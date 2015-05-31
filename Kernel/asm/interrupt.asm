@@ -15,7 +15,6 @@ GLOBAL pic
 
 	mov al, 20h
 	out 20h, al
-
 	iretq
 %endmacro
 
@@ -30,6 +29,9 @@ sti:
 	ret
 
 pic:	
-	mov al, 0xfe
+	mov al, 0xfd
 	out 0x21, al
+	mov al, 0xff
+	out 0xA1, al
+	sti
 	ret
