@@ -5,7 +5,6 @@
 
 void irqDispatcher(int64_t irq) {
 	ncNewline();
-	ncPrintDec(irq);
 	ncPrint("interrupcion");
 	ncNewline();
 
@@ -15,6 +14,7 @@ void irqDispatcher(int64_t irq) {
 			ncNewline();
 			break;
 		case 1:
+			ncPrint("key");
 			ncNewline();
 			break;
 		default:

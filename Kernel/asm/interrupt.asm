@@ -3,16 +3,20 @@ GLOBAL pit_handler
 GLOBAL sti
 GLOBAL keyboard_handler
 EXTERN irqDispatcher
+EXTERN ncNewline
+GLOBAL pic
 
 %macro irqHandlerMaster 1
 	mov rdi, %1
 	call irqDispatcher
 	
-	;signal pic
+
+	;signal pic	
+
 	mov al, 20h
 	out 20h, al
 
-	iret
+	iretq
 %endmacro
 
 
@@ -23,4 +27,9 @@ pit_handler:
 
 sti:
 	sti
+	ret
+
+pic:	
+	mov al, 0xfe
+	out 0x21, al
 	ret

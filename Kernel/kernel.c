@@ -106,8 +106,11 @@ int main()
 	ncPrintHex(test[(0x20)*2]);
 	ncNewline();
 	ncNewline();
-	ncPrint("sti");
+
 	sti();
-	while(1);
+	pic();
+	while(1) {
+
+	};
 	return 0;
 }
