@@ -7,6 +7,8 @@ static uint8_t * const video = (uint8_t*)0xB8000;
 static uint8_t * currentVideo = (uint8_t*)0xB8000;
 static const uint32_t width = 80;
 static const uint32_t height = 25 ;
+static char backup[2000];
+static int indexBackup = 0;
 
 unsigned static char kbdus[128] =
 {
@@ -49,8 +51,80 @@ unsigned static char kbdus[128] =
 };
 
 void ncPrintKeyboard(char c){
-	ncPrintChar(kbdus[c]);
+	char key = kbdus[c];
+	if(key == '\b'){ //backspace
+		if((uint64_t)(currentVideo - video) % (width * 2) != 0){
+			currentVideo -=2;
+			ncPrintChar(' ');
+			currentVideo -=2;
+		}
+	}else if(key == '\n'){
+		ncNewline();
+	}else if(c>2 && c<58 && (c!=15 && c!=29 && c!=42 && c!= 54 && c!=56)){
+		ncPrintChar(key);
+	}else if(c == 80){
+		scrollDown();
+	}else if(c == 72){
+		scrollUp();
+	}
 }
+
+void scrollDown(){
+	int i;
+	int limit = (uint64_t)(currentVideo - video)/2;
+	currentVideo = video;
+	for (i = 0; i < width; ++i)
+	{
+		backup[indexBackup*width + i] = *(currentVideo+i*2);
+	}
+	indexBackup++;
+	for (i = 0; i < limit; i++)
+	{
+		*currentVideo = *(currentVideo + width*2);
+		currentVideo +=2;
+	}
+	currentVideo -= width*2;
+}
+
+void scrollUp(){
+	if(!indexBackup){
+		return;
+	}
+	int i;
+	int limit = (uint64_t)(currentVideo - video)/2;
+	uint8_t * backupCurrentVideo = currentVideo;
+	
+	for (i = 0; i <= limit; i++)
+	{
+		*(currentVideo+width*2) = *currentVideo;
+		currentVideo -=2;
+	}
+	for(i=0; i<width; i++){
+		*(video + i*2) = backup[(indexBackup-1)*width+i];
+	}
+	indexBackup--;
+	currentVideo = backupCurrentVideo + width*2;
+}
+/*
+void scrollUp(){
+	int i;
+	int limit = (uint64_t)(currentVideo - video)/2;
+	//ncNewline;
+	uint8_t * backupCurrentVideo = currentVideo;
+	currentVideo = currentVideo - width*2;
+	
+	for(i =0; i<limit; i++){
+		if(indexBackup){
+			*currentVideo = 
+		}
+	}
+	for (i = 0; i < limit; i++)
+	{
+		*(currentVideo+width*2) = *currentVideo;
+		currentVideo -=2;
+	}
+	currentVideo = backupCurrentVideo;
+}*/
 
 void ncPrint(const char * string)
 {
