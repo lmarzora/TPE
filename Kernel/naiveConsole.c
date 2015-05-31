@@ -7,7 +7,7 @@ static uint8_t * const video = (uint8_t*)0xB8000;
 static uint8_t * currentVideo = (uint8_t*)0xB8000;
 static const uint32_t width = 80;
 static const uint32_t height = 25 ;
-static char backup[2000];
+static char backup[8000];
 static int indexBackup = 0;
 
 unsigned static char kbdus[128] =
@@ -61,6 +61,16 @@ void ncPrintKeyboard(char c){
 	}else if(key == '\n'){
 		ncNewline();
 	}else if(c>2 && c<58 && (c!=15 && c!=29 && c!=42 && c!= 54 && c!=56)){
+		int point = (uint64_t)(currentVideo - video)%(width*2);
+		if(point == 158){
+			return;
+		}
+
+		point = (uint64_t)(currentVideo - video)/(width*2);
+		while(point >= height){
+			scrollDown();
+			point = (uint64_t)(currentVideo - video)/(width*2);
+		}
 		ncPrintChar(key);
 	}else if(c == 80){
 		scrollDown();
@@ -70,6 +80,9 @@ void ncPrintKeyboard(char c){
 }
 
 void scrollDown(){
+	if((uint64_t)(currentVideo - video) < width*2){
+		return;
+	}
 	int i;
 	int limit = (uint64_t)(currentVideo - video)/2;
 	currentVideo = video;
@@ -99,32 +112,15 @@ void scrollUp(){
 		*(currentVideo+width*2) = *currentVideo;
 		currentVideo -=2;
 	}
-	for(i=0; i<width; i++){
-		*(video + i*2) = backup[(indexBackup-1)*width+i];
-	}
+
 	indexBackup--;
+	for(i=0; i<width; i++){
+		*(video + i*2) = backup[indexBackup*width+i];
+	}
+	
 	currentVideo = backupCurrentVideo + width*2;
 }
-/*
-void scrollUp(){
-	int i;
-	int limit = (uint64_t)(currentVideo - video)/2;
-	//ncNewline;
-	uint8_t * backupCurrentVideo = currentVideo;
-	currentVideo = currentVideo - width*2;
-	
-	for(i =0; i<limit; i++){
-		if(indexBackup){
-			*currentVideo = 
-		}
-	}
-	for (i = 0; i < limit; i++)
-	{
-		*(currentVideo+width*2) = *currentVideo;
-		currentVideo -=2;
-	}
-	currentVideo = backupCurrentVideo;
-}*/
+
 
 void ncPrint(const char * string)
 {
@@ -147,6 +143,9 @@ void ncNewline()
 		ncPrintChar(' ');
 	}
 	while((uint64_t)(currentVideo - video) % (width * 2) != 0);
+	if((uint64_t)(currentVideo - video)/(width*2) > (height/2)){
+		scrollDown();
+	}
 }
 
 void ncPrintDec(uint64_t value)
