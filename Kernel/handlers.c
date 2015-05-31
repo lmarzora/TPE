@@ -11,8 +11,9 @@ void irqDispatcher(int64_t irq) {
 			ncPrint("tick");
 			break;
 		case 1:
-			ncPrint("key");
-			ncNewline();
+			
+			ncPrintKeyboard(getKey());
+			//ncNewline();
 			break;
 		default:
 			ncPrint("default");

@@ -5,6 +5,7 @@ GLOBAL keyboard_handler
 EXTERN irqDispatcher
 EXTERN ncNewline
 GLOBAL pic
+GLOBAL getKey
 
 %macro irqHandlerMaster 1
 	mov rdi, %1
@@ -23,6 +24,16 @@ keyboard_handler:
 	irqHandlerMaster 1
 pit_handler:
 	irqHandlerMaster 0
+
+getKey:
+;	push ebp
+;	mov ebp,esp
+	mov rax, 0
+;	mov eax,0
+;	in ax,60h
+	in  ax, 60h
+;	leave
+	ret
 
 sti:
 	sti
