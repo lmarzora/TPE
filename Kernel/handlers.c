@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include <naiveConsole.h>
 #include <handlers.h>
+#include <keyboard.h>
 
 
 void irqDispatcher(int64_t irq) {
@@ -11,7 +12,6 @@ void irqDispatcher(int64_t irq) {
 			ncPrint("tick");
 			break;
 		case 1:
-			
 			ncPrintKeyboard(getKey());
 			//ncNewline();
 			break;
