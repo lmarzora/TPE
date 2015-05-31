@@ -1,0 +1,35 @@
+/*
+ * interrups.h
+ *
+ *  Created on: Apr 18, 2010
+ *      Author: anizzomc
+ */
+
+#ifndef INTERRUPS_H_
+#define INTERRUPS_H_
+
+#include "types.h"
+
+void _irq0Handler(void);
+void _irq1Handler(void);
+void _irq2Handler(void);
+void _irq3Handler(void);
+void _irq4Handler(void);
+void _irq5Handler(void);
+
+void _cli(void);
+
+void _sti(void);
+
+void picMasterMask(byte mask);
+
+void picSlaveMask(byte mask);
+
+void int_80_hand();
+
+void lidt(IDTR *idtr);
+
+//Termina la ejecución de la cpu.
+void haltcpu(void);
+
+#endif /* INTERRUPS_H_ */
