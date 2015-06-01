@@ -41,7 +41,7 @@ void erase(){
 void ncPrintKey(char c){
 	//limit
 	int point = (uint64_t)(currentVideo - video)%(width*2);
-	if(point == 158){
+	if(point == ((width-1)*2) ){
 		return;
 	}
 	
@@ -76,8 +76,6 @@ void scrollUp(){
 	
 	currentVideo = backupCurrentVideo + width*2;
 }
-
-
 
 void ncPrint(const char * string)
 {
@@ -170,3 +168,37 @@ static uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base)
 
 	return digits;
 }
+
+/*
+void guardarLinea(){
+	uint8_t plus = currentVideo/(width*2);
+	char texto[80] = {0};
+	int i = 0;
+	do
+	{
+		plus += (uint8_t) i*2; 
+		texto[i] = *(video + plus);
+		i++;
+	}while(i<(width*2));
+
+	ncNewline();
+	ncPrint(texto);
+	ncNewline();
+
+}*/
+/*
+void printLaLinea(){
+	int pos = (currentVideo - video)%(width*2);
+	uint8_t * pointer = currentVideo - pos;
+
+	ncNewline();
+	char[80] texto = {0};
+	do
+	{
+		ncPrintHex(*pointer);
+		pointer +=2;
+	}
+	while((uint64_t)(currentVideo - video) % (width * 2) != 0);
+
+}
+*/

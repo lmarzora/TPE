@@ -48,3 +48,13 @@ void * memcpy(void * destination, const void * source, uint64_t length)
 
 	return destination;
 }
+
+int decToHexa(int nro){
+	int total = 0;
+	do{
+		total = total*10 + nro%16;
+		nro = nro/16;
+	}while(nro);
+
+	return total;
+}
