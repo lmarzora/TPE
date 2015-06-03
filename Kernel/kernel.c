@@ -77,7 +77,7 @@ void * initializeKernelBinary()
 
 int main()
 {	
-	/*ncPrint("[Kernel Main]");
+	ncPrint("[Kernel Main]");
 	ncNewline();
 	ncPrint("  Sample code module at 0x");
 	ncPrintHex((uint64_t)sampleCodeModuleAddress);
@@ -93,7 +93,7 @@ int main()
 	ncPrint("  Sample data module contents: ");
 	ncPrint((char*)sampleDataModuleAddress);
 	ncNewline();
-*/
+
 	ncPrint("dir");
 	ncNewline();
 	ncPrintHex(&pit_handler);

@@ -108,7 +108,7 @@ int main()
 	ncNewline();
 
 	sti();
-
+	pic();
 	while(1) {
 
 	};
