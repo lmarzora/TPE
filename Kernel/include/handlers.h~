@@ -8,7 +8,7 @@ void irqDispatcher(int64_t);
 void pit_handler();
 void keyboard_handler();
 void pic();
-void in80handler();
-void syscall(void);
+void int80handler();
+void syscall(int,char*,int);
 
 #endif

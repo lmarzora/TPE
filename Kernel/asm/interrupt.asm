@@ -27,6 +27,7 @@ keyboard_handler:
 pit_handler:
 	irqHandlerMaster 0
 int80handler:
+	sti
 	call syscall
 	iretq
 

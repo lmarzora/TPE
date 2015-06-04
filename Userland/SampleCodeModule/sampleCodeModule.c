@@ -1,6 +1,8 @@
 #include <stdint.h>
-void int80(void);
-char * v = (char*)0xB8000 + 79 * 2;
+int read(char * buff ,int size);
+int write(char * buff ,int size);
+
+
 
 extern char bss;
 extern char endOfBinary;
@@ -15,9 +17,12 @@ int main() {
 	memset(&bss, 0, &endOfBinary - &bss);
 
 	//All the following code may be removed 
-	*v = 'X';
 	
-	int80();
+	char * hola[80] ;
+	while(1) {	
+		read(hola,80);
+		write(hola,80);
+	}
 	//Test if BSS is properly set up
 	if (var1 == 0 && var2 == 0)
 		return 0xDEADC0DE;

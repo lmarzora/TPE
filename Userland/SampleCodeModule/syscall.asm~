@@ -1,5 +1,16 @@
-GLOBAL int80
+GLOBAL read
+GLOBAL write
 
-int80:
-	int 80
+read:
+	mov rdx, rdi
+	mov rsi, rsi
+	mov	rdi, 1
+	int 80h
+	ret
+
+write:
+	mov rdx, rdi
+	mov rsi, rsi
+	mov	rdi, 2
+	int 80h
 	ret

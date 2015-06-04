@@ -7,7 +7,7 @@ EXTERN ncNewline
 GLOBAL pic
 GLOBAL getKey
 GLOBAL int80handler
-EXTEERN syscall
+EXTERN syscall
 
 %macro irqHandlerMaster 1
 	mov rdi, %1
@@ -27,6 +27,7 @@ keyboard_handler:
 pit_handler:
 	irqHandlerMaster 0
 int80handler:
+	call sti
 	call syscall
 	iretq
 

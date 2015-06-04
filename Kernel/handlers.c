@@ -21,9 +21,19 @@ void irqDispatcher(int64_t irq) {
 	return;
 }
 
-void syscall() {
-	ncPrint("aaaaaaaaaaaaaaaaaa");
-	ncNewline();
+int syscall(int code , char* buff , int size) {
+	int dim = -1;
+	switch (code) {
+		case 1: 
+			dim = sysread(buff,size);
+			break;
+		case 2:
+			dim = syswrite(buff,size);
+			break;
+		default:
+			ncPrint("AAAAAAAAAAAAAAAAAAAAAAAAAAA");	
+	}
+	return dim;
 }
 
  
