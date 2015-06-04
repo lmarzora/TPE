@@ -6,6 +6,8 @@ EXTERN irqDispatcher
 EXTERN ncNewline
 GLOBAL pic
 GLOBAL getKey
+GLOBAL int80handler
+EXTEERN syscall
 
 %macro irqHandlerMaster 1
 	mov rdi, %1
@@ -24,6 +26,9 @@ keyboard_handler:
 	irqHandlerMaster 1
 pit_handler:
 	irqHandlerMaster 0
+int80handler:
+	call syscall
+	iretq
 
 getKey:
 ;	push ebp
@@ -31,7 +36,7 @@ getKey:
 	mov rax, 0
 ;	mov eax,0
 ;	in ax,60h
-	in  rdi, 60h
+	in  ax, 60h
 ;	leave
 	ret
 

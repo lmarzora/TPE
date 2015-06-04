@@ -9,8 +9,7 @@ STATICLIBS=
 
 all: $(MODULE)
 
-$(MODULE): $(OBJECTS) $(ASMOBJECTS) $(STATICLIBS) 
-	$(LD) $(LDFLAGS) -T sampleCodeModule.ld -o ../$(MODULE) $(OBJECTS) $(ASMOBJECTS) $(STATICLIBS)
+$(MODULE): $(OBJECTS) $(ASMOBJECTS) $(STATICLIBS) $(LD) $(LDFLAGS) -T sampleCodeModule.ld -o ../$(MODULE) $(OBJECTS) $(ASMOBJECTS) $(STATICLIBS)
 
 %.o: %.c
 	 $(GCC) $(GCCFLAGS) -c $< -o $@ 

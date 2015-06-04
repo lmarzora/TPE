@@ -20,4 +20,10 @@ void irqDispatcher(int64_t irq) {
 	}
 	return;
 }
+
+void syscall() {
+	ncPrint("aaaaaaaaaaaaaaaaaa");
+	ncNewline();
+}
+
  
