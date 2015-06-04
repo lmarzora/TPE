@@ -1,1 +1,1 @@
-void ncPrintKeyboard(char c);
+void analizeKeyboard(char c);

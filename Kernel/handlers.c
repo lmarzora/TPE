@@ -12,7 +12,7 @@ void irqDispatcher(int64_t irq) {
 			ncPrint("tick");
 			break;
 		case 1:
-			ncPrintKeyboard(getKey());
+			analizeKeyboard(getKey());
 			//ncNewline();
 			break;
 		default:

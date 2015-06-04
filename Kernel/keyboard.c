@@ -1,5 +1,5 @@
-#include <naiveConsole.h>
 #include <terminal.h>
+
 unsigned static char kbdus[128] =
 {
     0,  27, '1', '2', '3', '4', '5', '6', '7', '8',	/* 9 */
@@ -40,19 +40,17 @@ unsigned static char kbdus[128] =
     0,	/* All other keys are undefined */
 };
 
-void ncPrintKeyboard(char c){
+void analizeKeyboard(char c){
 	char key = kbdus[c];
 	if(key == '\b'){ //backspace
-		erase();
+		backspace();
 	}else if(key == '\n'){
-		ncNewline();
-		writeBuffer('\n');
+		enter();
 	}else if(c>2 && c<58 && (c!=15 && c!=29 && c!=42 && c!= 54 && c!=56)){
-		ncPrintKey(key);
-		writeBuffer(key);
+		insertKey(key);
 	}else if(c == 80){
-		scrollDown();
+		downArrow();
 	}else if(c == 72){
-		scrollUp();
+		upArrow();
 	}
 }

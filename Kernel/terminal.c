@@ -1,35 +1,69 @@
 #include <naiveConsole.h>
 
-char buffer[80] ;
-int last = 0;
-int next = 0;
+char buffer[80];
+int index = 0;
+int done = 0;
 
-int writeBuffer(char c) {
-	buffer[next] = c;
-	last= next;
-	next++;
-	return 1;
+void backspace(){
+	erase();
+	
+	if(index){
+		index--;
+		buffer[index] = 0;
+	}
+
+}
+
+void enter(){
+	ncNewline();
+	if(index)
+		done = 1;
+}
+
+void insertKey(char key){
+	ncPrintKey(key);
+
+	if(index != 79)
+		buffer[index++] = key;
+	
+}
+
+void upArrow(){
+	scrollUp();
+}
+
+void downArrow(){
+	scrollDown();
+}
+
+void cleanBuffer(){
+	int i;
+	for(i=0; i<80; i++){
+		buffer[i] = 0;
+	}
+	index = 0;
+	done = 0;
 }
 
 int sysread(char* buff , int size) {
 
-	while( buffer[last]!='\n' && last < size) {
-	}
-	int i = 0;
+	while(!done);
 	
-	while (i<last) {
+	int i = 0;
+
+	while (i<index) {
 		buff[i] = buffer[i];
 		i++;
 	}
-	buff[last] = 0;
-	buffer[last] = 0;
-	last = 0;
-	next = 0;
+
+	buff[i] = 0;
+
+	cleanBuffer();
+
 	return i;
 }
 
 int syswrite(char* buff, int size) {
-	//ncPrint("ffffffff");
 	ncPrint(buff);	
 	ncNewline();
 	return 0;
