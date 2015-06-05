@@ -16,7 +16,7 @@ int cmpstr(char * s1, char * s2);
 
 int main() {
 	//Clean BSS
-	memset(&bss, 0, &endOfBinary - &bss);
+	//memset(&bss, 0, &endOfBinary - &bss);
 
 	//All the following code may be removed 
 	
@@ -24,7 +24,7 @@ int main() {
 	while(1) {	
 		line = getLn(line);
 		if(cmpstr(line,"get time")){
-			printLn("todo: ejecutar getTime");
+			getTime();
 			
 		}else if(cmpstr(line, "set time")){
 			printLn("todo: ejecutar setTime");
@@ -45,7 +45,7 @@ int main() {
 
 	return 0xDEADBEEF;
 }
-
+/*
 void * memset(void * destiation, int32_t c, uint64_t length) {
 	uint8_t chr = (uint8_t)c;
 	char * dst = (char*)destiation;
@@ -55,10 +55,5 @@ void * memset(void * destiation, int32_t c, uint64_t length) {
 
 	return destiation;
 }
+*/
 
-int cmpstr(char * s1, char * s2){
-	int i = 0;
-	while(s1[i] == s2[i] && s1[i] != 0)
-		i++;
-	return s1[i] == 0 && s2[i] == 0;
-}

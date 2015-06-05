@@ -18,7 +18,7 @@ void backspace(){
 	
 	if(index){
 		index--;
-		buffer[index] = 0;
+		//buffer[index] = 0;
 	}
 
 }
@@ -76,4 +76,7 @@ int syswrite(char* buff, int size) {
 	ncPrint(buff);	
 	ncNewline();
 	return 0;
+}
+void sysGetTime() {
+	printTime();
 }

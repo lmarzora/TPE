@@ -31,6 +31,9 @@ int syscall(int code , char* buff , int size) {
 		case 2:
 			dim = syswrite(buff,size);
 			break;
+		case 3:
+			sysGetTime();
+			break;
 		default:
 			ncPrint("AAAAAAAAAAAAAAAAAAAAAAAAAAA");	
 	}

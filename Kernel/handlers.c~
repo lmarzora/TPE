@@ -10,9 +10,10 @@ void irqDispatcher(int64_t irq) {
 	switch (irq) {
 		case 0:
 			ncPrint("tick");
+			incTicker();
 			break;
 		case 1:
-			ncPrintKeyboard(getKey());
+			analizeKeyboard(getKey());
 			//ncNewline();
 			break;
 		default:
@@ -29,7 +30,10 @@ int syscall(int code , char* buff , int size) {
 			break;
 		case 2:
 			dim = syswrite(buff,size);
-			break
+			break;
+		case 3:
+			getTime();
+			break;
 		default:
 			ncPrint("AAAAAAAAAAAAAAAAAAAAAAAAAAA");	
 	}

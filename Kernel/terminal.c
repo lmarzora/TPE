@@ -1,5 +1,5 @@
 #include <naiveConsole.h>
-
+#include <time.h>
 char buffer[80];
 int index = 0;
 int done = 0;
@@ -76,4 +76,7 @@ int syswrite(char* buff, int size) {
 	ncPrint(buff);	
 	ncNewline();
 	return 0;
+}
+void sysGetTime() {
+	printTime();
 }
