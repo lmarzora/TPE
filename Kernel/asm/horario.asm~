@@ -2,9 +2,9 @@ GLOBAL getHora
 GLOBAL getMin
 GLOBAL getSec
 
-GLOBAL setHora
-GLOBAL setMin
-GLOBAL setSec
+;GLOBAL setHora
+;GLOBAL setMin
+;GLOBAL setSec
 
 %macro getTime 1
 	;mov rdi, %1

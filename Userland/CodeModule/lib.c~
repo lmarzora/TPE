@@ -17,3 +17,11 @@ int cmpstr(char * s1, char * s2){
 	return s1[i] == 0 && s2[i] == 0;
 }
 
+void getTime(){
+	timeGet();
+}
+void setTime(char* time){
+	printLn("setting time to :");
+	printLn(time);
+	timeSet(time,8);
+}

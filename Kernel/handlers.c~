@@ -34,6 +34,13 @@ int syscall(int code , char* buff , int size) {
 		case 3:
 			sysGetTime();
 			break;
+		case 4:
+			if(size!=9) {
+				ncPrint("wrong size");
+				return;
+			}			
+			sysSetTime(buff);
+			break;
 		default:
 			ncPrint("AAAAAAAAAAAAAAAAAAAAAAAAAAA");	
 	}

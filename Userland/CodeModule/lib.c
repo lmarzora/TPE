@@ -20,3 +20,6 @@ int cmpstr(char * s1, char * s2){
 void getTime(){
 	timeGet();
 }
+void setTime(char* time){
+	timeSet(time,8);
+}

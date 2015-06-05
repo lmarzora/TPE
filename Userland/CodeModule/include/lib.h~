@@ -1,4 +1,4 @@
 void printLn(char*);
 char* getLn();
 int cmpstr(char * s1, char * s2);
-int getTime();
+void getTime();

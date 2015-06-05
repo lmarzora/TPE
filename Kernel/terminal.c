@@ -2,6 +2,9 @@
 #include <screensaver.h>
 #include <time.h>
 #include <terminal.h>
+
+#define CHARTOINT(a) (int) (a - '0')
+
 char buffer[80];
 int index = 0;
 int done = 0;
@@ -87,3 +90,13 @@ int syswrite(char* buff, int size) {
 void sysGetTime() {
 	printTime();
 }
+
+void sysSetTime(char* buff) {
+	int hora =(CHARTOINT(buff[0]))*10 + CHARTOINT(buff[1]);
+	int min =(CHARTOINT(buff[3]))*10 + CHARTOINT(buff[4]);
+	int sec =(CHARTOINT(buff[6]))*10 + CHARTOINT(buff[7]);
+
+	setTime(hora,min,sec);
+}
+
+
