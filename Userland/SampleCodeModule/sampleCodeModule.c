@@ -1,4 +1,6 @@
 #include <stdint.h>
+//#include "libc.h"
+
 int read(char * buff ,int size);
 int write(char * buff ,int size);
 
@@ -11,6 +13,7 @@ static int var1 = 0;
 static int var2 = 0;
 
 void * memset(void * destiny, int32_t c, uint64_t length);
+int cmpstr(char * s1, char * s2);
 
 int main() {
 	//Clean BSS
@@ -21,7 +24,17 @@ int main() {
 	char * hola[80] ;
 	while(1) {	
 		read(hola,80);
-		write(hola,80);
+		if(cmpstr(hola,"get time")){
+			write("todo: ejecutar getTime", 80);
+		}else if(cmpstr(hola, "set time")){
+			write("todo: ejecutar setTime", 80);
+		}else if (cmpstr(hola, "clear")){
+			write("todo: clearScreen", 80);
+		}else{
+			write("error: command not found", 20);
+			write(hola,80);
+		}
+		
 	}
 	//Test if BSS is properly set up
 	if (var1 == 0 && var2 == 0)
@@ -38,4 +51,11 @@ void * memset(void * destiation, int32_t c, uint64_t length) {
 		dst[length] = chr;
 
 	return destiation;
+}
+
+int cmpstr(char * s1, char * s2){
+	int i = 0;
+	while(s1[i] == s2[i] && s1[i] != 0)
+		i++;
+	return s1[i] == 0 && s2[i] == 0;
 }

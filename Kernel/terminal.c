@@ -3,6 +3,15 @@
 char buffer[80];
 int index = 0;
 int done = 0;
+int ticker = 0;
+
+void incTicker(){
+	ticker++;
+	if(ticker == 200){
+		ncPrint("LLegue a 200");
+		ticker = 0;
+	}
+}
 
 void backspace(){
 	erase();
@@ -37,10 +46,10 @@ void downArrow(){
 }
 
 void cleanBuffer(){
-	int i;
+	/*int i;
 	for(i=0; i<80; i++){
 		buffer[i] = 0;
-	}
+	}*/
 	index = 0;
 	done = 0;
 }

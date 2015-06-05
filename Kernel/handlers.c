@@ -10,6 +10,7 @@ void irqDispatcher(int64_t irq) {
 	switch (irq) {
 		case 0:
 			ncPrint("tick");
+			incTicker();
 			break;
 		case 1:
 			analizeKeyboard(getKey());
