@@ -18,7 +18,7 @@ void backspace(){
 	
 	if(index){
 		index--;
-		buffer[index] = 0;
+		//buffer[index] = 0;
 	}
 
 }

@@ -1,0 +1,2 @@
+void printLn(char*);
+void getLn(char*);
