@@ -1,10 +1,6 @@
 #include <stdint.h>
 #include <lib.h>
 
-
-
-
-
 extern char bss;
 extern char endOfBinary;
 
@@ -16,28 +12,31 @@ int cmpstr(char * s1, char * s2);
 
 int main() {
 	//Clean BSS
-	//memset(&bss, 0, &endOfBinary - &bss);
+	memset(&bss, 0, &endOfBinary - &bss);
 
 	//All the following code may be removed 
 	
 	char* line;
 	while(1) {	
+		printLn("$ ");
 		line = getLn(line);
-		if(cmpstr(line,"get time")){
-			getTime();
+		if(!cmpstr(line, "")){
+			if(cmpstr(line,"get time")){
+				getTime();
 			
-		}else if(cmpstr(line, "set time")){
-			printLn("todo: ejecutar setTime");
-			
-		}else if (cmpstr(line, "clear")){
-			printLn("todo: clearScreen");
-			
-		}else{
-			printLn("error: command not found");
-			printLn(line);
-			
+			}else if(cmpstr(line, "set time")){
+				printLn("todo: ejecutar setTime\n");
+				
+			}else if (cmpstr(line, "clear")){
+				printLn("todo: clearScreen\n");
+				
+			}else{
+				printLn("Error: Command \"");
+				printLn(line);
+				printLn("\" not found\n");
+				
+			}
 		}
-		
 	}
 	//Test if BSS is properly set up
 	if (var1 == 0 && var2 == 0)
@@ -45,7 +44,7 @@ int main() {
 
 	return 0xDEADBEEF;
 }
-/*
+
 void * memset(void * destiation, int32_t c, uint64_t length) {
 	uint8_t chr = (uint8_t)c;
 	char * dst = (char*)destiation;
@@ -55,5 +54,5 @@ void * memset(void * destiation, int32_t c, uint64_t length) {
 
 	return destiation;
 }
-*/
+
 

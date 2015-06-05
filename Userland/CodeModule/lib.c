@@ -1,5 +1,5 @@
 #include <lib.h>
-#include<syscalls.h>
+#include <syscalls.h>
 
 static char buff[80];
 

@@ -55,7 +55,7 @@ void scrollDown(){
 }
 
 void erase(){
-	if((uint64_t)(currentVideo - video) % (width * 2) != 0){
+	if(((uint64_t)(currentVideo - video) % (width * 2)) >4){
 			currentVideo -=2;
 			ncPrintChar(' ');
 			currentVideo -=2;
@@ -111,8 +111,12 @@ void ncPrint(const char * string)
 
 void ncPrintChar(char character)
 {
-	*currentVideo = character;
-	currentVideo += 2;
+	if(character == '\n'){
+		ncNewline();
+	}else{
+		*currentVideo = character;
+		currentVideo += 2;
+	}
 }
 
 void ncNewline()

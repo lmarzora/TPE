@@ -32,8 +32,7 @@ void backspace(){
 
 void enter(){
 	ncNewline();
-	if(index)
-		done = 1;
+	done = 1;
 }
 
 void insertKey(char key){
@@ -81,7 +80,7 @@ int sysread(char* buff , int size) {
 
 int syswrite(char* buff, int size) {
 	ncPrint(buff);	
-	ncNewline();
+	//ncNewline();
 	return 0;
 }
 void sysGetTime() {
