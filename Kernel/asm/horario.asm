@@ -2,9 +2,9 @@ GLOBAL getHora
 GLOBAL getMin
 GLOBAL getSec
 
-;GLOBAL setHora
-;GLOBAL setMin
-;GLOBAL setSec
+GLOBAL setHora
+GLOBAL setMin
+GLOBAL setSec
 
 %macro getTime 1
 	;mov rdi, %1
@@ -31,27 +31,26 @@ getSec:
 
 
 %macro setTime 1
-	;mov rdi, %1
 	
-	mov rax, 0
-
+	mov rax, 0;
 	mov al, %1
 	out 70h, al
-
-	mov al, 5
-	out al, 71h
+	
+	mov rax, 0
+	mov rax, rdi
+	out 71h, al
 
 	ret
 %endmacro
 
-;setHora:
-;	setTime 4
-;
-;setMin:
-;	setTime 2
-;
-;setSec:
-;	setTime 0
+setHora:
+	setTime 4
+
+setMin:
+	setTime 2
+
+setSec:
+	setTime 0
 
 
 

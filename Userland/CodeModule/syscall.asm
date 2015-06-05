@@ -1,7 +1,7 @@
 GLOBAL read
 GLOBAL write
 GLOBAL timeGet
-
+GLOBAL timeSet
 read:
 	mov rdx, rsi
 	mov rsi, rdi
@@ -12,11 +12,20 @@ read:
 write:
 	mov rdx, rsi
 	mov rsi, rdi
-	mov	rdi, 2
+	mov rdi, 2
 	int 80h
 	ret
 
 timeGet:
+	mov rdx, rsi
+	mov rsi, rdi
 	mov rdi, 3
+	int 80h
+	ret
+
+timeSet
+	mov rdx, rsi
+	mov rsi ,rdi
+	mov rdi, 4
 	int 80h
 	ret
