@@ -27,7 +27,8 @@ int main() {
 			getTime();
 			
 		}else if(cmpstr(line, "set time")){
-			printLn("todo: ejecutar setTime");
+			//printLn("todo: ejecutar setTime");
+			setTime("10:10:10");
 			
 		}else if (cmpstr(line, "clear")){
 			printLn("todo: clearScreen");

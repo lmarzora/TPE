@@ -47,7 +47,7 @@ void analizeKeyboard(unsigned char c){
 		backspace();
 	}else if(key == '\n'){
 		enter();
-	}else if(c>2 && c<58 && (c!=15 && c!=29 && c!=42 && c!= 54 && c!=56)){
+	}else if(c>=2 && c<58 && (c!=15 && c!=29 && c!=42 && c!= 54 && c!=56)){
 		insertKey(key);
 	}else if(c == 80){
 		downArrow();
