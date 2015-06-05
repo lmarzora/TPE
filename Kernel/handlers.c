@@ -2,6 +2,7 @@
 #include <naiveConsole.h>
 #include <handlers.h>
 #include <keyboard.h>
+#include <terminal.h>
 
 
 void irqDispatcher(int64_t irq) {

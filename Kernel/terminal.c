@@ -1,6 +1,7 @@
 #include <naiveConsole.h>
 #include <screensaver.h>
 #include <time.h>
+#include <terminal.h>
 char buffer[80];
 int index = 0;
 int done = 0;

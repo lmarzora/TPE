@@ -1,5 +1,5 @@
 #include <naiveConsole.h>
-#include <screensaver.h>
+
 int activated = 0;
 
 void activateSS(){

@@ -9,6 +9,6 @@ void pit_handler();
 void keyboard_handler();
 void pic();
 void int80handler();
-void syscall(int,char*,int);
+int syscall(int,char*,int);
 
 #endif

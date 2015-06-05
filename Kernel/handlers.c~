@@ -2,6 +2,7 @@
 #include <naiveConsole.h>
 #include <handlers.h>
 #include <keyboard.h>
+#include <terminal.h>
 
 
 void irqDispatcher(int64_t irq) {
@@ -9,12 +10,11 @@ void irqDispatcher(int64_t irq) {
 
 	switch (irq) {
 		case 0:
-			ncPrint("tick");
-			incTicker();
+			incTick();
 			break;
 		case 1:
+			resetTick();
 			analizeKeyboard(getKey());
-			//ncNewline();
 			break;
 		default:
 			ncPrint("default");
@@ -32,7 +32,7 @@ int syscall(int code , char* buff , int size) {
 			dim = syswrite(buff,size);
 			break;
 		case 3:
-			getTime();
+			sysGetTime();
 			break;
 		default:
 			ncPrint("AAAAAAAAAAAAAAAAAAAAAAAAAAA");	
