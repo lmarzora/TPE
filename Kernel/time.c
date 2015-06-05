@@ -1,5 +1,5 @@
 #include <naiveConsole.h>
-
+#include <time.h>
 
 void printTime(){
 	int hora = getHora();

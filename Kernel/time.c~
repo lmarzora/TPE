@@ -1,5 +1,4 @@
 #include <naiveConsole.h>
-#include <naiveConsole.h>
 
 
 void printTime(){
