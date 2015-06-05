@@ -25,10 +25,13 @@ int main() {
 				getTime();
 			
 			}else if(cmpstr(line, "set time")){
-				//printLn("todo: ejecutar setTime\n");
 				printLn("Ingrese la hora (hh:mm:ss)\n");
 				line = getLn();
-				setTime(line);
+				if(setTime(line)){
+					printLn("Hora seteada correctamente\n");
+				}else{
+					printLn("Hora ingresada no valida\n");
+				}
 				
 			}else if (cmpstr(line, "clear")){
 				printLn("todo: clearScreen\n");

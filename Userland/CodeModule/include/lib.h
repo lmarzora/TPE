@@ -2,4 +2,6 @@ void printLn(char*);
 char* getLn();
 int cmpstr(char * s1, char * s2);
 void getTime();
-void setTime(char*);
+int setTime(char*);
+int verifyTime(char * time);
+int nmbRange(char c);
