@@ -28,7 +28,7 @@ int main() {
 				//printLn("todo: ejecutar setTime\n");
 				printLn("Ingrese la hora (hh:mm:ss)\n");
 				line = getLn();
-				setTIme(line);
+				setTime(line);
 				
 			}else if (cmpstr(line, "clear")){
 				printLn("todo: clearScreen\n");
