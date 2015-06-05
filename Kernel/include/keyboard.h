@@ -1,2 +1,2 @@
 int getKey();
-void analizeKeyboard(char c);
+void analizeKeyboard(unsigned char c);
