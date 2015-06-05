@@ -7,4 +7,5 @@ void insertKey(char key);
 void upArrow();
 void downArrow();
 
-void incTicker();
+void incTick();
+void resetTick();

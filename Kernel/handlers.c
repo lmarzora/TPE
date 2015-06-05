@@ -9,12 +9,11 @@ void irqDispatcher(int64_t irq) {
 
 	switch (irq) {
 		case 0:
-			ncPrint("tick");
-			incTicker();
+			incTick();
 			break;
 		case 1:
+			resetTick();
 			analizeKeyboard(getKey());
-			//ncNewline();
 			break;
 		default:
 			ncPrint("default");

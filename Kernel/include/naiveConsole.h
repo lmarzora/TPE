@@ -17,4 +17,8 @@ void scrollDown();
 void scrollUp();
 void ncPrintKey(char c);
 
+void backupScreen();
+void restoreScreen();
+void blankScreen();
+
 #endif

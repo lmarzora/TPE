@@ -1,0 +1,2 @@
+void activateSS();
+void deactivateSS();

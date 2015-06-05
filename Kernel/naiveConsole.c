@@ -10,6 +10,30 @@ static const uint32_t height = 25 ;
 static char backup[8000];
 static int indexBackup = 0;
 
+static char originalScreen[4000];
+static uint8_t * originalVideo;
+
+//Para screensaver
+void backupScreen(){
+	int i;
+	for(i=0; i<height*width*2; i++){
+		originalScreen[i] = *(video+i);
+	}
+	originalVideo = currentVideo;
+	currentVideo = video;
+}
+
+void restoreScreen(){
+	int i;
+	for(i=0; i<height*width*2; i++){
+		*(video+i) = originalScreen[i];
+		
+	}
+	currentVideo = originalVideo;
+}
+////////////////////
+
+
 void scrollDown(){
 	if((uint64_t)(currentVideo - video) < width*2){
 		return;
@@ -127,12 +151,16 @@ void ncPrintBase(uint64_t value, uint32_t base)
 
 void ncClear()
 {
+	blankScreen();
+	currentVideo = video;
+	indexBackup = 0;
+}
+
+void blankScreen(){
 	int i;
 
 	for (i = 0; i < height * width; i++)
 		video[i * 2] = ' ';
-	currentVideo = video;
-	indexBackup = 0;
 }
 
 static uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base)

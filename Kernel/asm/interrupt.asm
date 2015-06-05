@@ -46,7 +46,7 @@ sti:
 	ret
 
 pic:	
-	mov al, 0xfd
+	mov al, 0xfc
 	out 0x21, al
 	mov al, 0xff
 	out 0xA1, al
