@@ -2,6 +2,7 @@ GLOBAL read
 GLOBAL write
 GLOBAL timeGet
 GLOBAL timeSet
+GLOBAL screenClear
 read:
 	mov rdx, rsi
 	mov rsi, rdi
@@ -23,9 +24,14 @@ timeGet:
 	int 80h
 	ret
 
-timeSet
+timeSet:
 	mov rdx, rsi
 	mov rsi ,rdi
 	mov rdi, 4
+	int 80h
+	ret
+
+screenClear:
+	mov rdi, 5
 	int 80h
 	ret

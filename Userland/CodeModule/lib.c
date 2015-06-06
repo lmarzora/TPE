@@ -4,6 +4,11 @@
 static char buff[80];
 
 void printLn(char* line) {
+	print(line);
+	print("\n");
+}
+
+void print(char * line){
 	write(line,80);
 }
 char* getLn() {
@@ -51,4 +56,8 @@ int setTime(char* time){
 	}
 	return 0;
 	
+}
+
+void clearScreen(){
+	screenClear();
 }

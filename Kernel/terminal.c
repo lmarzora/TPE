@@ -36,6 +36,10 @@ void backspace(){
 
 }
 
+void clearScreen(){
+	ncClear();
+}
+
 void enter(){
 	ncNewline();
 	done = 1;

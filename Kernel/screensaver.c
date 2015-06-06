@@ -3,7 +3,7 @@
 static char blue = 0x99;
 static char orange = 0x66;
 static char white = 0xFF;
-static char black = 0x00;
+//static char black = 0x00;
 static char green = 0x22;
 
 int activated = 0;
@@ -15,9 +15,6 @@ void activateSS(){
 	backupScreen();
 	blankScreen();
 	
-	//fillTank();
-	//fishOne(0);
-	//ncPrint("SE ACTIVO EL SCREEN SAVER");
 	activated = 1;
 	toggleScreenSaver();
 }
@@ -30,11 +27,11 @@ void toggleScreenSaver(){
 
 	if(screen){
 		fish(3);
-		plantVines(15);
+		plantVines(7,-1);
 		screen = 0;
 	}else{
 		fish(0);
-		plantVines(5);
+		plantVines(1,1);
 		screen = 1;
 	}
 }
@@ -100,24 +97,25 @@ void fish(int x){
 
 }
 
-void vines(int x){
+void vines(int x, int s){
 	int k=0;
 	for(int i=0; i<8; i++){
-		colorScreen(24-i, x+(k%2), green);
+		colorScreen(24-i, x+(k%2)*s, green);
 		k++;
 	}
 }
 
-void plantVines(int x){
+void plantVines(int x, int s){
 	int i;
 	for(i=x; i<80; i+=15){
-		vines(i);
+		vines(i, s);
 	}
+	/*
 	if(x==15){
 		vines(1);
 	}else{
 		vines(78);
-	}
+	}*/
 		
 }
 

@@ -37,9 +37,12 @@ int syscall(int code , char* buff , int size) {
 		case 4:
 			if(size!=8) {
 				ncPrint("wrong size");
-				return;
+				return 0;
 			}			
 			sysSetTime(buff);
+			break;
+		case 5:
+			clearScreen();
 			break;
 		default:
 			ncPrint("AAAAAAAAAAAAAAAAAAAAAAAAAAA");	

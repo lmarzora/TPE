@@ -9,38 +9,40 @@ static int var2 = 0;
 
 void * memset(void * destiny, int32_t c, uint64_t length);
 int cmpstr(char * s1, char * s2);
+void intro();
 
 int main() {
 	//Clean BSS
 	memset(&bss, 0, &endOfBinary - &bss);
 
-	//All the following code may be removed 
-	
+	intro();
+
 	char* line;
 	while(1) {	
-		printLn("$ ");
+		print("$ ");
 		line = getLn(line);
 		if(!cmpstr(line, "")){
 			if(cmpstr(line,"get time")){
 				getTime();
 			
 			}else if(cmpstr(line, "set time")){
-				printLn("Ingrese la hora (hh:mm:ss)\n");
-				printLn("->");
+				printLn("Ingrese la hora de forma: hh.mm.ss");
+				print("->");
 				line = getLn();
 				if(setTime(line)){
-					printLn("Hora seteada correctamente\n");
+					printLn("Hora seteada correctamente");
 				}else{
-					printLn("Hora ingresada no valida\n");
+					printLn("Hora ingresada no valida");
 				}
 				
 			}else if (cmpstr(line, "clear")){
-				printLn("todo: clearScreen\n");
-				
+				//printLn("todo: clearScreen");
+				clearScreen();
+				intro();
 			}else{
-				printLn("Error: Command \"");
-				printLn(line);
-				printLn("\" not found\n");
+				print("Error: Command \"");
+				print(line);
+				printLn("\" not found");
 				
 			}
 		}
@@ -60,6 +62,21 @@ void * memset(void * destiation, int32_t c, uint64_t length) {
 		dst[length] = chr;
 
 	return destiation;
+}
+
+void intro(){
+	int i;
+	for(i=0; i<80; i++){
+		print("*");
+	}
+	for(i=0; i<32; i++){
+		print(" ");
+	}
+	printLn("LeLu Shell v1.0");
+	for(i=0; i<80; i++){
+		print("*");
+	}
+	print("\n");
 }
 
 
