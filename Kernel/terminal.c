@@ -13,8 +13,11 @@ int ticker = 0;
 //200 ticks = aprox 10 segundos
 void incTick(){
 	ticker++;
-	if(ticker == 200){
+	if(ticker == 100){
 		activateSS();
+	}
+	if(ticker%30 == 0){
+		toggleScreenSaver();
 	}
 }
 

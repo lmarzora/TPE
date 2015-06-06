@@ -20,5 +20,6 @@ void ncPrintKey(char c);
 void backupScreen();
 void restoreScreen();
 void blankScreen();
+void colorScreen(int i, int j, char color);
 
 #endif

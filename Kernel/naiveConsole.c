@@ -127,7 +127,7 @@ void ncNewline()
 	}
 	while((uint64_t)(currentVideo - video) % (width * 2) != 0);
 
-	if((uint64_t)(currentVideo - video)/(width*2) > (height/2)){
+	if((uint64_t)(currentVideo - video)/(width*2) > (4*height/5)){
 		scrollDown();
 	}
 }
@@ -165,6 +165,10 @@ void blankScreen(){
 
 	for (i = 0; i < height * width; i++)
 		video[i * 2] = ' ';
+}
+
+void colorScreen(int i, int j, char color){
+	*(video + i*width*2 +(2*j +1)) = color;
 }
 
 static uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base)
