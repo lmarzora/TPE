@@ -1,6 +1,9 @@
 #include <terminal.h>
 #include <keyboard.h>
 
+static int rightShift = 0;
+static int leftShift = 0;
+static int capsLock = 0;
 unsigned static char kbdus[128] =
 {
     0,  27, '1', '2', '3', '4', '5', '6', '7', '8',	/* 9 */
@@ -41,17 +44,88 @@ unsigned static char kbdus[128] =
     0,	/* All other keys are undefined */
 };
 
+int shiftCaps(){
+  return ((rightShift || leftShift) + capsLock)%2;
+}
+
+char shiftKeys(char c){
+  if(!(leftShift || rightShift))
+    return c;
+
+  switch(c){
+    case '1':
+      return '!';
+    case '2':
+      return '@';
+    case '3':
+      return '#';
+    case '4':
+      return '$';
+    case '5':
+      return '%';
+    case '6': 
+      return '^';
+    case '7':
+      return '&';
+    case '8':
+      return '*';
+    case '9':
+      return '(';
+    case '0':
+      return ')';
+    case '-':
+      return '_';
+    case '=':
+      return '+';
+    case ';':
+      return ':';
+    case '[':
+      return '{';
+    case ']':
+      return '}';
+    case '\\':
+      return '|';
+    case '\'':
+      return '\"';
+    case ',':
+      return '<';
+    case '.':
+      return '>';
+    case '/':
+      return '?';
+    case '`':
+      return '~';
+  }
+  return 'Y';
+}
+
 void analizeKeyboard(unsigned char c){
 	char key = kbdus[c];
+ 
 	if(key == '\b'){ //backspace
 		backspace();
 	}else if(key == '\n'){
 		enter();
-	}else if(c>=2 && c<58 && (c!=15 && c!=29 && c!=42 && c!= 54 && c!=56)){
-		insertKey(key);
+  }else if(c==42){
+    leftShift = 1;
+  }else if (c==170){
+    leftShift = 0;
+  }else if(c == 54){
+    rightShift = 1;
+  }else if(c == 182){
+    rightShift = 0;
+  }else if(c == 58){
+    capsLock = (capsLock +1)%2;
+  }else if(c>=2 && c<58 && (c!=15 && c!=29 && c!=42 && c!= 54 && c!=56)){
+		if(key >= 'a' && key<='z'){
+      insertKey(key - 32*shiftCaps());
+    }else{
+      insertKey(shiftKeys(key));
+    }
 	}else if(c == 80){
 		downArrow();
 	}else if(c == 72){
 		upArrow();
 	}
 }
+
