@@ -26,6 +26,7 @@ int main() {
 			
 			}else if(cmpstr(line, "set time")){
 				printLn("Ingrese la hora (hh:mm:ss)\n");
+				printLn("->");
 				line = getLn();
 				if(setTime(line)){
 					printLn("Hora seteada correctamente\n");
