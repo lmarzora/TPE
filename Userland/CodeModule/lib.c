@@ -27,6 +27,8 @@ void getTime(){
 }
 
 int verifyTime(char * time){
+	if(time[2] != ':' || time[5] != ':')
+		return 0;
 	if(!(nmbRange(time[0]) || nmbRange(time[1])))
 		return 0;
 	if(!(nmbRange(time[3]) || nmbRange(time[4])))

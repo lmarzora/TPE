@@ -52,6 +52,7 @@ void scrollDown(){
 		currentVideo +=2;
 	}
 	currentVideo -= width*2;
+	showCursor();
 }
 
 void erase(){
@@ -59,6 +60,7 @@ void erase(){
 			currentVideo -=2;
 			ncPrintChar(' ');
 			currentVideo -=2;
+			showCursor();
 	}
 }
 
@@ -99,6 +101,7 @@ void scrollUp(){
 	}
 	
 	currentVideo = backupCurrentVideo + width*2;
+	showCursor();
 }
 
 void ncPrint(const char * string)
@@ -116,7 +119,9 @@ void ncPrintChar(char character)
 	}else{
 		*currentVideo = character;
 		currentVideo += 2;
+		showCursor();
 	}
+
 }
 
 void ncNewline()
@@ -130,6 +135,7 @@ void ncNewline()
 	if((uint64_t)(currentVideo - video)/(width*2) > (4*height/5)){
 		scrollDown();
 	}
+	showCursor();
 }
 
 void ncPrintDec(uint64_t value)
@@ -203,4 +209,9 @@ static uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base)
 	
 
 	return digits;
+}
+
+void showCursor(){
+	int pos = (currentVideo - video)/2;
+	toggleCursor(pos & 0XFF, (pos >> 8) & 0XFF );
 }

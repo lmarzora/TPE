@@ -10,6 +10,7 @@ static int var2 = 0;
 void * memset(void * destiny, int32_t c, uint64_t length);
 int cmpstr(char * s1, char * s2);
 void intro();
+void help();
 
 int main() {
 	//Clean BSS
@@ -26,7 +27,7 @@ int main() {
 				getTime();
 			
 			}else if(cmpstr(line, "set time")){
-				printLn("Ingrese la hora de forma: hh.mm.ss");
+				printLn("Ingrese la hora de forma: hh:mm:ss");
 				print("->");
 				line = getLn();
 				if(setTime(line)){
@@ -39,6 +40,8 @@ int main() {
 				//printLn("todo: clearScreen");
 				clearScreen();
 				intro();
+			}else if(cmpstr(line, "help")){
+				help();
 			}else{
 				print("Error: Command \"");
 				print(line);
@@ -77,6 +80,15 @@ void intro(){
 		print("*");
 	}
 	print("\n");
+}
+
+void help(){
+	printLn("--------    Help    -------");
+	printLn("-> get time: shows time");
+	printLn("-> set time: sets time");
+	printLn("-> clear: clears screen");
+	printLn("-> help: shows this help");
+	printLn("---------------------------");
 }
 
 
