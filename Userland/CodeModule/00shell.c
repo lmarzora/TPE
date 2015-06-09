@@ -4,10 +4,6 @@
 extern char bss;
 extern char endOfBinary;
 
-static int var1 = 0;
-static int var2 = 0;
-
-
 int main() {
 	//Clean BSS
 	memset(&bss, 0, &endOfBinary - &bss);
@@ -61,11 +57,8 @@ int main() {
 			}
 		}
 	}
-	//Test if BSS is properly set up
-	if (var1 == 0 && var2 == 0)
-		return 0xDEADC0DE;
-
-	return 0xDEADBEEF;
+	
+	return 0;
 }
 
 
