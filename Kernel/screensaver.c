@@ -1,9 +1,9 @@
 #include <naiveConsole.h>
 #include <screensaver.h>
+
 static char blue = 0x99;
 static char orange = 0x66;
 static char white = 0xFF;
-//static char black = 0x00;
 static char green = 0x22;
 
 int activated = 0;
@@ -92,7 +92,6 @@ void fish(int x){
 
 	//ojo
 	colorScreen(4+x, 40, white);
-	//colorScreen(4, 41, black);
 	
 
 }
@@ -110,12 +109,6 @@ void plantVines(int x, int s){
 	for(i=x; i<80; i+=15){
 		vines(i, s);
 	}
-	/*
-	if(x==15){
-		vines(1);
-	}else{
-		vines(78);
-	}*/
 		
 }
 

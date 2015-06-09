@@ -1,8 +1,7 @@
-#include <stdint.h>
-#include <naiveConsole.h>
 #include <handlers.h>
 #include <keyboard.h>
 #include <terminal.h>
+#include <sysCallAttention.h>
 
 
 void irqDispatcher(int64_t irq) {
@@ -12,12 +11,12 @@ void irqDispatcher(int64_t irq) {
 		case 0:
 			incTick();
 			break;
-		case 1:
+		case 1:	
 			resetTick();
 			analizeKeyboard(getKey());
 			break;
 		default:
-			ncPrint("default");
+			break;
 	}
 	return;
 }
@@ -34,18 +33,14 @@ int syscall(int code , char* buff , int size) {
 		case 3:
 			sysGetTime();
 			break;
-		case 4:
-			if(size!=8) {
-				ncPrint("wrong size");
-				return 0;
-			}			
+		case 4:			
 			sysSetTime(buff);
 			break;
 		case 5:
 			clearScreen();
 			break;
 		default:
-			ncPrint("AAAAAAAAAAAAAAAAAAAAAAAAAAA");	
+			break;
 	}
 	return dim;
 }

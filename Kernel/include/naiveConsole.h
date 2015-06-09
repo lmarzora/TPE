@@ -14,10 +14,12 @@ void ncClear();
 
 void toggleCursor(uint16_t x, uint16_t y);
 void showCursor();
+void pushUpBackup();
 
 void erase();
 void scrollDown();
 void scrollUp();
+void automaticScroll();
 void ncPrintKey(char c);
 
 void backupScreen();

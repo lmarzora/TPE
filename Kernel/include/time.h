@@ -1,3 +1,5 @@
+#include <stdint.h>
+
 void printTime();
 int getHora();
 int getMin();

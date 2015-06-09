@@ -3,8 +3,6 @@
 #include <time.h>
 #include <terminal.h>
 
-#define CHARTOINT(a) (int) (a - '0')
-
 char buffer[80];
 int index = 0;
 int done = 0;
@@ -13,7 +11,7 @@ int ticker = 0;
 //200 ticks = aprox 10 segundos
 void incTick(){
 	ticker++;
-	if(ticker == 100){
+	if(ticker == 300){
 		activateSS();
 	}
 	if(ticker%30 == 0){
@@ -31,7 +29,6 @@ void backspace(){
 	
 	if(index){
 		index--;
-		//buffer[index] = 0;
 	}
 
 }
@@ -48,7 +45,7 @@ void enter(){
 void insertKey(char key){
 	ncPrintKey(key);
 
-	if(index != 79)
+	if(index != 77)
 		buffer[index++] = key;
 	
 }
@@ -61,20 +58,11 @@ void downArrow(){
 	scrollDown();
 }
 
-void cleanBuffer(){
-	/*int i;
-	for(i=0; i<80; i++){
-		buffer[i] = 0;
-	}*/
-	index = 0;
-	done = 0;
-}
 
-int sysread(char* buff , int size) {
+void copyBuffer(char * buff){
+ 	while (!done);
 
-	while(!done);
-	
-	int i = 0;
+ 	int i = 0;
 
 	while (i<index) {
 		buff[i] = buffer[i];
@@ -83,26 +71,11 @@ int sysread(char* buff , int size) {
 
 	buff[i] = 0;
 
-	cleanBuffer();
+	index = 0;
+	done = 0;
 
-	return i;
-}
+ }
 
-int syswrite(char* buff, int size) {
-	ncPrint(buff);	
-	//ncNewline();
-	return 0;
-}
-void sysGetTime() {
-	printTime();
-}
-
-void sysSetTime(char* buff) {
-	int hora =(CHARTOINT(buff[0]))*10 + CHARTOINT(buff[1]);
-	int min =(CHARTOINT(buff[3]))*10 + CHARTOINT(buff[4]);
-	int sec =(CHARTOINT(buff[6]))*10 + CHARTOINT(buff[7]);
-
-	setTime(hora,min,sec);
-}
-
-
+ void printBuffer(char * buff){
+ 	ncPrint(buff);
+ }

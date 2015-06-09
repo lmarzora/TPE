@@ -33,6 +33,16 @@ void restoreScreen(){
 }
 ////////////////////
 
+void pushUpBackup(){
+	int i;
+	int j;
+	for(i=15; i<100; i++){
+		for(j=0; j<width; j++){
+			backup[(i-15)*width + j] = backup[i*width + j];
+		}
+	}
+	indexBackup -=15;
+}
 
 void scrollDown(){
 	if((uint64_t)(currentVideo - video) < width*2){
@@ -41,6 +51,9 @@ void scrollDown(){
 	int i;
 	int limit = (uint64_t)(currentVideo - video)/2;
 	currentVideo = video;
+	if(indexBackup == 100){
+		pushUpBackup();
+	}
 	for (i = 0; i < width; ++i)
 	{
 		backup[indexBackup*width + i] = *(currentVideo+i*2);
@@ -54,6 +67,8 @@ void scrollDown(){
 	currentVideo -= width*2;
 	showCursor();
 }
+
+
 
 void erase(){
 	if(((uint64_t)(currentVideo - video) % (width * 2)) >4){
@@ -71,12 +86,7 @@ void ncPrintKey(char c){
 		return;
 	}
 	
-	//automatic scrolling
-	point = (uint64_t)(currentVideo - video)/(width*2);
-	while(point >= height){
-		scrollDown();
-		point = (uint64_t)(currentVideo - video)/(width*2);
-	}
+	automaticScroll();
 
 	ncPrintChar(c);
 }
@@ -132,10 +142,17 @@ void ncNewline()
 	}
 	while((uint64_t)(currentVideo - video) % (width * 2) != 0);
 
-	if((uint64_t)(currentVideo - video)/(width*2) > (4*height/5)){
-		scrollDown();
-	}
+	automaticScroll();
+	
 	showCursor();
+}
+
+void automaticScroll(){
+	int point = (uint64_t)(currentVideo - video)/(width*2);
+	while(point >= height){
+		scrollDown();
+		point = (uint64_t)(currentVideo - video)/(width*2);
+	}
 }
 
 void ncPrintDec(uint64_t value)

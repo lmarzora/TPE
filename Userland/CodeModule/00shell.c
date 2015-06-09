@@ -1,5 +1,5 @@
-#include <stdint.h>
 #include <lib.h>
+#include <00shell.h>
 
 extern char bss;
 extern char endOfBinary;
@@ -7,10 +7,6 @@ extern char endOfBinary;
 static int var1 = 0;
 static int var2 = 0;
 
-void * memset(void * destiny, int32_t c, uint64_t length);
-int cmpstr(char * s1, char * s2);
-void intro();
-void help();
 
 int main() {
 	//Clean BSS
@@ -18,7 +14,9 @@ int main() {
 
 	intro();
 
-	char* line;
+	char * line;
+	char * timeLine;
+	
 	while(1) {	
 		print("$ ");
 		line = getLn(line);
@@ -27,17 +25,17 @@ int main() {
 				getTime();
 			
 			}else if(cmpstr(line, "set time")){
-				printLn("Ingrese la hora de forma: hh:mm:ss");
+				printLn("Input time in the format hh:mm:ss");
 				print("->");
-				line = getLn();
-				if(setTime(line)){
-					printLn("Hora seteada correctamente");
+				timeLine = getLn();
+				if(verifyTime(timeLine)){
+					setTime(timeLine);
+					printLn("Time set correctly");
 				}else{
-					printLn("Hora ingresada no valida");
+					printLn("Error setting time: invalid input");
 				}
 				
 			}else if (cmpstr(line, "clear")){
-				//printLn("todo: clearScreen");
 				clearScreen();
 				intro();
 			}else if(cmpstr(line, "help")){
@@ -57,15 +55,7 @@ int main() {
 	return 0xDEADBEEF;
 }
 
-void * memset(void * destiation, int32_t c, uint64_t length) {
-	uint8_t chr = (uint8_t)c;
-	char * dst = (char*)destiation;
 
-	while(length--)
-		dst[length] = chr;
-
-	return destiation;
-}
 
 void intro(){
 	int i;
@@ -83,12 +73,40 @@ void intro(){
 }
 
 void help(){
-	printLn("--------    Help    -------");
+	printLn("----------------------    Help    ----------------------");
 	printLn("-> get time: shows time");
 	printLn("-> set time: sets time");
+	printLn("   Shows a prompt to input time in the format hh:mm:ss");
 	printLn("-> clear: clears screen");
 	printLn("-> help: shows this help");
-	printLn("---------------------------");
+	printLn("--------------------------------------------------------");
+}
+
+int verifyTime(char * time){
+	if(time[2] != ':' || time[5] != ':')
+		return 0;
+	if(time[8] != 0)
+		return 0;
+	if(!(nmbRange(time[0]) || nmbRange(time[1])))
+		return 0;
+	if(!(nmbRange(time[3]) || nmbRange(time[4])))
+		return 0;
+	if(!(nmbRange(time[6]) || nmbRange(time[7])))
+		return 0;
+
+	int hora = (time[0]-'0')*10 + (time[1]-'0');
+	int min = (time[3]-'0')*10 + (time[4]-'0');
+	int sec = (time[6]-'0') *10 + (time[7]-'0');
+
+	if(hora<0 || hora>=24 || min<0 || min>=60 || sec<0 || sec>=60)
+		return 0;
+
+	return 1;
+	
+}
+
+int nmbRange(char c){
+	return (c>='0' && c<='9');
 }
 
 

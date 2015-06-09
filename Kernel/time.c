@@ -41,11 +41,7 @@ int setTime(int hora, int min, int sec){
 //transforma un numero tipo int de 2 cifras a time
 uint8_t intToTime(int num) {
 	uint8_t time;
-	//ncPrintDec(num);
-	//ncPrint(" to: ");
 	time = (uint8_t) (((num/10 & 0xf) << 4) + (num%10 & 0xf));
-	//ncPrintHex(time);
-	//ncNewline();
 	return time;
 
 }
