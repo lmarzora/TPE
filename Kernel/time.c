@@ -1,4 +1,4 @@
-#include <naiveConsole.h>
+#include <terminal.h>
 #include <time.h>
 
 void printTime(){
@@ -6,24 +6,8 @@ void printTime(){
 	int min = getMin();
 	int sec = getSec();
 
-	if(hora < 0xA){
-		ncPrintDec(0);
-	}
-	ncPrintHex(hora);
-	ncPrintChar(':');
-
-	if(min < 0xA){
-		ncPrintDec(0);
-	}
-	ncPrintHex(min);
-	ncPrintChar(':');
-
-	if(sec < 0xA){
-		ncPrintDec(0);
-	}
-	ncPrintHex(sec);
+	timePrint(hora, min, sec);
 	
-	ncNewline();
 }
 
 int setTime(int hora, int min, int sec){

@@ -1,6 +1,5 @@
 #include <naiveConsole.h>
 #include <screensaver.h>
-#include <time.h>
 #include <terminal.h>
 
 char buffer[80];
@@ -74,6 +73,27 @@ void copyBuffer(char * buff){
 	index = 0;
 	done = 0;
 
+ }
+
+ void timePrint(int hora, int min, int sec){
+ 	if(hora < 0xA){
+		ncPrintDec(0);
+	}
+	ncPrintHex(hora);
+	ncPrintChar(':');
+
+	if(min < 0xA){
+		ncPrintDec(0);
+	}
+	ncPrintHex(min);
+	ncPrintChar(':');
+
+	if(sec < 0xA){
+		ncPrintDec(0);
+	}
+	ncPrintHex(sec);
+	
+	ncNewline();
  }
 
  void printBuffer(char * buff){
