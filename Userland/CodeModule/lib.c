@@ -47,3 +47,7 @@ void setTime(char* time){
 void clearScreen(){
 	screenClear();
 }
+
+void setInterval(int num){
+	intervalSet("", num);
+}

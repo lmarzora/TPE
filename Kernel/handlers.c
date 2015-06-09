@@ -39,6 +39,9 @@ int syscall(int code , char* buff , int size) {
 		case 5:
 			clearScreen();
 			break;
+		case 6:
+			sysSetInterval(size);
+			break;
 		default:
 			break;
 	}

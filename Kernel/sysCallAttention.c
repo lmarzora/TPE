@@ -26,3 +26,7 @@ void sysSetTime(char* buff) {
 
 	setTime(hora,min,sec);
 }
+
+void sysSetInterval(int num){
+	changeInterval(num);
+}

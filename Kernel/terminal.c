@@ -6,15 +6,16 @@ char buffer[80];
 int index = 0;
 int done = 0;
 int ticker = 0;
+int interval = 270;
 
-//200 ticks = aprox 10 segundos
+//18 ticks = aprox 1 segundo
 void incTick(){
 	ticker++;
-	if(ticker == 300){
-		activateSS();
-	}
 	if(ticker%30 == 0){
 		toggleScreenSaver();
+	}
+	if(ticker == interval){
+		activateSS();
 	}
 }
 
@@ -98,4 +99,8 @@ void copyBuffer(char * buff){
 
  void printBuffer(char * buff){
  	ncPrint(buff);
+ }
+
+ void changeInterval(int num){
+ 	interval = num*18;
  }

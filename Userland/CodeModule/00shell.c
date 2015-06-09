@@ -16,6 +16,7 @@ int main() {
 
 	char * line;
 	char * timeLine;
+	char * interval;
 	
 	while(1) {	
 		print("$ ");
@@ -40,6 +41,18 @@ int main() {
 				intro();
 			}else if(cmpstr(line, "help")){
 				help();
+			}else if(cmpstr(line, "set interval")){
+				printLn("Input seconds to wait for screen saver activation (from 1 to 9999)");
+				print("->");
+				interval = getLn();
+				int nmbrInterval = verifyInterval(interval);
+				if(nmbrInterval){
+					setInterval(nmbrInterval);
+					printLn("Interval set correctly");
+				}else{
+					printLn("Error setting interval: invalid input");
+				}
+
 			}else{
 				print("Error: Command \"");
 				print(line);
@@ -73,13 +86,15 @@ void intro(){
 }
 
 void help(){
-	printLn("----------------------    Help    ----------------------");
+	printLn("--------------------------    Help    --------------------------");
 	printLn("-> get time: shows time");
 	printLn("-> set time: sets time");
 	printLn("   Shows a prompt to input time in the format hh:mm:ss");
+	printLn("-> set interval: sets time to wait for screen saver activation");
+	printLn("   Shows a prompt to input seconds between 1 and 9999");
 	printLn("-> clear: clears screen");
 	printLn("-> help: shows this help");
-	printLn("--------------------------------------------------------");
+	printLn("----------------------------------------------------------------");
 }
 
 int verifyTime(char * time){
@@ -107,6 +122,21 @@ int verifyTime(char * time){
 
 int nmbRange(char c){
 	return (c>='0' && c<='9');
+}
+
+int verifyInterval(char * interval){
+	int i=0;
+	int nmbr = 0;
+	while(interval[i] != 0){
+		if(!nmbRange(interval[i]))
+			return 0;
+		if(i>=4)
+			return 0;
+		nmbr = nmbr*10 + (interval[i] - '0');
+		i++;
+	}
+
+	return nmbr;
 }
 
 

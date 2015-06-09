@@ -3,6 +3,8 @@ GLOBAL write
 GLOBAL timeGet
 GLOBAL timeSet
 GLOBAL screenClear
+GLOBAL intervalSet
+
 read:
 	mov rdx, rsi
 	mov rsi, rdi
@@ -33,5 +35,12 @@ timeSet:
 
 screenClear:
 	mov rdi, 5
+	int 80h
+	ret
+
+intervalSet:
+	mov rdx, rsi
+	mov rsi, rdi
+	mov rdi, 6
 	int 80h
 	ret
