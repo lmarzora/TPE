@@ -11,9 +11,7 @@ int main() {
 	intro();
 
 	char * line;
-	char * timeLine;
-	char * interval;
-	
+
 	while(1) {	
 		print("$ ");
 		line = getLn(line);
@@ -24,9 +22,9 @@ int main() {
 			}else if(cmpstr(line, "set time")){
 				printLn("Input time in the format hh:mm:ss");
 				print("->");
-				timeLine = getLn();
-				if(verifyTime(timeLine)){
-					setTime(timeLine);
+				line = getLn();
+				if(verifyTime(line)){
+					setTime(line);
 					printLn("Time set correctly");
 				}else{
 					printLn("Error setting time: invalid input");
@@ -40,8 +38,8 @@ int main() {
 			}else if(cmpstr(line, "set interval")){
 				printLn("Input seconds to wait for screen saver activation (from 1 to 9999)");
 				print("->");
-				interval = getLn();
-				int nmbrInterval = verifyInterval(interval);
+				line = getLn();
+				int nmbrInterval = verifyInterval(line);
 				if(nmbrInterval){
 					setInterval(nmbrInterval);
 					printLn("Interval set correctly");
@@ -123,9 +121,11 @@ int verifyInterval(char * interval){
 	while(interval[i] != 0){
 		if(!nmbRange(interval[i]))
 			return 0;
-		if(i>=4)
-			return 0;
+		
 		nmbr = nmbr*10 + (interval[i] - '0');
+		if(nmbr>9999)
+			return 0;
+
 		i++;
 	}
 
