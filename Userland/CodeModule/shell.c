@@ -1,10 +1,11 @@
+#include <shell.h>
 #include <lib.h>
-#include <00shell.h>
 
 extern char bss;
 extern char endOfBinary;
 
 int main() {
+	
 	//Clean BSS
 	memset(&bss, 0, &endOfBinary - &bss);
 

@@ -37,15 +37,48 @@ void * getStackBase()
 
 void * initializeKernelBinary()
 {
-	
+	char buffer[10];
+
+	ncPrint("[x64BareBones]");
+	ncNewline();
+
+	ncPrint("CPU Vendor:");
+	ncPrint(cpuVendor(buffer));
+	ncNewline();
+
+	ncPrint("[Loading modules]");
+	ncNewline();
 	void * moduleAddresses[] = {
 		sampleCodeModuleAddress,
 		sampleDataModuleAddress
 	};
 
 	loadModules(&endOfKernelBinary, moduleAddresses);
+	ncPrint("[Done]");
+	ncNewline();
+	ncNewline();
+
+	ncPrint("[Initializing kernel's binary]");
+	ncNewline();
+
 	clearBSS(&bss, &endOfKernel - &bss);
 
+	ncPrint("  text: 0x");
+	ncPrintHex((uint64_t)&text);
+	ncNewline();
+	ncPrint("  rodata: 0x");
+	ncPrintHex((uint64_t)&rodata);
+	ncNewline();
+	ncPrint("  data: 0x");
+	ncPrintHex((uint64_t)&data);
+	ncNewline();
+	ncPrint("  bss: 0x");
+	ncPrintHex((uint64_t)&bss);
+	ncNewline();
+
+	ncPrint("[Done]");
+	ncNewline();
+	ncNewline();
 	return getStackBase();
 }
 
@@ -58,10 +91,42 @@ int main()
 	ncClear();
 	sti();
 	pic();
-	
-	((EntryPoint)sampleCodeModuleAddress)();
-	
 
+
+	
+	ncPrint("[Kernel Main]");
+	ncNewline();
+	ncPrint("  Sample code module at 0x");
+	ncPrintHex((uint64_t)sampleCodeModuleAddress);
+	ncNewline();
+	ncPrint("  Calling the sample code module returned: ");
+	ncPrintHex(((EntryPoint)sampleCodeModuleAddress)());
+	ncNewline();
+	ncNewline();
+
+	ncPrint("  Sample data module at 0x");
+	ncPrintHex((uint64_t)sampleDataModuleAddress);
+	ncNewline();
+	ncPrint("  Sample data module contents: ");
+	ncPrint((char*)sampleDataModuleAddress);
+	ncNewline();
+
+
+/*
+	
+	ncNewline();
+	idt_set_gate(0x20,(uint64_t)pit_handler,0x8,0x8E);
+	idt_set_gate(0x21,(uint64_t)keyboard_handler,0x8,0x8E);
+	idt_set_gate(0x80,(uint64_t)int80handler,0x8,0x8E);
+	
+	//ncClear();
+	sti();
+	pic();
+	ncPrint("hola");
+	int p = ((EntryPoint)sampleCodeModuleAddress)();
+	ncPrintDec(p);
+	ncPrint("chau");
+*/
 
 	return 0;
 }

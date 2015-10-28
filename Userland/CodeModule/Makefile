@@ -1,16 +1,19 @@
 include ../Makefile.inc
 
-MODULE=sampleCodeModule.bin 
+MODULE=0000-sampleCodeModule.bin 
 SOURCES=$(wildcard *.c) 
 OBJECTS=$(SOURCES:.c=.o) 
-ASMSOURCES=$(wildcard *.asm) 
-ASMOBJECTS=$(ASMSOURCES:.asm=.o) 
+ASMSOURCES=$(wildcard asm/*.asm) 
+ASMOBJECTS=$(ASMSOURCES:.asm=.o)
+LIBSOURCES=$(wildcard libs/*.c)
+LIBOBJECTS=$(LIBSOURCES:.c=.o)
+
 STATICLIBS=
 
 all: $(MODULE)
 
-$(MODULE): $(OBJECTS) $(ASMOBJECTS) $(STATICLIBS) 
-	$(LD) $(LDFLAGS) -T shell.ld -o ../$(MODULE) $(OBJECTS) $(ASMOBJECTS) $(STATICLIBS)
+$(MODULE): $(OBJECTS) $(ASMOBJECTS) $(LIBOBJECTS) $(STATICLIBS) 
+	$(LD) $(LDFLAGS) -T shell.ld -o ../$(MODULE) $(OBJECTS) $(ASMOBJECTS) $(LIBOBJECTS) $(STATICLIBS)
 
 %.o: %.c
 	 $(GCC) $(GCCFLAGS) -I./include -c $< -o $@ 
