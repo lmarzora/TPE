@@ -22,6 +22,6 @@ $(MODULE): $(OBJECTS) $(ASMOBJECTS) $(LIBOBJECTS) $(STATICLIBS)
 	$(ASM) $(ASMFLAGS) $< -o $@
 
 clean: 
-	rm -rf *.o
+	rm -rf asm/*.o libs/*.o *.o
 
 .PHONY: all clean
