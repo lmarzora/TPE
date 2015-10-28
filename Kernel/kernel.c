@@ -118,7 +118,7 @@ int main()
 	ncNewline();
 	idt_set_gate(0x20,(uint64_t)pit_handler,0x8,0x8E);
 	idt_set_gate(0x21,(uint64_t)keyboard_handler,0x8,0x8E);
-	idt_set_gate(0x80,(uint64_t)int80handler,0x8,0x8E);
+	idt_set_gate(0x80,(uint64_t)int80handler,0x8,0x8F);
 	
 	ncClear();
 	sti();
