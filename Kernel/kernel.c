@@ -5,6 +5,7 @@
 #include <naiveConsole.h>
 #include <handlers.h>
 #include <idt.h>
+#include <memory.h>
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -114,8 +115,7 @@ int main()
 
 
 */
-	
-	ncNewline();
+	mem_setup(1);
 	idt_set_gate(0x20,(uint64_t)pit_handler,0x8,0x8E);
 	idt_set_gate(0x21,(uint64_t)keyboard_handler,0x8,0x8E);
 	idt_set_gate(0x80,(uint64_t)int80handler,0x8,0x8F);
