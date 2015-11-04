@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <string.h>
 
-enum STATE {READY, BLOCKED, RUNNING};
+enum STATE {READY, BLOCKED, RUNNING, TERMINATED};
 
 #define MAX_TICK 3;
 #define FOREVER -1;
@@ -10,6 +11,8 @@ static volatile int curr_tick;
 static volatile uint64_t total_ticks = 0;
 
 typedef enum { false, true } boolean;
+
+typedef int (*process_func) (int argc, char *argv);
 
 struct ProcessQueue
 {
@@ -25,6 +28,7 @@ struct Process{
 	struct Process *list_prev;
 	struct Process *list_next;
 	struct ProcessQueue *queue;
+	char * name;
 	int state;	
 	int id;
 	uint64_t wakeup;
@@ -39,6 +43,7 @@ typedef struct Process Process;
 static volatile Process *curr_process;
 static ProcessQueue *pq_ready;
 static ProcessQueue *pq_blocked;
+static ProcessQueue *pq_terminated;
 static Process *process_list;		
 static unsigned num_processes;	
 
@@ -57,11 +62,13 @@ static void check_blocked_processes();
 Process* peek_q(ProcessQueue *pq);
 void print_all(char * texto);
 void yield(void);
+Process * create_process(process_func func, int argc, void *arg, const char *name, int pid);
 
 int main(){
 
 	pq_ready = calloc(1, sizeof(ProcessQueue));
 	pq_blocked = calloc(1, sizeof(ProcessQueue));
+	pq_terminated = calloc(1, sizeof(ProcessQueue));
 	//pq_ready.head = NULL;
 	//pq_ready.tail = NULL;
 
@@ -69,20 +76,22 @@ int main(){
 
 
 	int i;
+	char buff[30];
 	for(i=0; i<10; i++){
-		Process *choto = calloc(1, sizeof(Process));
-		choto->atomic = false;
-		choto->state = READY;
-		choto->id = i;
+		Process *choto;
 		if(i==0){
+			choto = calloc(1, sizeof(Process));
+			choto->atomic = false;
+			choto->id = i;
 			choto->state = RUNNING;
 			curr_process = choto;
+			choto->name = "0";
+			process_list_add(choto);
 		}else{
-			choto->queue = pq_ready;
-			enqueue_q(choto, pq_ready);
-
+			sprintf(buff, "%d", i);
+			choto = create_process(NULL, 0, NULL, buff, i);
+			ready(choto);
 		}
-		process_list_add(choto);
 	}
 
 	
@@ -131,6 +140,19 @@ void print_all(char * texto){
 		aux = aux->list_next;
 	}
 	printf("\n");*/
+
+
+
+	printf("-------------------------\n");
+	printf("\n");
+	int i = 0;
+	Process * aux = process_list;
+	printf("Procesos: \n");
+	for(i=0; i<num_processes; i++){
+		printf("Id: %d | ", aux->id);
+		aux = aux->list_next;
+	}
+	printf("\n");
 	
 	printf("-------------------------\n");
 	printf("*** %s ***\n", texto);
@@ -318,8 +340,6 @@ dequeue_q(Process *p){
 static void
 ready(Process *p){
 	printf("%ld) Despertanto a: %d\n", total_ticks, p->id);
-	if (p->state == READY)
-		return;
 
 	dequeue_q(p);
 	dequeue_blocked(p);
@@ -384,8 +404,8 @@ void yield(void)
 	
 }
 
-Process * create_process(TaskFunc func, int argc, void *arg, const char *name, int pid){
-	Task *task;
+Process * create_process(process_func func, int argc, void *arg, const char *name, int pid){
+	Process *p;
 
 	// Alocar bloque de control
 	/*
@@ -401,7 +421,7 @@ Process * create_process(TaskFunc func, int argc, void *arg, const char *name, i
 
 	// Alocar stack garantizando tamaño mínimo. Como éste es por lo
 	// menos una página, va a ser alocado por páginas enteras.
-	task->stack = Malloc(stacksize < MIN_STACK ? MIN_STACK : stacksize);
+	//task->stack = Malloc(stacksize < MIN_STACK ? MIN_STACK : stacksize);
 
 	/* 
 	Inicializar el stack simulando que wrapper(func, arg) fue interrumpida 
@@ -411,7 +431,7 @@ Process * create_process(TaskFunc func, int argc, void *arg, const char *name, i
 	empuja al stack cuando se produce una interrupción. Los demás registros 
 	no importan, porque wrapper() todavía no comenzó a ejecutar.
 	*/
-	InitialStack *s = (InitialStack *)(task->stack + alloc_size(task->stack)) - 1;	
+	/*InitialStack *s = (InitialStack *)(task->stack + alloc_size(task->stack)) - 1;	
 
 	s->regs.eip = (unsigned) wrapper;			// simular interrupción
 	s->regs.cs = MT_CS;							// .
@@ -420,14 +440,36 @@ Process * create_process(TaskFunc func, int argc, void *arg, const char *name, i
 	s->arg = arg;								// segundo argumento de wrapper
 
 	task->esp = &s->regs;						// puntero a stack inicial
+	*/
 
-	// Agregar a la lista de tareas. Si está heredando un TLS de la tarea
-	// actual, incrementar su cuenta de referencia.
-	Atomic();
-	task_list_add(task);
-	if ( mt_curr_task->tls )
-		mt_curr_task->tls->refcount++;
-	Unatomic();
 
-	return task;
+	p = calloc(1, sizeof(Process));
+	p->atomic = false;
+	p->id = pid;
+	p->name = name;
+
+
+	// Agregar a la lista de tareas
+	atomic();
+	process_list_add(p);
+	unatomic();
+
+	return p;
+}
+
+void delete_process(Process *p){
+	if (p == curr_process){
+		exit();
+		return;
+	}
+
+
+	p->atomic = false;
+	ready(p);
+}
+
+void exit(){
+	curr_process->state = TERMINATED;
+	enqueue_q(curr_process, pq_terminated);
+	num_processes--;
 }
