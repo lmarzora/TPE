@@ -51,11 +51,16 @@ void insertKey(char key){
 }
 
 void upArrow(){
-	scrollUp();
+	scrollUpWrap();
 }
 
 void downArrow(){
-	scrollDown();
+	scrollDownWrap();
+}
+
+void fPress(){
+	printKernel("Esta es la consola del kernel");
+	switchScreen();
 }
 
 

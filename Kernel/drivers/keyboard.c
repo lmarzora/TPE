@@ -101,6 +101,10 @@ char shiftKeys(char c){
 void analizeKeyboard(unsigned char c){
 	char key = kbdus[c];
  
+  if(c == 59){
+    fPress();
+    return;
+  }
 	if(key == '\b'){ //backspace
 		backspace();
 	}else if(key == '\n'){

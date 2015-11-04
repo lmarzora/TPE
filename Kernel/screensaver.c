@@ -12,7 +12,7 @@ int screen = 0;
 void activateSS(){
 	if(activated)
 		return;
-	backupScreen();
+	backupScreenWrap();
 	blankScreen();
 	
 	activated = 1;
@@ -39,7 +39,7 @@ void toggleScreenSaver(){
 void deactivateSS(){
 	if(!activated)
 		return;
-	restoreScreen();
+	restoreScreenWrap();
 	activated = 0;
 }
 

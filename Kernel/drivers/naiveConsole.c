@@ -1,39 +1,108 @@
 #include <naiveConsole.h>
 
+enum SCREEN {KERNEL, USER};
+
 static uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base);
 
 static char buffer[64] = { '0' };
+
 static uint8_t * const video = (uint8_t*)0xB8000;
 static uint8_t * currentVideo = (uint8_t*)0xB8000;
+
 static const uint32_t width = 80;
 static const uint32_t height = 25 ;
-static char backup[8000];
-static int indexBackup = 0;
 
-static char originalScreen[4000];
+static char backupUser[8000];
+static int indexBackupUser = 0;
+static char backupKernel[8000];
+static int indexBackupKernel = 0;
+
+//static char originalScreen[4000];
 static uint8_t * originalVideo;
 
+static char userScreen[4000];
+static int indexUserScreen = 0;
+static char kernelScreen[4000];
+static int indexKernelScreen = 0;
+
+static int screen = USER;
+
+
+void switchScreen(){
+	backupScreenWrap();
+	if(screen == USER){
+		screen = KERNEL;
+	}else{
+		screen = USER;
+	}
+	restoreScreenWrap();
+}
+
+void printKernel(char * s){
+	int i=0;
+	while(s[i] != 0 && s[i] != '\n'){
+		kernelScreen[indexKernelScreen] = s[i];
+		kernelScreen[indexKernelScreen+1] = 0x0F;
+		indexKernelScreen+=2;
+		i++;
+	}
+}
 //Para screensaver
-void backupScreen(){
+
+void backupScreenWrap(){
+	if(screen == USER){
+		backupScreen(userScreen);
+	}else{
+		backupScreen(kernelScreen);
+	}
+}
+
+void restoreScreenWrap(){
+	if(screen == USER){
+		restoreScreen(userScreen);
+	}else{
+		restoreScreen(kernelScreen);
+	}
+}
+
+void backupScreen(char * originalScreen){
 	int i;
 	for(i=0; i<height*width*2; i++){
 		originalScreen[i] = *(video+i);
 	}
-	originalVideo = currentVideo;
+	if(screen == USER){
+		indexUserScreen = currentVideo - video;
+	}else{
+		indexKernelScreen = currentVideo - video;
+	}
+	
 	currentVideo = video;
 }
 
-void restoreScreen(){
+void restoreScreen(char * originalScreen){
 	int i;
 	for(i=0; i<height*width*2; i++){
 		*(video+i) = originalScreen[i];
 		
 	}
-	currentVideo = originalVideo;
+
+	if(screen == USER){
+		currentVideo = video + indexUserScreen;
+	}else{
+		currentVideo = video + indexKernelScreen;
+	}
+	showCursor();
+	//currentVideo = originalVideo;
 }
 ////////////////////
 
 void pushUpBackup(){
+	char * backup;
+	if(screen == USER){
+		backup = userScreen;
+	}else{
+		backup = kernelScreen;
+	}
 	int i;
 	int j;
 	for(i=15; i<100; i++){
@@ -41,10 +110,31 @@ void pushUpBackup(){
 			backup[(i-15)*width + j] = backup[i*width + j];
 		}
 	}
-	indexBackup -=15;
+	if(screen == USER){
+		indexBackupUser -=15;
+	}else{
+		indexBackupKernel -=15;
+	}
+	
 }
 
-void scrollDown(){
+void scrollDownWrap(){
+	if(screen == USER){
+		scrollDown(userScreen, indexBackupUser);
+	}else{
+		scrollDown(kernelScreen, indexBackupKernel);
+	}
+}
+
+void scrollUpWrap(){
+	if(screen == USER){
+		scrollUp(userScreen, indexBackupUser);
+	}else{
+		scrollUp(kernelScreen, indexBackupKernel);
+	}
+}
+
+void scrollDown(char * backup, int indexBackup){
 	if((uint64_t)(currentVideo - video) < width*2){
 		return;
 	}
@@ -66,6 +156,12 @@ void scrollDown(){
 	}
 	currentVideo -= width*2;
 	showCursor();
+
+	if(screen == USER){
+		indexBackupUser = indexBackup;
+	}else{
+		indexBackupKernel = indexBackup;
+	}
 }
 
 
@@ -91,7 +187,7 @@ void ncPrintKey(char c){
 	ncPrintChar(c);
 }
 
-void scrollUp(){
+void scrollUp(char * backup, int indexBackup){
 	if(!indexBackup){
 		return;
 	}
@@ -112,6 +208,11 @@ void scrollUp(){
 	
 	currentVideo = backupCurrentVideo + width*2;
 	showCursor();
+	if(screen == USER){
+		indexBackupUser = indexBackup;
+	}else{
+		indexBackupKernel = indexBackup;
+	}
 }
 
 void ncPrint(const char * string)
@@ -150,7 +251,7 @@ void ncNewline()
 void automaticScroll(){
 	int point = (uint64_t)(currentVideo - video)/(width*2);
 	while(point >= height){
-		scrollDown();
+		scrollDownWrap();
 		point = (uint64_t)(currentVideo - video)/(width*2);
 	}
 }
@@ -180,7 +281,11 @@ void ncClear()
 {
 	blankScreen();
 	currentVideo = video;
-	indexBackup = 0;
+	if(screen == USER){
+		indexBackupUser = 0;
+	}else{
+		indexBackupKernel = 0;
+	}
 }
 
 void blankScreen(){

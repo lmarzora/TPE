@@ -17,14 +17,20 @@ void showCursor();
 void pushUpBackup();
 
 void erase();
-void scrollDown();
-void scrollUp();
+void scrollDownWrap();
+void scrollUpWrap();
+void scrollDown(char * backup, int indexBackup);
+void scrollUp(char * backup, int indexBackup);
 void automaticScroll();
 void ncPrintKey(char c);
 
-void backupScreen();
-void restoreScreen();
+void backupScreenWrap();
+void restoreScreenWrap();
+void backupScreen(char * originalScreen);
+void restoreScreen(char * originalScreen);
 void blankScreen();
 void colorScreen(int i, int j, char color);
+
+void printKernel(char * s);
 
 #endif
