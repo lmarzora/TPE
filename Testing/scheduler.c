@@ -63,6 +63,9 @@ Process* peek_q(ProcessQueue *pq);
 void print_all(char * texto);
 void yield(void);
 Process * create_process(process_func func, int argc, void *arg, const char *name, int pid);
+void end_process(void);
+
+
 
 int main(){
 
@@ -103,6 +106,9 @@ int main(){
 			printf("%ld) Bloqueando a: %d\n", total_ticks, curr_process->id);
 			block(NULL, 10);
 		}
+		else if((total_ticks % 5) == 0){
+			delete_process(curr_process);
+		}
 		/*
 		if(total_ticks == 12){
 			printf("%ld) Bloqueando a: %d\n", total_ticks, curr_process->id);
@@ -141,6 +147,9 @@ void print_all(char * texto){
 	}
 	printf("\n");*/
 
+	
+
+
 
 
 	printf("-------------------------\n");
@@ -160,7 +169,7 @@ void print_all(char * texto){
 	printf("Readys:\n");
 	Process * p;
 	Process * first = peek_q(pq_ready);
-	Process * aux = first;
+	aux = first;
 	if(first != NULL){
 		printf(" id: %d  |", first->id);
 		first = first->next;
@@ -184,6 +193,29 @@ void print_all(char * texto){
 	printf("\n-------------------------\n");
 
 	
+
+
+
+	printf("\n");
+	printf("-------------------------\n");
+	printf("\n");
+	printf("Terminated:\n");
+	first = peek_q(pq_terminated);
+	aux = first;
+	if(first != NULL){
+		printf(" id: %d  |", first->id);
+		first = first->next;
+		while(first != aux){
+			printf(" id: %d  |", first->id);
+			first = first->next;
+		}
+	}
+	printf("-------------------------\n");
+	printf("\n");
+	printf("\n");
+
+
+
 }
 void select_process(){
 
@@ -459,7 +491,7 @@ Process * create_process(process_func func, int argc, void *arg, const char *nam
 
 void delete_process(Process *p){
 	if (p == curr_process){
-		exit();
+		end_process();
 		return;
 	}
 
@@ -468,8 +500,8 @@ void delete_process(Process *p){
 	ready(p);
 }
 
-void exit(){
+void end_process(){
 	curr_process->state = TERMINATED;
+	process_list_remove(curr_process);
 	enqueue_q(curr_process, pq_terminated);
-	num_processes--;
 }
