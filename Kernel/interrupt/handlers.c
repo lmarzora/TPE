@@ -1,6 +1,7 @@
 #include <handlers.h>
 #include <keyboard.h>
 #include <terminal.h>
+#include <naiveConsole.h>
 #include <sysCallAttention.h>
 
 
@@ -23,6 +24,7 @@ void irqDispatcher(int64_t irq) {
 
 int syscall(int code , char* buff , int size) {
 	int dim = -1;
+	void** buff2;
 	switch (code) {
 		case 1: 
 			dim = sysread(buff,size);
@@ -41,6 +43,11 @@ int syscall(int code , char* buff , int size) {
 			break;
 		case 6:
 			sysSetInterval(size);
+			break;
+		case 7:
+			buff2 = (void**)buff;
+			getPages(size,buff2);
+			ncPrintHex(*buff2);
 			break;
 		default:
 			break;
