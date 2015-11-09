@@ -1,4 +1,4 @@
-include<memory.h>
+#include<memory.h>
 #include<lib.h>
 #include<naiveConsole.h>
 #include<stdint.h>
@@ -330,7 +330,8 @@ void
 myfree(void* p)
 {
 	//ncPrint("free memory addr: %"PRIx64"\n",p);
-	freeMemory(p,MAX_INDEX - 1);
+	int t = freeMemory(p - HEAP_START,MAX_INDEX);
+
 }
 /*
 int 
