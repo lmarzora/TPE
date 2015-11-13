@@ -4,11 +4,19 @@ GLOBAL timeGet
 GLOBAL timeSet
 GLOBAL screenClear
 GLOBAL intervalSet
+GLOBAL alloc
 
 read:
 	mov rdx, rsi
 	mov rsi, rdi
 	mov rdi, 1
+	int 80h
+	ret
+
+alloc:
+	mov rdx, rsi
+	mov rsi, rdi
+	mov rdi, 7
 	int 80h
 	ret
 

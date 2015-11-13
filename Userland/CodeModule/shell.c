@@ -1,11 +1,17 @@
 #include <shell.h>
 #include <lib.h>
+#include<memory.h>
 
 extern char bss;
 extern char endOfBinary;
 
 int main() {
 	
+	
+	void*p  = malloc(0x1000);
+
+	
+	while(1);
 	//Clean BSS
 	memset(&bss, 0, &endOfBinary - &bss);
 
