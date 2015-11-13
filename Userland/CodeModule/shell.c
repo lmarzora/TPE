@@ -70,7 +70,7 @@ void intro(){
 	for(i=0; i<32; i++){
 		print(" ");
 	}
-	printLn("LeLu Shell v1.0");
+	printLn("LeLuJo Shell v2.0");
 	for(i=0; i<80; i++){
 		print("*");
 	}
