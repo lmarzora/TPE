@@ -116,8 +116,31 @@ int main()
 
 
 	mem_setup(1);
-
 	
+	printMap();
+		
+	ncNewline();
+	myalloc(0x1000);
+myalloc(0x1000);
+myalloc(0x1000);
+myalloc(0x1000);
+myalloc(0x1000);
+myalloc(0x1000);
+myalloc(0x1000);
+myalloc(0x1000);
+myalloc(0x1000);
+myalloc(0x1000);
+myalloc(0x1000);
+myalloc(0x1000);
+myalloc(0x1000);
+myalloc(0x1000);
+myalloc(0x1000);
+
+	ncNewline();
+
+	printMap();
+
+	ncNewline();
 
 	idt_set_gate(0x20,(uint64_t)pit_handler,0x8,0x8E);
 	idt_set_gate(0x21,(uint64_t)keyboard_handler,0x8,0x8E);

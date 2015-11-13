@@ -1,5 +1,6 @@
-#include<memory.h>
-
+#include <stdint.h>
+#include <string.h>
+#include <memory.h>
 
 enum STATE {READY, BLOCKED, RUNNING, TERMINATED};
 
@@ -89,7 +90,7 @@ int main(){
 			choto->name = "0";
 			process_list_add(choto);
 		}else{
-			s//printf(buff, "%d", i);
+			//sprintf(buff, "%d", i);
 			choto = create_process(NULL, 0, NULL, buff, i);
 			ready(choto);
 		}

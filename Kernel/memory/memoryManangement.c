@@ -8,9 +8,9 @@
 #define PAGE 0x1000
 #define MAX_LEVEL 8
 #define MAX_INDEX 7
-#define TOTAL_MEMORY 0x10000000
+#define TOTAL_MEMORY 0x100000000
 #define CMP  0x8000000000000000
-#define HEAP_START 0x20000000
+#define HEAP_START 0x700000
 
 static uint64_t * bitmaps[MAX_LEVEL + 1];
 extern uint8_t endOfKernel;
@@ -40,7 +40,7 @@ mem_setup(unsigned himem_size)
 	ncPrint("bitmap addr: ");
 	ncPrintHex(&bitmaps);
 	ncNewline();
-	uint64_t addr = (void*) 0x10000000;
+	uint64_t addr = (void*) 0x600000;
 	int i;
 	for(i=0;i<MAX_LEVEL;i++)
 	{	
@@ -203,12 +203,6 @@ getBlock(int buddyIndex)
 			int j;
 			for (j=0; j<32; j++)
 			{
-				ncPrint("cmp: ");
-				ncPrintHex(cmp);
-				ncNewline();
-				ncPrint("p: ");
-				ncPrintHex(p);
-				ncNewline();
 				//ncPrint("p: %"PRIx64"\n",p);
 				if (cmp & p)
 				{
@@ -218,7 +212,6 @@ getBlock(int buddyIndex)
 				}
 				cmp= cmp>>2;
 			}
-			panic("Error");
 		}
 	}
 	return (void*)0xDEAD;

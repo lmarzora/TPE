@@ -45,9 +45,8 @@ int syscall(int code , char* buff , int size) {
 			sysSetInterval(size);
 			break;
 		case 7:
-			buff2 = (void**)buff;
-			getPages(size,buff2);
-			ncPrintHex(*buff2);
+			ncPrintDec(size);
+			getPages(size,buff);
 			break;
 		default:
 			break;
