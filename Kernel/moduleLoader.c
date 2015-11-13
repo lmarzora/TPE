@@ -33,6 +33,7 @@ static void loadModule(uint8_t ** module, void * targetModuleAddress)
 
 	ncPrint(" [Done]");
 	ncNewline();
+
 }
 
 static uint32_t readUint32(uint8_t ** address)

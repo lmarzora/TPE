@@ -29,6 +29,7 @@ struct arguments
   int count;
 };
 
+int buildImage(array_t fileArray, char *output_file);
 
 int write_size(FILE *target, char *filename);
 
