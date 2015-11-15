@@ -1,76 +1,29 @@
 #include <stdint.h>
 #include <string.h>
 #include <memory.h>
+#include <scheduler.h>
 
-enum STATE {READY, BLOCKED, RUNNING, TERMINATED};
 
-#define MAX_TICK 3;
-#define FOREVER -1;
 static volatile int curr_tick;
 static volatile uint64_t total_ticks = 0;
-
-typedef enum { false, true } boolean;
-
-typedef int (*process_func) (int argc, char *argv);
-
-struct ProcessQueue
-{
-	struct Process * head;
-	struct Process * tail;
-};
-
-struct Process{
-	struct Process *next;
-	struct Process *prev;
-	struct Process *blocked_prev;
-	struct Process *blocked_next;
-	struct Process *list_prev;
-	struct Process *list_next;
-	struct ProcessQueue *queue;
-	char * name;
-	int state;	
-	int id;
-	uint64_t wakeup;
-	boolean atomic;
-	boolean waiting;
-};
-
-typedef struct ProcessQueue ProcessQueue;
-typedef struct Process Process;
-
 
 static volatile Process *curr_process;
 static ProcessQueue *pq_ready;
 static ProcessQueue *pq_blocked;
 static ProcessQueue *pq_terminated;
 static Process *process_list;		
-static unsigned num_processes;	
+static unsigned num_processes;
+static stack_frame init_stack;
 
 
-Process* get_last(ProcessQueue * pq);
-void enqueue_q(volatile Process *p, ProcessQueue * pq);
-void select_process();
-static void dequeue_q(Process *p);
-static void dequeue_blocked(Process *p);
-static void ready(Process *p);
-static void enqueue_blocked(Process *p, int wakeup);
-static void block(ProcessQueue *queue, unsigned msecs);
-static void process_list_add(Process *p);
-static void process_list_remove(Process *p);
-static void check_blocked_processes();
-Process* peek_q(ProcessQueue *pq);
-void print_all(char * texto);
-void yield(void);
-Process * create_process(process_func func, int argc, void *arg, const char *name, int pid);
-void end_process(void);
 
 
 
 int main(){
 
-	pq_ready = calloc(1, sizeof(ProcessQueue));
-	pq_blocked = calloc(1, sizeof(ProcessQueue));
-	pq_terminated = calloc(1, sizeof(ProcessQueue));
+	pq_ready = kalloc(sizeof(ProcessQueue), 0);
+	pq_blocked = kalloc(sizeof(ProcessQueue), 0);
+	pq_terminated = kalloc(sizeof(ProcessQueue), 0);
 	//pq_ready.head = NULL;
 	//pq_ready.tail = NULL;
 
@@ -82,7 +35,7 @@ int main(){
 	for(i=0; i<10; i++){
 		Process *choto;
 		if(i==0){
-			choto = calloc(1, sizeof(Process));
+			choto = kalloc(sizeof(Process), 0);
 			choto->atomic = false;
 			choto->id = i;
 			choto->state = RUNNING;
@@ -90,7 +43,7 @@ int main(){
 			choto->name = "0";
 			process_list_add(choto);
 		}else{
-			//sprintf(buff, "%d", i);
+			sprintf(buff, "%d", i);
 			choto = create_process(NULL, 0, NULL, buff, i);
 			ready(choto);
 		}
@@ -216,12 +169,12 @@ void print_all(char * texto){
 
 
 }
-void select_process(){
+uint64_t select_process(uint64_t old_rsp){
 
 	if(curr_process->state == RUNNING){
-		if(curr_process->atomic) return;
+		if(curr_process->atomic) return curr_process->rsp;
 		curr_tick--;
-		if(curr_tick > 0) return;
+		if(curr_tick > 0) return curr_process->rsp;
 		curr_process->state = READY;
 		enqueue_q(curr_process, pq_ready);
 	}
@@ -232,15 +185,17 @@ void select_process(){
 	next_process->state = RUNNING;
 	curr_tick = MAX_TICK;
 
-	if(curr_process == next_process) return;
+	if(curr_process == next_process) return curr_process->rsp;
 
 	curr_process = next_process;
 	curr_process->next = NULL;
 	curr_process->prev = NULL;
 	curr_process->queue = NULL;
+
+
+	return curr_process->rsp;
 	//printf("%ld) HOLA Process: %d\n", total_ticks, curr_process->id);
 
-	//HACER CAMBIO DE CONTEXTO
 
 
 }
@@ -435,7 +390,7 @@ void yield(void)
 	
 }
 
-Process * create_process(process_func func, int argc, void *arg, const char *name, int pid){
+Process * create_process(process_func func, int argc, void *argv, const char *name, int pid){
 	Process *p;
 
 	// Alocar bloque de control
@@ -473,11 +428,23 @@ Process * create_process(process_func func, int argc, void *arg, const char *nam
 	task->esp = &s->regs;						// puntero a stack inicial
 	*/
 
+	void *rsp = myAlloc(0x400000);
 
-	p = calloc(1, sizeof(Process));
+	stack_frame *s = kalloc(sizeof(stack_frame), 0);
+
+	s->rip = func;
+	s->rsp = (uint64_t) rsp + argc + 1;
+
+
+	set_stack_frame(rsp, argv, argc, stack_frame *s);
+
+
+
+	p = kalloc(sizeof(Process), 0);
 	p->atomic = false;
 	p->id = pid;
 	p->name = name;
+
 
 
 	// Agregar a la lista de tareas
@@ -487,6 +454,19 @@ Process * create_process(process_func func, int argc, void *arg, const char *nam
 
 	return p;
 }
+
+void set_stack_frame(uint64_t *rsp, void* argv, int argc, stack_frame *s){
+
+	int i, j;
+	for(i = argc - 1, j = 0; i >= 0; i --, j++){
+		rsp[j] = argv[i];
+	}
+	rsp[j] = argc;
+	j++;
+
+	memcpy(rsp[j], s, sizeof(stack_frame));
+}
+
 
 void delete_process(Process *p){
 	if (p == curr_process){
