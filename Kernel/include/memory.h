@@ -1,7 +1,7 @@
 #include<stdint.h>
 #include<inttypes.h>
 
-
+#define PAGE 0x1000
 void mem_setup(unsigned himem_size);
 int block_size(int level);
 int level_size(int level);

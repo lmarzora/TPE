@@ -1,6 +1,6 @@
 #include <stdint.h>
 #include <string.h>
-#include <memory.h>
+#include <lib.h>
 #include <scheduler.h>
 
 
@@ -19,63 +19,13 @@ static stack_frame init_stack;
 
 
 
-int main(){
+int setScheduler(){
 
 	pq_ready = kalloc(sizeof(ProcessQueue), 0);
 	pq_blocked = kalloc(sizeof(ProcessQueue), 0);
 	pq_terminated = kalloc(sizeof(ProcessQueue), 0);
-	//pq_ready.head = NULL;
-	//pq_ready.tail = NULL;
-
-	curr_tick = MAX_TICK;
-
-
-	int i;
-	char buff[30];
-	for(i=0; i<10; i++){
-		Process *choto;
-		if(i==0){
-			choto = kalloc(sizeof(Process), 0);
-			choto->atomic = false;
-			choto->id = i;
-			choto->state = RUNNING;
-			curr_process = choto;
-			choto->name = "0";
-			process_list_add(choto);
-		}else{
-			sprintf(buff, "%d", i);
-			choto = create_process(NULL, 0, NULL, buff, i);
-			ready(choto);
-		}
-	}
-
 	
-	while((i = getchar()) != EOF){
-		total_ticks++;
-		print_all("Antes");
-		check_blocked_processes();
-		if((total_ticks % 8) == 0){
-			//printf("%ld) Bloqueando a: %d\n", total_ticks, curr_process->id);
-			block(NULL, 10);
-		}
-		else if((total_ticks % 5) == 0){
-			delete_process(curr_process);
-		}
-		/*
-		if(total_ticks == 12){
-			//printf("%ld) Bloqueando a: %d\n", total_ticks, curr_process->id);
-			block(NULL, total_ticks + 20);
-		}
-		if(total_ticks == 22){
-			//printf("%ld) Bloqueando a: %d\n", total_ticks, curr_process->id);
-			block(NULL, total_ticks + 10);
-		}*/
-		select_process();
-		print_all("Despues");
-		
-	}
-
-
+	curr_tick = MAX_TICK;
 
 }
 
@@ -428,7 +378,7 @@ Process * create_process(process_func func, int argc, void *argv, const char *na
 	task->esp = &s->regs;						// puntero a stack inicial
 	*/
 
-	void *rsp = myAlloc(0x400000);
+	void *rsp = alloc(0x400000);
 
 	stack_frame *s = kalloc(sizeof(stack_frame), 0);
 
@@ -436,7 +386,7 @@ Process * create_process(process_func func, int argc, void *argv, const char *na
 	s->rsp = (uint64_t) rsp + argc + 1;
 
 
-	set_stack_frame(rsp, argv, argc, stack_frame *s);
+	set_stack_frame(rsp, argv, argc, s);
 
 
 
@@ -455,7 +405,7 @@ Process * create_process(process_func func, int argc, void *argv, const char *na
 	return p;
 }
 
-void set_stack_frame(uint64_t *rsp, void* argv, int argc, stack_frame *s){
+void set_stack_frame(uint64_t *rsp, uint64_t* argv, int argc, stack_frame *s){
 
 	int i, j;
 	for(i = argc - 1, j = 0; i >= 0; i --, j++){

@@ -43,15 +43,16 @@ struct stack_frame {
 };
 
 
-typedef struct
+struct initial_stack
 {
-	stack_frame regs;
+	struct stack_frame regs;
 	process_func f;
 	void * arg;
 	int argc;
-}
-initial_stack;
+};
 
+typedef struct stack_frame stack_frame;
+typedef struct initial_stack initial_stack;
 
 struct Process{
 	uint64_t rsp;
@@ -90,5 +91,5 @@ void print_all(char * texto);
 void yield(void);
 Process * create_process(process_func func, int argc, void *argv, const char *name, int pid);
 void end_process(void);
-void set_stack_frame(void*, void*, int, stack_frame*);
+void set_stack_frame(uint64_t*, uint64_t*, int, stack_frame*);
 
