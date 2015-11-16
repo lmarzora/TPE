@@ -8,7 +8,8 @@ GLOBAL pic
 GLOBAL getKey
 GLOBAL int80handler
 EXTERN syscall
-EXTERN select_process
+EXTERN schedule
+GLOBAL getFlags
 
 %macro irqHandlerMaster 1
 	mov rdi, %1
@@ -74,11 +75,12 @@ pit_handler:
 
 	mov rdi, rsp
 
-	call select_process
-
+	call schedule
+	
 	mov rsp, rax
-
+	
 	popstate
+	;hlt
 	iretq
 
 int80handler:
@@ -106,5 +108,11 @@ pic:
 	mov al, 0xff
 	out 0xA1, al
 	sti
+	ret
+
+
+getFlags:
+	pushf
+	pop ax;
 	ret
 

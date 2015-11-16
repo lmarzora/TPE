@@ -1,5 +1,6 @@
-#include<memory.h>
+#include"memory.h"
 #include<lib.h>
+#include"../kSetUp.h"
 
 int getPages(int size, void**buff)
 {
@@ -22,7 +23,7 @@ void* alloc(int size)
 }
 
 
-void* kalloc(int size,char k)
+void* kalloc(uint64_t size,uint32_t k)
 {
 	if(size < PAGE)
 		size = PAGE;
@@ -33,4 +34,18 @@ void* kalloc(int size,char k)
 	memset(p,k,size);
 
 	return p;
+}
+
+void setUpPageAllocator(uint64_t memory_size)
+{
+	mem_setup(memory_size);
+	//set kernel pages as used
+	//set userand pages as used
+
+}
+
+void free(void* p)
+{
+	myfree(p);
+
 }

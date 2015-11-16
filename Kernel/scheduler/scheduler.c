@@ -1,11 +1,12 @@
 #include <stdint.h>
 #include <string.h>
 #include <lib.h>
-#include <scheduler.h>
+#include "scheduler.h"
 
 
 static volatile int curr_tick;
 static volatile uint64_t total_ticks = 0;
+static volatile uint64_t pids = 0;
 
 static volatile Process *curr_process;
 static ProcessQueue *pq_ready;
@@ -26,6 +27,7 @@ int setScheduler(){
 	pq_terminated = kalloc(sizeof(ProcessQueue), 0);
 	
 	curr_tick = MAX_TICK;
+
 
 }
 
@@ -329,7 +331,7 @@ process_list_remove(Process *p)
 	p->list_next->list_prev = p->list_prev;
 }
 
-void yield(void)
+void yield_cpu(void)
 {
 	//desbilitar interrupciones
 	enqueue_q(curr_process, pq_ready);
@@ -378,22 +380,47 @@ Process * create_process(process_func func, int argc, void *argv, const char *na
 	task->esp = &s->regs;						// puntero a stack inicial
 	*/
 
-	void *rsp = alloc(0x400000);
+	void *rsp = kalloc(0x800000,0);
+	
+	ncPrint("#create_process#");
+	ncNewline();
+	ncPrint("func: ");
+	ncPrintHex(func);
+	ncPrint(" ");
+	ncPrint(name);
+	ncPrint(" rsp: ");
+	ncPrintHex(rsp);
+	
 
 	stack_frame *s = kalloc(sizeof(stack_frame), 0);
 
 	s->rip = func;
 	s->rsp = (uint64_t) rsp + argc + 1;
+	s->ss = rsp;
 
+
+
+	s->eflags = 0x202;
+
+	ncPrint("rip: ");
+	ncPrintHex(s->rip);
+	ncPrint(" rsp: ");
+	ncPrintHex(s->rsp);
+	ncPrint(" ss: ");
+	ncPrintHex(s->ss);
+	ncPrint(" flags: ");
+	ncPrintHex(s->eflags);
+	ncNewline();
 
 	set_stack_frame(rsp, argv, argc, s);
-
-
+	
+	
 
 	p = kalloc(sizeof(Process), 0);
 	p->atomic = false;
 	p->id = pid;
 	p->name = name;
+	p->rsp = (uint64_t) rsp + argc + 1;
 
 
 
@@ -401,8 +428,17 @@ Process * create_process(process_func func, int argc, void *argv, const char *na
 	atomic();
 	process_list_add(p);
 	unatomic();
-
+	
 	return p;
+}
+
+int createProcess(process_func func, int argc, void *argv, const char *name)
+{
+	uint64_t pid = pids++;
+	Process* p = create_process(func,argc,argv,name,pid);
+	ready(p);
+	return pid;
+
 }
 
 void set_stack_frame(uint64_t *rsp, uint64_t* argv, int argc, stack_frame *s){
@@ -412,9 +448,78 @@ void set_stack_frame(uint64_t *rsp, uint64_t* argv, int argc, stack_frame *s){
 		rsp[j] = argv[i];
 	}
 	rsp[j] = argc;
+
+
 	j++;
 
-	memcpy(rsp[j], s, sizeof(stack_frame));
+	rsp[j] = &terminateProcess;
+	j++;
+
+	stack_frame *r = (stack_frame*) (rsp + j);
+	
+
+	r->rip = s->rip;
+	r->rsp = s->rsp;
+	r->ss = s->ss;
+	r->eflags = s->eflags;
+
+	for(i=0;i<sizeof(stack_frame);i++)
+	{	
+		ncPrintHex(rsp[i]);
+		ncPrint(" ");
+	}
+
+
+	//while(1);
+	/*
+	for(i = argc - 1, j = 0; i >= 0; i --, j++){
+		ncPrintDec(rsp[j]);
+		ncPrint(" ");
+	}
+	ncNewline();
+
+	ncPrintDec(rsp[j]);
+	ncNewline();
+	j++;
+	stack_frame * q;
+	memcpy(q,rsp[j],sizeof(stack_frame));
+/*	
+	ncPrint("rip: ");
+	ncPrintHex(q->rip);
+	ncPrint(" cs: ");
+	ncPrintHex(q->cs);
+	ncPrint(" eflags: ");
+	ncPrintHex(q->eflags);
+	ncPrint(" rsp: ");
+	ncPrintHex(q->rsp);
+	ncPrint(" ss: ");
+	ncPrintHex(q->ss);
+
+	//while(1);	
+
+	/*
+
+	//Registers restore context
+	ncPrintHex(q->rax);
+	ncPrintHex(q->rbx);
+	ncPrintHex(q->rcx);
+	ncPrintHex(q->rdx);
+	ncPrintHex(q->rbp);
+	ncPrintHex(q->rdi);
+	ncPrintHex(q->rsi);
+	ncPrintHex(q->r8);
+	ncPrintHex(q->r9);
+	ncPrintHex(q->r10);
+	ncPrintHex(q->r11);
+	ncPrintHex(q->r12);
+	ncPrintHex(q->r13);
+	ncPrintHex(q->r14);
+	ncPrintHex(q->r15);
+	ncPrintHex(q->fs);
+	ncPrintHex(q->gs);
+*/
+	
+
 }
 
 
@@ -434,3 +539,22 @@ void end_process(){
 	process_list_remove(curr_process);
 	enqueue_q(curr_process, pq_terminated);
 }
+
+
+void terminateProcess()
+{
+	free(curr_process->ss);
+	end_process();	
+	
+
+}
+
+int bedTime(int queueID,uint64_t time)
+{
+	ProcessQueue* queue = NULL;	
+
+	block(queue,time);
+	return 1;
+}
+
+

@@ -5,7 +5,9 @@
 
 void * memset(void * destination, int32_t character, uint64_t length);
 void * memcpy(void * destination, const void * source, uint64_t length);
-void * kalloc(int,char);
+void * kalloc(uint64_t,uint32_t);
 void * alloc(int);
+void free(void*);
+uint64_t getFlags(void);
 
 #endif

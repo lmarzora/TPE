@@ -5,7 +5,10 @@
 #include <naiveConsole.h>
 #include <handlers.h>
 #include <idt.h>
-#include <memory.h>
+#include <scheduler_interface.h>
+#include "kSetUp.h"
+
+#define TOTAL_MEMORY 0x10000000000000 
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -85,71 +88,33 @@ void * initializeKernelBinary()
 
 int main()
 {	
-/*
-	idt_set_gate(0x20,(uint64_t)pit_handler,0x8,0x8E);
-	idt_set_gate(0x21,(uint64_t)keyboard_handler,0x8,0x8E);
-	idt_set_gate(0x80,(uint64_t)int80handler,0x8,0x8E);
-	
-	ncClear();
-	sti();
-	pic();
 
+	uint64_t memory = TOTAL_MEMORY;
+	
+	setUpPageAllocator(memory);
+	setUpScheduler();
+	
+	process_data* shell = kalloc(sizeof(process_data),0);
 
 	
-	ncPrint("[Kernel Main]");
-	ncNewline();
-	ncPrint("  Sample code module at 0x");
-	ncPrintHex((uint64_t)sampleCodeModuleAddress);
-	ncNewline();
-	ncPrint("  Calling the sample code module returned: ");
-	ncPrintHex(((EntryPoint)sampleCodeModuleAddress)());
-	ncNewline();
-	ncNewline();
-
-	ncPrint("  Sample data module at 0x");
-	ncPrintHex((uint64_t)sampleDataModuleAddress);
-	ncNewline();
-	ncPrint("  Sample data module contents: ");
-	ncPrint((char*)sampleDataModuleAddress);
-	ncNewline();
-*/
-
-
-	mem_setup(1);
+	shell->func = sampleCodeModuleAddress;
+	shell->name = "shell";
 	
-	printMap();
-		
-	ncNewline();
-	myalloc(0x1000);
-myalloc(0x1000);
-myalloc(0x1000);
-myalloc(0x1000);
-myalloc(0x1000);
-myalloc(0x1000);
-myalloc(0x1000);
-myalloc(0x1000);
-myalloc(0x1000);
-myalloc(0x1000);
-myalloc(0x1000);
-myalloc(0x1000);
-myalloc(0x1000);
-myalloc(0x1000);
-myalloc(0x1000);
+	newProcess(shell);	
 
 	ncNewline();
-
-	printMap();
-
-	ncNewline();
-
+	
 	idt_set_gate(0x20,(uint64_t)pit_handler,0x8,0x8E);
 	idt_set_gate(0x21,(uint64_t)keyboard_handler,0x8,0x8E);
 	idt_set_gate(0x80,(uint64_t)int80handler,0x8,0x8F);
 	
-	ncClear();
+	//FncClear();
+		
 	sti();
 	pic();;
-	((EntryPoint)sampleCodeModuleAddress)();
+
+	
+	//((EntryPoint)sampleCodeModuleAddress)();
 
 
 	return 0;

@@ -1,14 +1,13 @@
-#include<memory.h>
+#include"memory.h"
 #include<lib.h>
 #include<naiveConsole.h>
-#include<stdint.h>
-#include<inttypes.h>
+
 
 
 #define PAGE 0x1000
-#define MAX_LEVEL 8
-#define MAX_INDEX 7
-#define TOTAL_MEMORY 0x100000000
+#define MAX_LEVEL 13
+#define MAX_INDEX 12
+#define TOTAL_MEMORY 0x1000000000
 #define CMP  0x8000000000000000
 #define HEAP_START 0x700000
 
@@ -29,7 +28,7 @@ int level_size(int level)
 
 
 void
-mem_setup(unsigned himem_size)
+mem_setup(uint64_t himem_size)
 {
 	extern char _end;
 	ncClear();
@@ -42,6 +41,7 @@ mem_setup(unsigned himem_size)
 	ncNewline();
 	uint64_t addr = (void*) 0x600000;
 	int i;
+
 	for(i=0;i<MAX_LEVEL;i++)
 	{	
 		bitmaps[i] = addr;
@@ -49,23 +49,21 @@ mem_setup(unsigned himem_size)
 		
 		ncPrint("level: ");
 		ncPrintDec(i);;		
-		ncNewline();
-		/*
-		ncPrint("level_addr: ");
+		ncPrint(" level_addr: ");
 		ncPrintHex(bitmaps[i]);
 		ncPrint(" level_size: ");
 		ncPrintDec(level_size(i));
 		ncPrint(" block_size: ");
-		ncPrintDec(block_size(i));
-		ncNewline();
-		ncClear();
-		ncPrint("setting lvl");
-		ncNewline();
-		*/
+		ncPrintDec(block_size(i));	
+		
 		memset(bitmaps[i],0,level_size(i)*sizeof(uint64_t));
-	
+	ncNewline();
+
 	}
+
 	memset(bitmaps[MAX_INDEX],0xAAAAAAAA,level_size(i)*sizeof(uint64_t));
+	
+
 	
 }
 
@@ -86,8 +84,8 @@ mem_setup(unsigned himem_size)
 void * 
 myalloc(uint64_t bytes)
 {
-	//ncPrint("MYALLOC\n");
-	//ncPrint("bytes:%d\n",bytes);
+	ncPrint("MYALLOC\n");
+	
 	void * p;
 	int level = getLevel(bytes);
 	if (level == -1)
@@ -96,13 +94,26 @@ myalloc(uint64_t bytes)
 	}
 	//ncPrint("bytes: %d, level: %d\n",bytes,level); 
 	int t = level;
+	//ncClear();
+	ncPrintDec(level);
+		ncNewline();
 	do
 	{		
 		p = getBlock(t);
 		//ncPrint("address: %x\n",p);
 		t++;
+		ncPrintDec(t);
+		ncNewline();
 	}	
 	while (t < MAX_LEVEL && p == (void*)0xDEAD);
+	
+	
+	ncPrint("addr: ");
+	ncPrintHex(p);
+	ncNewline();
+	ncPrint("level: ");
+	ncPrintDec(t);
+	ncNewline();
 	
 
 	if (t > MAX_LEVEL || p == (void*)0xDEAD)
@@ -171,20 +182,35 @@ right(void*p, int level)
 int
 getLevel(uint64_t bytes)
 {
-	//ncPrint("getting level\n");
+	ncPrint("getting level\n");
+	ncPrint("bytes: ");
+	ncPrintDec(bytes);
 	ncNewline();
 	double l = (bytes/PAGE) ;
 		if(l > (1ull << MAX_INDEX))
+		{
+			ncPrintDec(l);
 			return -1;
+		}
 
 	int lvl = (int) l;
+	
+	int i=0;
+	if(l - lvl != 0)
+	{
+		i ++;;	
+	}	
 
-
-	if( l - lvl)
-		return (lvl+1)>>1;
-
-	return lvl>>1;		
-
+	while(lvl=lvl>>1)
+	{
+		i++;
+	}
+	
+	ncNewline();
+	ncPrint("level: ");	
+	ncPrintDec(i);
+	ncNewline();
+	return i;
 }
 
 void *

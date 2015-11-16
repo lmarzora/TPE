@@ -1,7 +1,10 @@
+#include<stdint.h>
+
 enum STATE {READY, BLOCKED, RUNNING, TERMINATED};
 
 #define MAX_TICK 3;
 #define FOREVER -1;
+
 
 typedef enum { false, true } boolean;
 
@@ -13,34 +16,42 @@ struct ProcessQueue
 	struct Process * tail;
 };
 
-struct stack_frame {
-	//Registers restore context
-	uint64_t gs;
-	uint64_t fs;
-	uint64_t r15;
-	uint64_t r14;
-	uint64_t r13;
-	uint64_t r12;
-	uint64_t r11;
-	uint64_t r10;
-	uint64_t r9;
-	uint64_t r8;
-	uint64_t rsi;
-	uint64_t rdi;
-	uint64_t rbp;
-	uint64_t rdx;
-	uint64_t rcx;
-	uint64_t rbx;
-	uint64_t rax;
 
+struct stack_frame {
 	//iretq hook
+	//uint64_t base;
 	uint64_t rip;
 	uint64_t cs;
 	uint64_t eflags;
 	uint64_t rsp;
 	uint64_t ss;
-	uint64_t base;
+	
+	
+	
+	
+
+	//Registers restore context
+	uint64_t rax;
+	uint64_t rbx;
+	uint64_t rcx;
+	uint64_t rdx;
+	uint64_t rbp;
+	uint64_t rdi;
+	uint64_t rsi;
+	uint64_t r8;
+	uint64_t r9;
+	uint64_t r10;
+	uint64_t r11;
+	uint64_t r12;
+	uint64_t r13;
+	uint64_t r14;
+	uint64_t r15;
+	uint64_t fs;
+	uint64_t gs;
+
+	
 };
+
 
 
 struct initial_stack
@@ -56,6 +67,7 @@ typedef struct initial_stack initial_stack;
 
 struct Process{
 	uint64_t rsp;
+	uint64_t ss;
 	struct Process *next;
 	struct Process *prev;
 	struct Process *blocked_prev;
@@ -74,7 +86,6 @@ struct Process{
 typedef struct ProcessQueue ProcessQueue;
 typedef struct Process Process;
 
-
 Process* get_last(ProcessQueue * pq);
 void enqueue_q(volatile Process *p, ProcessQueue * pq);
 uint64_t select_process(uint64_t);
@@ -88,8 +99,9 @@ static void process_list_remove(Process *p);
 static void check_blocked_processes();
 Process* peek_q(ProcessQueue *pq);
 void print_all(char * texto);
-void yield(void);
 Process * create_process(process_func func, int argc, void *argv, const char *name, int pid);
 void end_process(void);
 void set_stack_frame(uint64_t*, uint64_t*, int, stack_frame*);
-
+void terminateProcess();
+void yield_cpu();
+int bedtime(int,uint64_t);
