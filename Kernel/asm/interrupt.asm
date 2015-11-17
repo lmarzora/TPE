@@ -3,13 +3,13 @@ GLOBAL pit_handler
 GLOBAL sti
 GLOBAL keyboard_handler
 EXTERN irqDispatcher
-EXTERN ncNewline
 GLOBAL pic
 GLOBAL getKey
 GLOBAL int80handler
 EXTERN syscall
 EXTERN schedule
-GLOBAL getFlags
+EXTERN ncPrintHex
+EXTERN ncNewline
 
 %macro irqHandlerMaster 1
 	mov rdi, %1
@@ -63,6 +63,7 @@ GLOBAL getFlags
 	pop rcx
 	pop rbx
 	pop rax
+
 %endmacro
 
 
@@ -76,11 +77,16 @@ pit_handler:
 	mov rdi, rsp
 
 	call schedule
-	
+
 	mov rsp, rax
+
 	
-	popstate
-	;hlt
+	
+	popState
+	
+
+
+	
 	iretq
 
 int80handler:

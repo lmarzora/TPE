@@ -31,14 +31,14 @@ void
 mem_setup(uint64_t himem_size)
 {
 	extern char _end;
-	ncClear();
-	ncNewline();
-	ncPrint("setting up page frame allocator");
-	ncNewline();
+	//ncClear();
+	//ncNewline();
+	//ncPrint("setting up page frame allocator");
+	//ncNewline();
 	
-	ncPrint("bitmap addr: ");
-	ncPrintHex(&bitmaps);
-	ncNewline();
+	//ncPrint("bitmap addr: ");
+	//ncPrintHex(&bitmaps);
+	//ncNewline();
 	uint64_t addr = (void*) 0x600000;
 	int i;
 
@@ -47,17 +47,17 @@ mem_setup(uint64_t himem_size)
 		bitmaps[i] = addr;
 		addr += (level_size(i)) * sizeof(uint64_t);
 		
-		ncPrint("level: ");
-		ncPrintDec(i);;		
-		ncPrint(" level_addr: ");
-		ncPrintHex(bitmaps[i]);
-		ncPrint(" level_size: ");
-		ncPrintDec(level_size(i));
-		ncPrint(" block_size: ");
-		ncPrintDec(block_size(i));	
+		//ncPrint("level: ");
+		//ncPrintDec(i);;		
+		//ncPrint(" level_addr: ");
+		//ncPrintHex(bitmaps[i]);
+		//ncPrint(" level_size: ");
+		//ncPrintDec(level_size(i));
+		//ncPrint(" block_size: ");
+		//ncPrintDec(block_size(i));	
 		
 		memset(bitmaps[i],0,level_size(i)*sizeof(uint64_t));
-	ncNewline();
+	//ncNewline();
 
 	}
 
@@ -84,7 +84,7 @@ mem_setup(uint64_t himem_size)
 void * 
 myalloc(uint64_t bytes)
 {
-	ncPrint("MYALLOC\n");
+	//ncPrint("MYALLOC\n");
 	
 	void * p;
 	int level = getLevel(bytes);
@@ -92,41 +92,41 @@ myalloc(uint64_t bytes)
 	{	
 		panic("memory excedes limit");
 	}
-	//ncPrint("bytes: %d, level: %d\n",bytes,level); 
+	////ncPrint("bytes: %d, level: %d\n",bytes,level); 
 	int t = level;
-	//ncClear();
-	ncPrintDec(level);
-		ncNewline();
+	////ncClear();
+	//ncPrintDec(level);
+		//ncNewline();
 	do
 	{		
 		p = getBlock(t);
-		//ncPrint("address: %x\n",p);
+		////ncPrint("address: %x\n",p);
 		t++;
-		ncPrintDec(t);
-		ncNewline();
+		//ncPrintDec(t);
+		//ncNewline();
 	}	
 	while (t < MAX_LEVEL && p == (void*)0xDEAD);
 	
 	
-	ncPrint("addr: ");
-	ncPrintHex(p);
-	ncNewline();
-	ncPrint("level: ");
-	ncPrintDec(t);
-	ncNewline();
+	//ncPrint("addr: ");
+	//ncPrintHex(p);
+	//ncNewline();
+	//ncPrint("level: ");
+	//ncPrintDec(t);
+	//ncNewline();
 	
 
 	if (t > MAX_LEVEL || p == (void*)0xDEAD)
 	{
-		ncPrintHex(p);
-		ncNewline();
+		//ncPrintHex(p);
+		//ncNewline();
 		panic("Out of memory");
 		return (void*) 0;
 	}
-	//ncPrint("\n\n\nreserving %d bytes from address %x\n",bytes,p);
-	ncClear();
+	////ncPrint("\n\n\nreserving %d bytes from address %x\n",bytes,p);
+	//ncClear();
 	reserveMemory(p,bytes,t-1);
-	//ncPrint("addr: %"PRIx64"\n",p);	
+	////ncPrint("addr: %"PRIx64"\n",p);	
 	return p + HEAP_START;
 }
 
@@ -134,23 +134,23 @@ int
 reserveMemory(void* p, uint64_t bytes, int level)
 {
 	
-	ncPrint("level: ");
-	ncPrintDec(level);
-	ncPrint(" , p: ");
-	ncPrintHex(p);
-	ncPrint(" , bytes; ");
-	ncPrintDec(bytes);
-	ncNewline();
+	//ncPrint("level: ");
+	//ncPrintDec(level);
+	//ncPrint(" , p: ");
+	//ncPrintHex(p);
+	//ncPrint(" , bytes; ");
+	//ncPrintDec(bytes);
+	//ncNewline();
 	
 	if(!bytes)
 	{
-		//ncPrint(" setting free ");
+		////ncPrint(" setting free ");
 		set(level,p,1,0);
 		return 0;
 	}
 	if(bytes > block_size(level))
 	{
-		//ncPrint(" setting part ");
+		////ncPrint(" setting part ");
 		set(level,p,0,0);
 		return bytes - block_size(level);
 	}
@@ -161,7 +161,7 @@ reserveMemory(void* p, uint64_t bytes, int level)
 	}
 	if(bytes)
 		bytes = bytes - block_size(level);
-	//ncPrint(" setting full ");
+	////ncPrint(" setting full ");
 	set(level,p,0,1);
 	return bytes;	
 
@@ -182,14 +182,14 @@ right(void*p, int level)
 int
 getLevel(uint64_t bytes)
 {
-	ncPrint("getting level\n");
-	ncPrint("bytes: ");
-	ncPrintDec(bytes);
-	ncNewline();
+	//ncPrint("getting level\n");
+	//ncPrint("bytes: ");
+	//ncPrintDec(bytes);
+	//ncNewline();
 	double l = (bytes/PAGE) ;
 		if(l > (1ull << MAX_INDEX))
 		{
-			ncPrintDec(l);
+			//ncPrintDec(l);
 			return -1;
 		}
 
@@ -206,10 +206,10 @@ getLevel(uint64_t bytes)
 		i++;
 	}
 	
-	ncNewline();
-	ncPrint("level: ");	
-	ncPrintDec(i);
-	ncNewline();
+	//ncNewline();
+	//ncPrint("level: ");	
+	//ncPrintDec(i);
+	//ncNewline();
 	return i;
 }
 
@@ -217,23 +217,23 @@ void *
 getBlock(int buddyIndex)
 {
 	int i;
-	//ncPrint("searching for blocks on level %d\n",buddyIndex);
-	//ncPrint("max: %x\n",max[buddyIndex]);
+	////ncPrint("searching for blocks on level %d\n",buddyIndex);
+	////ncPrint("max: %x\n",max[buddyIndex]);
 	for (i=0; i < level_size(i); i++)
 	{
 		uint64_t p = bitmaps[buddyIndex][i];
-		//ncPrint("%x\t",p);
+		////ncPrint("%x\t",p);
 		if (p != 0)
 		{
 			uint64_t cmp = CMP;
 			int j;
 			for (j=0; j<32; j++)
 			{
-				//ncPrint("p: %"PRIx64"\n",p);
+				////ncPrint("p: %"PRIx64"\n",p);
 				if (cmp & p)
 				{
 					//bitmaps[buddyIndex][i] = p^cmp;
-					//ncPrint("block found\n");	
+					////ncPrint("block found\n");	
 					return dir(i,j,buddyIndex);
 				}
 				cmp= cmp>>2;
@@ -246,8 +246,8 @@ getBlock(int buddyIndex)
 void
 panic(char* msg)
 {
-	ncPrint(msg);
-	ncNewline();
+	//ncPrint(msg);
+	//ncNewline();
 	while(1);
 	//exit(1);
 }
@@ -256,7 +256,7 @@ void*
 dir(int i, int offset, int level)
 {
 	uint64_t entry =  i*32 + offset;
-	//ncPrint("level: %d, entry: %d\n",entry,level);
+	////ncPrint("level: %d, entry: %d\n",entry,level);
 	uint64_t p = entry * block_size(level);
 	return (void*)p;
 }
@@ -264,7 +264,7 @@ dir(int i, int offset, int level)
 void
 set(int level, void* p, int val1, int val2)
 {
-	//ncPrint("called set val1: %d, val2: %d\n lvl: %d, addr:%x\n",val1,val2,level,p);
+	////ncPrint("called set val1: %d, val2: %d\n lvl: %d, addr:%x\n",val1,val2,level,p);
 	uint64_t bit, blockIndex, i, offset, block, cmp = CMP, size = 32;
 	int test2;
 	double test1;
@@ -281,37 +281,37 @@ set(int level, void* p, int val1, int val2)
 	i = blockIndex/size;
 	offset = blockIndex - i*size;
 	
-	//ncPrint("addr: %"PRIx64"\n",p);	
-	//ncPrint("block: %"PRId64", i: %"PRId64", offset: %"PRId64"\n",blockIndex,i,offset);
+	////ncPrint("addr: %"PRIx64"\n",p);	
+	////ncPrint("block: %"PRId64", i: %"PRId64", offset: %"PRId64"\n",blockIndex,i,offset);
 
 	block = bitmaps[level][i];
 	
-	//ncPrint("block: %"PRIx64"\n",block);
+	////ncPrint("block: %"PRIx64"\n",block);
 	cmp = cmp >> (offset*2);
-	//ncPrint("cmp: %"PRIx64"\n",cmp);
+	////ncPrint("cmp: %"PRIx64"\n",cmp);
 	bit = (cmp & block);
-	//ncPrint("bit occupied: %d, val: %d\n",bit,val1);
+	////ncPrint("bit occupied: %d, val: %d\n",bit,val1);
 	if (val1 != bit)
 	{
-		//ncPrint("changing occupied bit\n");
+		////ncPrint("changing occupied bit\n");
 		bitmaps[level][i] = block ^ (cmp);
 		block = bitmaps[level][i];
 	}
 
 
-	//ncPrint("block: %"PRIx64"\n",block);
+	////ncPrint("block: %"PRIx64"\n",block);
 	cmp = cmp >> 1;
-	//ncPrint("cmp: %"PRIx64"\n",cmp);
+	////ncPrint("cmp: %"PRIx64"\n",cmp);
 	bit = (cmp & block);
-	//ncPrint("bit part: %d, val: %d\n",bit,val2);
+	////ncPrint("bit part: %d, val: %d\n",bit,val2);
 	
 	if (val2 != bit)
 	{
-		//ncPrint("changing part bit\n");
+		////ncPrint("changing part bit\n");
 		bitmaps[level][i] = block ^ (cmp);
 	}	
 	//block = bitmaps[level][i];
-	//ncPrint("block: %x\n",block);
+	////ncPrint("block: %x\n",block);
 	
 }
 
@@ -322,7 +322,7 @@ getBlockIndex(void * p, int level)
 
 	index = (uint64_t)p/PAGE;
 	index/=(1ull << level);	
-	//ncPrint("index: %"PRId64"\n",index);	
+	////ncPrint("index: %"PRId64"\n",index);	
 	
 	return index;
 }
@@ -348,7 +348,7 @@ printMap()
 void
 myfree(void* p)
 {
-	//ncPrint("free memory addr: %"PRIx64"\n",p);
+	////ncPrint("free memory addr: %"PRIx64"\n",p);
 	int t = freeMemory(p - HEAP_START,MAX_INDEX);
 
 }

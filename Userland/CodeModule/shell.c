@@ -7,9 +7,6 @@ extern char endOfBinary;
 
 int main() {
 	
-		void* z = malloc(20);
-		void* uhuhuh = malloc(20);
-		void* t = malloc(2000);
 
 	//Clean BSS
 	memset(&bss, 0, &endOfBinary - &bss);

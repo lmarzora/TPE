@@ -32,12 +32,14 @@ int usleep(uint64_t time)
 uint64_t schedule(uint64_t rsp)
 {
 	
+
 			
 	ncNewline();
 	ncPrint("rsp: ");
 	ncPrintHex(rsp);
 	ncNewline();
 
+	
 	uint64_t newRsp = select_process(rsp);
 
 	ncNewline();
@@ -45,6 +47,24 @@ uint64_t schedule(uint64_t rsp)
 	ncPrintHex(newRsp);
 	ncNewline();
 
+	//stack_frame * sf = (stack_frame*)newRsp;
+	uint64_t * sp = (uint64_t*)newRsp;
+	ncNewline();	
+	int i;
+	for(i=0;i<sizeof(stack_frame)/8;i++)
+	{	
+		ncPrintHex(sp[i]);
+		ncPrint(" ");
+	}
+	
+	ncNewline();
+	ncPrint("newRsp: ");
+	ncPrintHex(newRsp);
+	ncNewline();	
+
+	ncClear();
+
+	return newRsp;
 		
 
 }

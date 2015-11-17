@@ -381,7 +381,7 @@ Process * create_process(process_func func, int argc, void *argv, const char *na
 	*/
 
 	void *rsp = kalloc(0x800000,0);
-	
+	rsp += 0x800000 - 1;
 	ncPrint("#create_process#");
 	ncNewline();
 	ncPrint("func: ");
@@ -392,27 +392,7 @@ Process * create_process(process_func func, int argc, void *argv, const char *na
 	ncPrintHex(rsp);
 	
 
-	stack_frame *s = kalloc(sizeof(stack_frame), 0);
-
-	s->rip = func;
-	s->rsp = (uint64_t) rsp + argc + 1;
-	s->ss = rsp;
-
-
-
-	s->eflags = 0x202;
-
-	ncPrint("rip: ");
-	ncPrintHex(s->rip);
-	ncPrint(" rsp: ");
-	ncPrintHex(s->rsp);
-	ncPrint(" ss: ");
-	ncPrintHex(s->ss);
-	ncPrint(" flags: ");
-	ncPrintHex(s->eflags);
-	ncNewline();
-
-	set_stack_frame(rsp, argv, argc, s);
+	uint64_t nRsp = set_stack_frame(rsp,func);
 	
 	
 
@@ -420,10 +400,18 @@ Process * create_process(process_func func, int argc, void *argv, const char *na
 	p->atomic = false;
 	p->id = pid;
 	p->name = name;
-	p->rsp = (uint64_t) rsp + argc + 1;
+	p->rsp = nRsp;
 
-
-
+	ncNewline();
+	ncPrint(" id: ");
+	ncPrintDec(p->id);
+	ncPrint(" name: ");
+	ncPrint(p->name);
+	ncPrint(" rsp: ");
+	ncPrintHex(p->rsp);
+	ncNewline();
+	
+	
 	// Agregar a la lista de tareas
 	atomic();
 	process_list_add(p);
@@ -435,41 +423,62 @@ Process * create_process(process_func func, int argc, void *argv, const char *na
 int createProcess(process_func func, int argc, void *argv, const char *name)
 {
 	uint64_t pid = pids++;
+	ncClear();
 	Process* p = create_process(func,argc,argv,name,pid);
 	ready(p);
 	return pid;
 
 }
 
-void set_stack_frame(uint64_t *rsp, uint64_t* argv, int argc, stack_frame *s){
+uint64_t set_stack_frame(uint64_t *rsp,process_func func){
 
-	int i, j;
-	for(i = argc - 1, j = 0; i >= 0; i --, j++){
-		rsp[j] = argv[i];
-	}
-	rsp[j] = argc;
+	
+	stack_frame *r = (stack_frame*) (rsp);
+	
+	
+	r->gs = 0x001;
+	r->fs = 0x002;
+	r->r15= 0x003;
+	r->r14= 0x004;
+	r->r13= 0x005;
+	r->r12= 0x006;
+	r->r11= 0x007;
+	r->r10= 0x008;
+	r->r9= 0x009;
+	r->r8= 0x00A;
+	r->rsi= 0x00B;
+	r->rdi= 0x00C;
+	r->rbp= 0x00D;
+	r->rdx= 0x00E;
+	r->rcx= 0x00F;
+	r->rbx= 0x010;
+	r->rax= 0x011;
+	
+	//iretq hook
+	
+	
+	r->rip= func;
+	r->cs= 0x008;
+	r->eflags= 0x202;
+	r->rsp= (uint64_t)&(r->base);
+	r->ss= 0x000;
 
 
-	j++;
 
-	rsp[j] = &terminateProcess;
-	j++;
-
-	stack_frame *r = (stack_frame*) (rsp + j);
+	
+	r->base= 0x000;
 	
 
-	r->rip = s->rip;
-	r->rsp = s->rsp;
-	r->ss = s->ss;
-	r->eflags = s->eflags;
 
-	for(i=0;i<sizeof(stack_frame);i++)
+	ncNewline();	
+	int i;
+	for(i=0;i<sizeof(stack_frame)/8;i++)
 	{	
 		ncPrintHex(rsp[i]);
 		ncPrint(" ");
 	}
 
-
+	return &(r->gs);
 	//while(1);
 	/*
 	for(i = argc - 1, j = 0; i >= 0; i --, j++){
