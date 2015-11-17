@@ -27,7 +27,7 @@ int setScheduler(){
 	pq_terminated = kalloc(sizeof(ProcessQueue), 0);
 	
 	curr_tick = MAX_TICK;
-
+	curr_process=0;
 
 }
 
@@ -122,6 +122,11 @@ void print_all(char * texto){
 
 }
 uint64_t select_process(uint64_t old_rsp){
+
+		
+
+		if(curr_process)
+			curr_process->rsp=old_rsp;
 
 	if(curr_process->state == RUNNING){
 		if(curr_process->atomic) return curr_process->rsp;

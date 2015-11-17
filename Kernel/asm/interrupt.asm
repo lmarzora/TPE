@@ -72,21 +72,19 @@ EXTERN ncNewline
 keyboard_handler:
 	irqHandlerMaster 1
 pit_handler:
+
 	pushState
 
 	mov rdi, rsp
-
 	call schedule
 
 	mov rsp, rax
 
-	
-	
 	popState
 	
+	mov al, 20h
+	out 20h, al
 
-
-	
 	iretq
 
 int80handler:
