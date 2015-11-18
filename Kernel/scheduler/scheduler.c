@@ -17,7 +17,7 @@ static unsigned num_processes;
 static stack_frame init_stack;
 
 
-
+void printStack(uint64_t* rsp);
 
 
 int setScheduler(){
@@ -386,7 +386,8 @@ Process * create_process(process_func func, int argc, void *argv, const char *na
 	*/
 
 	void *rsp = kalloc(0x800000,0);
-	rsp += 0x800000 - 1;
+	rsp += 0x800000 - 1 -sizeof(stack_frame) ;
+/*
 	ncPrint("#create_process#");
 	ncNewline();
 	ncPrint("func: ");
@@ -396,17 +397,17 @@ Process * create_process(process_func func, int argc, void *argv, const char *na
 	ncPrint(" rsp: ");
 	ncPrintHex(rsp);
 	
-
+*/
 	uint64_t nRsp = set_stack_frame(rsp,func);
 	
-	
+	//printStack(nRsp);
 
 	p = kalloc(sizeof(Process), 0);
 	p->atomic = false;
 	p->id = pid;
 	p->name = name;
 	p->rsp = nRsp;
-
+/*
 	ncNewline();
 	ncPrint(" id: ");
 	ncPrintDec(p->id);
@@ -415,22 +416,37 @@ Process * create_process(process_func func, int argc, void *argv, const char *na
 	ncPrint(" rsp: ");
 	ncPrintHex(p->rsp);
 	ncNewline();
-	
+*/	
 	
 	// Agregar a la lista de tareas
 	atomic();
 	process_list_add(p);
-	unatomic();
+	ready(p);
 	
+/*	
+	printStack(p->rsp);
+	ncNewline();
+	ncPrint("NEXT: ");
+	ncPrintHex(p->next);
+	if(p->next){
+		ncNewline();
+		ncPrint("name: ");
+		ncPrint(p->next->name);
+		ncPrint(" rsp: ");
+		ncPrintHex(p->next->rsp);
+		printStack(p->next->rsp);
+	}
+*/
+	unatomic();
 	return p;
 }
 
 int createProcess(process_func func, int argc, void *argv, const char *name)
 {
 	uint64_t pid = pids++;
-	ncClear();
+	//ncClear();
 	Process* p = create_process(func,argc,argv,name,pid);
-	ready(p);
+	
 	return pid;
 
 }
@@ -473,17 +489,10 @@ uint64_t set_stack_frame(uint64_t *rsp,process_func func){
 	
 	r->base= 0x000;
 	
-
-
-	ncNewline();	
-	int i;
-	for(i=0;i<sizeof(stack_frame)/8;i++)
-	{	
-		ncPrintHex(rsp[i]);
-		ncPrint(" ");
-	}
-
+	//printStack(rsp);
+	
 	return &(r->gs);
+	
 	//while(1);
 	/*
 	for(i = argc - 1, j = 0; i >= 0; i --, j++){
@@ -571,4 +580,14 @@ int bedTime(int queueID,uint64_t time)
 	return 1;
 }
 
+void printStack(uint64_t* rsp)
+{
+	ncNewline();	
+	int i;
+	for(i=0;i<sizeof(stack_frame)/8;i++)
+	{	
+		ncPrintHex(rsp[i]);
+		ncPrint(" ");
+	}
 
+}

@@ -55,8 +55,8 @@ uint64_t schedule(uint64_t rsp)
 
 	//stack_frame * sf = (stack_frame*)newRsp;
 	uint64_t * sp = (uint64_t*)newRsp;
-	/*
-	ncNewline();	
+	
+	/*ncNewline();	
 	int i;
 	for(i=0;i<sizeof(stack_frame)/8;i++)
 	{	
@@ -69,10 +69,10 @@ uint64_t schedule(uint64_t rsp)
 	ncPrint("newRsp: ");
 	ncPrintHex(newRsp);
 	ncNewline();	
-	*/
+	//while(1);
 	//ncClear();
 	
-
+*/
 
 	return newRsp;
 		

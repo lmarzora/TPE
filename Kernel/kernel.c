@@ -25,6 +25,8 @@ static void * const sampleDataModuleAddress = (void*)0x500000;
 typedef int (*EntryPoint)();
 
 
+void tareaNula(void);
+
 void clearBSS(void * bssAddress, uint64_t bssSize)
 {
 	memset(bssAddress, 0, bssSize);
@@ -91,8 +93,10 @@ int main()
 
 	uint64_t memory = TOTAL_MEMORY;
 	
+
 	setUpPageAllocator(memory);
 	setUpScheduler();
+	ncClear();
 	
 	process_data* shell = kalloc(sizeof(process_data),0);
 
@@ -102,8 +106,18 @@ int main()
 	
 	newProcess(shell);	
 
+
+	process_data* null_task = kalloc(sizeof(process_data),0);
+
+	
+	null_task->func = &tareaNula;
+	null_task->name = "tarea_nula";
+	
+	newProcess(null_task);
+
+
 	ncNewline();
-	ncClear();
+	//ncClear();
 
 	idt_set_gate(0x20,(uint64_t)pit_handler,0x8,0x8E);
 	idt_set_gate(0x21,(uint64_t)keyboard_handler,0x8,0x8E);
@@ -120,3 +134,10 @@ int main()
 
 	return 0;
 }
+
+void tareaNula(void)
+{
+	while(1);
+}
+
+
