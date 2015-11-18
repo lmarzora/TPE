@@ -116,8 +116,8 @@ int main()
 	newProcess(null_task);
 
 
-	ncNewline();
-	//ncClear();
+	//ncNewline();
+	ncClear();
 
 	idt_set_gate(0x20,(uint64_t)pit_handler,0x8,0x8E);
 	idt_set_gate(0x21,(uint64_t)keyboard_handler,0x8,0x8E);
@@ -138,6 +138,15 @@ int main()
 void tareaNula(void)
 {
 	while(1);
+
+	//otro test
+	uint64_t i = 0;
+	while(1){
+		if(i>9999999){
+			ncPrint("Nulo");
+		}
+		i++;	
+	} 
 }
 
 

@@ -2,6 +2,7 @@
 #include <string.h>
 #include <lib.h>
 #include "scheduler.h"
+#include <naiveConsole.h>
 
 
 static volatile int curr_tick;
@@ -19,7 +20,6 @@ static stack_frame init_stack;
 
 void printStack(uint64_t* rsp);
 
-
 int setScheduler(){
 
 	pq_ready = kalloc(sizeof(ProcessQueue), 0);
@@ -29,6 +29,14 @@ int setScheduler(){
 	curr_tick = MAX_TICK;
 	curr_process=0;
 
+}
+
+Process * getProcessList(){
+	return process_list;
+}
+
+int numProcesses(){
+	return num_processes;
 }
 
 static void check_blocked_processes(){

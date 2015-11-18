@@ -48,6 +48,10 @@ void clearScreen(){
 	screenClear();
 }
 
+void listProcesses(){
+	processesList();
+}
+
 void setInterval(int num){
 	intervalSet("", num);
 }

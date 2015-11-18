@@ -1,5 +1,7 @@
 #include<stdint.h>
 
+void printProcesses();
+
 enum STATE {READY, BLOCKED, RUNNING, TERMINATED};
 
 #define MAX_TICK 3;
@@ -105,3 +107,5 @@ uint64_t set_stack_frame(uint64_t*, process_func);
 void terminateProcess();
 void yield_cpu();
 int bedtime(int,uint64_t);
+Process * getProcessList();
+int numProcesses();

@@ -51,6 +51,8 @@ int main() {
 					printLn("Error setting interval: invalid input");
 				}
 
+			}else if(cmpstr(line, "ps")){
+				listProcesses();
 			}else{
 				print("Error: Command \"");
 				print(line);
@@ -88,6 +90,7 @@ void help(){
 	printLn("-> set interval: sets time to wait for screen saver activation");
 	printLn("   Shows a prompt to input seconds between 1 and 9999");
 	printLn("-> clear: clears screen");
+	printLn("-> ps: shows all processes");
 	printLn("-> help: shows this help");
 	printLn("----------------------------------------------------------------");
 }

@@ -9,3 +9,4 @@ void getTime();
 void setTime(char*);
 void setInterval(int);
 void clearScreen();
+void listProcesses();

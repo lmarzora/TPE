@@ -4,6 +4,7 @@ GLOBAL timeGet
 GLOBAL timeSet
 GLOBAL screenClear
 GLOBAL intervalSet
+GLOBAL processesList
 GLOBAL alloc
 
 read:
@@ -43,6 +44,11 @@ timeSet:
 
 screenClear:
 	mov rdi, 5
+	int 80h
+	ret
+
+processesList:
+	mov rdi, 8
 	int 80h
 	ret
 

@@ -48,6 +48,9 @@ int syscall(int code , char* buff , int size) {
 			ncPrintDec(size);
 			getPages(size,buff);
 			break;
+		case 8:
+			printProcesses();
+			break;
 		default:
 			break;
 	}

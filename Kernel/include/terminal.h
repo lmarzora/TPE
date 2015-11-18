@@ -12,3 +12,4 @@ void copyBuffer(char * buff);
 void printBuffer(char * buff);
 void timePrint(int hora, int min, int sec);
 void changeInterval(int);
+void printProcesses();
