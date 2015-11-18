@@ -1,4 +1,6 @@
 GLOBAL cpuVendor
+GLOBAL getCR3
+GLOBAL setCR3
 
 section .text
 	
@@ -25,3 +27,11 @@ cpuVendor:
 	mov rsp, rbp
 	pop rbp
 	ret
+
+getCR3:
+	mov rax, cr3
+	ret
+setCR3:
+	mov cr3, rdi
+	ret
+

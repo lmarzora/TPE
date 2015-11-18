@@ -1,12 +1,10 @@
 #include<stdint.h>
+#include<lib.h>
 
 enum STATE {READY, BLOCKED, RUNNING, TERMINATED};
 
 #define MAX_TICK 3;
 #define FOREVER -1;
-
-
-typedef enum { false, true } boolean;
 
 typedef int (*process_func) (int argc, char *argv);
 
@@ -79,8 +77,8 @@ struct Process{
 	int state;	
 	int id;
 	uint64_t wakeup;
-	boolean atomic;
-	boolean waiting;
+	bool atomic;
+	bool waiting;
 };
 
 typedef struct ProcessQueue ProcessQueue;

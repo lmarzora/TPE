@@ -93,7 +93,7 @@ int main()
 
 	uint64_t memory = TOTAL_MEMORY;
 	
-
+	setUpPaging();
 	setUpPageAllocator(memory);
 	setUpScheduler();
 	ncClear();

@@ -10,4 +10,8 @@ void * alloc(int);
 void free(void*);
 uint64_t getFlags(void);
 
+
+typedef int bool;
+enum { false, true };
+
 #endif
