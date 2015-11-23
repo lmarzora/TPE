@@ -1,11 +1,14 @@
 ;PIT 
 GLOBAL pit_handler
+GLOBAL call_pit
 GLOBAL sti
+GLOBAL cli
 GLOBAL keyboard_handler
 EXTERN irqDispatcher
 GLOBAL pic
 GLOBAL getKey
 GLOBAL int80handler
+GLOBAL getFlags
 EXTERN syscall
 EXTERN schedule
 EXTERN ncPrintHex
@@ -106,6 +109,10 @@ sti:
 	sti
 	ret
 
+cli:
+	cli
+	ret
+
 pic:	
 	mov al, 0xfc
 	out 0x21, al
@@ -114,9 +121,14 @@ pic:
 	sti
 	ret
 
+call_pit:
+	int 20h
+	ret
+
 
 getFlags:
 	pushf
-	pop ax;
+	mov rax, 0
+	pop rax
 	ret
 

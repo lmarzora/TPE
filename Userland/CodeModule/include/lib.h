@@ -5,8 +5,16 @@ void print(char*);
 char* getLn();
 void * memset(void * destiny, int32_t c, uint64_t length);
 int cmpstr(char * s1, char * s2);
+int ispid(char * buf);
 void getTime();
 void setTime(char*);
 void setInterval(int);
 void clearScreen();
+
 void listProcesses();
+void newProcess(void (* func) (void));
+void killProcess(int num);
+
+void testStuff();
+
+int nmbRange(char c);

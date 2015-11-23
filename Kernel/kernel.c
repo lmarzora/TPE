@@ -8,6 +8,11 @@
 #include <scheduler_interface.h>
 #include "kSetUp.h"
 
+//TESTING
+#include "semaphore.h"
+#include "msgqueue.h"
+//
+
 #define TOTAL_MEMORY 0x10000000000000 
 
 extern uint8_t text;
@@ -25,7 +30,9 @@ static void * const sampleDataModuleAddress = (void*)0x500000;
 typedef int (*EntryPoint)();
 
 
-void tareaNula(void);
+int testProc(int argc, void *argv);
+void nullProc();
+void testMsgReceive();
 
 void clearBSS(void * bssAddress, uint64_t bssSize)
 {
@@ -107,17 +114,16 @@ int main()
 	newProcess(shell);	
 
 
-	process_data* null_task = kalloc(sizeof(process_data),0);
+	process_data* test = kalloc(sizeof(process_data),0);
 
 	
-	null_task->func = &tareaNula;
-	null_task->name = "tarea_nula";
+	test->func = &testMsgReceive;
+	test->name = "testMsg";
 	
-	newProcess(null_task);
-
+	newProcess(test);
 
 	//ncNewline();
-	ncClear();
+	//ncClear();
 
 	idt_set_gate(0x20,(uint64_t)pit_handler,0x8,0x8E);
 	idt_set_gate(0x21,(uint64_t)keyboard_handler,0x8,0x8E);
@@ -126,7 +132,7 @@ int main()
 	//FncClear();
 		
 	sti();
-	pic();;
+	pic();
 
 	
 	//((EntryPoint)sampleCodeModuleAddress)();
@@ -135,18 +141,59 @@ int main()
 	return 0;
 }
 
-void tareaNula(void)
-{
+void nullProc(){
 	while(1);
+}
+
+int testProc(int argc, void *argv)
+{	/*
+	ncNewline();
+	ncNewline();
+	ncPrint("aaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n");
+	ncNewline();
+	ncPrintDec(argc);*/
+
+
+	/*
+	
+	Semaphore * misem = CreateSem("pepe", 0);
+	
 
 	//otro test
 	uint64_t i = 0;
 	while(1){
 		if(i>9999999){
-			ncPrint("Nulo");
+			if(i<10000005){
+				ncPrint("Nulo");
+				WaitSem(misem);
+			}
 		}
 		i++;	
-	} 
+	} */
+
+	
 }
+
+void testMsgReceive(){
+	//while(1);
+
+	char buf[100];
+	MsgQueue * mimsg = CreateMsgQueue("wachin", 2, sizeof(buf));
+
+	//ncPrint("Creado - ahora espera\n");
+	GetMsgQueue(mimsg, buf);
+	//ncPrint("FIN espera - ahora imprimo\n");
+
+	ncPrint("Mensaje: ");
+	ncPrint(buf);
+	ncNewline();
+
+	ncPrint("$ ");
+
+	while(1);
+
+}
+
+
 
 

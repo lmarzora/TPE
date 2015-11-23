@@ -5,6 +5,8 @@
 extern char bss;
 extern char endOfBinary;
 
+void hola();
+
 int main() {
 	
 
@@ -53,6 +55,21 @@ int main() {
 
 			}else if(cmpstr(line, "ps")){
 				listProcesses();
+			}else if(cmpstr(line, "hola")){
+				newProcess(&hola);
+			}else if(cmpstr(line, "kill")){
+				printLn("Input pid to kill");
+				print("->");
+				line = getLn();
+				int num = isPid(line);
+				if(num == -1 ){
+					printLn("Invalid input");
+				}else{
+					killProcess(num);
+				}
+				
+			}else if(cmpstr(line, "test")){
+				testStuff();
 			}else{
 				print("Error: Command \"");
 				print(line);
@@ -65,6 +82,11 @@ int main() {
 	return 0;
 }
 
+void hola(){
+	printLn("hola que tal");
+	print("$ ");
+	//while(1);
+}
 
 
 void intro(){
@@ -118,9 +140,6 @@ int verifyTime(char * time){
 	
 }
 
-int nmbRange(char c){
-	return (c>='0' && c<='9');
-}
 
 int verifyInterval(char * interval){
 	int i=0;

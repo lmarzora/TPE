@@ -55,3 +55,31 @@ void listProcesses(){
 void setInterval(int num){
 	intervalSet("", num);
 }
+
+void newProcess(void (* func) (void)){
+	processNew(func);
+}
+
+void killProcess(int num){
+	processKill("", num);
+}
+
+int isPid(char * buf){
+	int num=0;
+	int i;
+	for(i=0; buf[i] != 0; i++){
+		if(!nmbRange(buf[i]))
+			return -1;
+		num = num*10 + (buff[i] - '0');
+	}
+
+	return num;
+}
+
+int nmbRange(char c){
+	return (c>='0' && c<='9');
+}
+
+void testStuff(){
+	stuffTest();
+}

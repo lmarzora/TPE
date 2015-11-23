@@ -6,6 +6,9 @@ GLOBAL screenClear
 GLOBAL intervalSet
 GLOBAL processesList
 GLOBAL alloc
+GLOBAL processNew
+GLOBAL processKill
+GLOBAL stuffTest
 
 read:
 	mov rdx, rsi
@@ -56,5 +59,23 @@ intervalSet:
 	mov rdx, rsi
 	mov rsi, rdi
 	mov rdi, 6
+	int 80h
+	ret
+
+processNew:
+	mov rsi, rdi
+	mov rdi, 9
+	int 80h
+	ret
+
+processKill:
+	mov rdx, rsi
+	mov rsi, rdi
+	mov rdi, 10
+	int 80h
+	ret
+
+stuffTest:
+	mov rdi, 23
 	int 80h
 	ret
