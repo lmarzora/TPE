@@ -61,7 +61,7 @@ int main() {
 				listProcesses();
 			}else if(cmpstr(line, "hola")){
 				//newProcess("el hola", &hola, 0, 0);	
-				newProcess("prod-cons", &prodcons_main, 0, 0);
+				newProcess("prod-cons", &simpleconv_main, 0, 0);
 			}else if(cmpstr(line, "kill")){
 				printLn("Input pid to kill");
 				print("->");
