@@ -1,7 +1,8 @@
 #include <shell.h>
 #include <lib.h>
-#include<memory.h>
-#include<debug.h>
+#include <memory.h>
+#include <debug.h>
+#include <apps.h>
 extern char bss;
 extern char endOfBinary;
 
@@ -59,7 +60,8 @@ int main() {
 			}else if(cmpstr(line, "ps")){
 				listProcesses();
 			}else if(cmpstr(line, "hola")){
-				newProcess("el hola", &hola, 0, 0);	
+				//newProcess("el hola", &hola, 0, 0);	
+				newProcess("prod-cons", &prodcons_main, 0, 0);
 			}else if(cmpstr(line, "kill")){
 				printLn("Input pid to kill");
 				print("->");
