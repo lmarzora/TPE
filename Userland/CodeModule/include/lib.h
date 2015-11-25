@@ -12,7 +12,7 @@ void setInterval(int);
 void clearScreen();
 
 void listProcesses();
-void newProcess(void (* func) (void));
+void newProcess(char * nom, void * func, int argc, void * argv);
 void killProcess(int num);
 
 void testStuff();

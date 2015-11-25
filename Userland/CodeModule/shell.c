@@ -15,7 +15,7 @@ int main() {
 	
 	intro();
 	
-	
+	int x = 0;
 	char * line;
 	
 	while(1) {	
@@ -56,7 +56,11 @@ int main() {
 			}else if(cmpstr(line, "ps")){
 				listProcesses();
 			}else if(cmpstr(line, "hola")){
-				newProcess(&hola);
+				if(x%2)
+					newProcess("el hola", &hola, 23, 0);
+				else
+					newProcess("el jojo", &hola, 23, 0);
+				x++;	
 			}else if(cmpstr(line, "kill")){
 				printLn("Input pid to kill");
 				print("->");
@@ -85,7 +89,7 @@ int main() {
 void hola(){
 	printLn("hola que tal");
 	print("$ ");
-	//while(1);
+	while(1);
 }
 
 

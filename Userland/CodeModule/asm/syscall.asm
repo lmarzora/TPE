@@ -63,9 +63,7 @@ intervalSet:
 	ret
 
 processNew:
-	mov rsi, rdi
-	mov rdi, 9
-	int 80h
+	int 81h
 	ret
 
 processKill:

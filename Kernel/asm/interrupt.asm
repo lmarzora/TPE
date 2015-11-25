@@ -8,11 +8,13 @@ EXTERN irqDispatcher
 GLOBAL pic
 GLOBAL getKey
 GLOBAL int80handler
+GLOBAL int81handler
 GLOBAL getFlags
 EXTERN syscall
 EXTERN schedule
 EXTERN ncPrintHex
 EXTERN ncNewline
+EXTERN processHandler
 
 %macro irqHandlerMaster 1
 	mov rdi, %1
@@ -93,6 +95,10 @@ pit_handler:
 int80handler:
 ;	sti
 	call syscall
+	iretq
+
+int81handler:
+	call processHandler
 	iretq
 
 getKey:

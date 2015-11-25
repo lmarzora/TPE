@@ -27,7 +27,7 @@ void irqDispatcher(int64_t irq) {
 int syscall(int code , char* buff , int size) {
 	int dim = -1;
 	void** buff2;
-	process_data* data;
+	
 	MsgQueue * luis;
 
 	switch (code) {
@@ -57,12 +57,7 @@ int syscall(int code , char* buff , int size) {
 			printProcesses();
 			break;
 		case 9:
-			data = kalloc(sizeof(process_data),0);
-
-	
-			data->func = buff;
-			data->name = "programa";
-			newProcess(data);
+			
 			break;
 		case 10:
 			killProcess(size);
@@ -86,6 +81,27 @@ int syscall(int code , char* buff , int size) {
 			break;
 	}
 	return dim;
+}
+
+void processHandler(char* nombre, void* func, int argc, void * argv){
+
+	process_data* data = kalloc(sizeof(process_data),0);
+
+	data->name = nombre;
+	data->func = func;
+	data->argc = argc;
+	data->argv = argv;
+	
+	newProcess(data);
+	/*
+	ncPrint(nombre);
+	ncNewline();
+	ncPrintHex(func);
+	ncNewline();
+	ncPrintDec(argc);
+	ncNewline();
+	ncPrintHex(argv);
+	ncNewline();*/
 }
 
 int setInterrupt(int valor){
