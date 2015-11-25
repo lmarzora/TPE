@@ -93,15 +93,81 @@ void processHandler(char* nombre, void* func, int argc, void * argv){
 	data->argv = argv;
 	
 	newProcess(data);
+
+}
+
+void msgQueueHandler(int code, char * msg, char * nombre, unsigned max, unsigned size){
+	MsgQueue * aux;
+	switch(code){
+		case 0:
+			aux = CreateMsgQueue(nombre, max, size);
+			break;
+		case 1:
+			aux = getMessageQueue(nombre);
+			if(aux)
+				PutMsgQueue(aux, msg);
+			else
+				ncPrint("No se encontro MsgQueue\n");
+			break;
+		case 2:
+			aux = getMessageQueue(nombre);
+			if(aux)
+				GetMsgQueue(aux, msg);
+			else
+				ncPrint("No se encontro MsgQueue\n");
+			break;
+		case 3:
+			aux = getMessageQueue(nombre);
+			if(aux)
+				DeleteMsgQueue(aux);
+			else
+				ncPrint("No se encontro MsgQueue\n");
+			break;
+	}
 	/*
+	ncPrint("-------------------\n");
+	ncPrintDec(code);
+	ncNewline();
+	ncPrint(msg);
+	ncNewline();
 	ncPrint(nombre);
 	ncNewline();
-	ncPrintHex(func);
+	ncPrintDec(max);
 	ncNewline();
-	ncPrintDec(argc);
+	ncPrintDec(size);
 	ncNewline();
-	ncPrintHex(argv);
-	ncNewline();*/
+	ncPrint("-------------------\n");*/
+
+}
+
+void semaphoreHandler(int code, char * nombre, int valor){
+	Semaphore * aux;
+	switch(code){
+		case 0:
+			aux = CreateSem(nombre, valor);
+			break;
+		case 1:
+			aux = getSemaphore(nombre);
+			if(aux)
+				WaitSem(aux);
+			else
+				ncPrint("No se encontro Semaforo\n");
+			break;
+		case 2:
+			aux = getSemaphore(nombre);
+			if(aux)
+				SignalSem(aux);
+			else
+				ncPrint("No se encontro Semaforo\n");
+			break;
+		case 3:
+			aux = getMessageQueue(nombre);
+			if(aux)
+				DeleteSem(aux);
+			else
+				ncPrint("No se encontro Semaforo\n");
+			break;
+	}
 }
 
 int setInterrupt(int valor){

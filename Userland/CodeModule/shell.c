@@ -14,6 +14,9 @@ int main() {
 	memset(&bss, 0, &endOfBinary - &bss);
 	
 	intro();
+
+	char * nombre = "pepe";
+	char mibuff[40];
 	
 	int x = 0;
 	char * line;
@@ -56,11 +59,7 @@ int main() {
 			}else if(cmpstr(line, "ps")){
 				listProcesses();
 			}else if(cmpstr(line, "hola")){
-				if(x%2)
-					newProcess("el hola", &hola, 23, 0);
-				else
-					newProcess("el jojo", &hola, 23, 0);
-				x++;	
+				newProcess("el hola", &hola, 0, 0);	
 			}else if(cmpstr(line, "kill")){
 				printLn("Input pid to kill");
 				print("->");
@@ -73,8 +72,19 @@ int main() {
 				}
 				
 			}else if(cmpstr(line, "test")){
-				testStuff();
+				//testStuff();
+				
+				newMsgQueue(nombre, 3, sizeof(mibuff));
+				putMsgQueue("gato loco", nombre);
+				getMsgQueue(mibuff, nombre);
+				printLn("Mensaje es: ");
+				printLn(mibuff);
+				printLn("");
+				//deleteMsgQueue(nombre);
+				//putMsgQueue("wachin", nombre);
+				
 			}else{
+				
 				print("Error: Command \"");
 				print(line);
 				printLn("\" not found");

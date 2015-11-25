@@ -83,3 +83,33 @@ int nmbRange(char c){
 void testStuff(){
 	stuffTest();
 }
+
+void newMsgQueue(char * nombre, unsigned max, unsigned size){
+	msgQueueSysCall(0, "", nombre, max, size);
+}
+void putMsgQueue(char * msg, char* nombre){
+	msgQueueSysCall(1, msg, nombre, 0, 0);
+}
+
+void getMsgQueue(char * msg, char* nombre){
+	msgQueueSysCall(2, msg, nombre, 0, 0);
+}
+
+void deleteMsgQueue(char * nombre){
+	msgQueueSysCall(3, "", nombre, 0, 0);
+}
+
+void newSemaphore(char * nombre, int valor){
+	semaphoreSysCall(0, nombre, valor);
+}
+void waitSemaphore(char* nombre){
+	semaphoreSysCall(1, nombre, 0);
+}
+
+void signalSemaphore(char* nombre){
+	semaphoreSysCall(2, nombre, 0);
+}
+
+void deleteSemaphore(char * nombre){
+	semaphoreSysCall(3, nombre, 0);
+}

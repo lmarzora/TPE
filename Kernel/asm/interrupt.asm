@@ -9,12 +9,16 @@ GLOBAL pic
 GLOBAL getKey
 GLOBAL int80handler
 GLOBAL int81handler
+GLOBAL int82handler
+GLOBAL int83handler
 GLOBAL getFlags
 EXTERN syscall
 EXTERN schedule
 EXTERN ncPrintHex
 EXTERN ncNewline
 EXTERN processHandler
+EXTERN msgQueueHandler
+EXTERN semaphoreHandler
 
 %macro irqHandlerMaster 1
 	mov rdi, %1
@@ -99,6 +103,14 @@ int80handler:
 
 int81handler:
 	call processHandler
+	iretq
+
+int82handler:
+	call msgQueueHandler
+	iretq
+
+int83handler:
+	call semaphoreHandler
 	iretq
 
 getKey:

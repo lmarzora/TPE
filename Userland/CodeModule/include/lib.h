@@ -18,3 +18,13 @@ void killProcess(int num);
 void testStuff();
 
 int nmbRange(char c);
+
+void newMsgQueue(char * nombre, unsigned max, unsigned size);
+void putMsgQueue(char * msg, char* nombre);
+void getMsgQueue(char * msg, char* nombre);
+void deleteMsgQueue(char * nombre);
+
+void newSemaphore(char * nombre, int valor);
+void waitSemaphore(char * nombre);
+void signalSemaphore(char* nombre);
+void deleteSemaphore(char * nombre);

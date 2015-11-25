@@ -9,6 +9,8 @@ GLOBAL alloc
 GLOBAL processNew
 GLOBAL processKill
 GLOBAL stuffTest
+GLOBAL msgQueueSysCall
+GLOBAL semaphoreSysCall
 
 read:
 	mov rdx, rsi
@@ -64,6 +66,14 @@ intervalSet:
 
 processNew:
 	int 81h
+	ret
+
+msgQueueSysCall:
+	int 82h
+	ret
+
+semaphoreSysCall:
+	int 83h
 	ret
 
 processKill:
