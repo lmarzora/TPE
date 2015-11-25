@@ -7,7 +7,7 @@ ASMSOURCES=$(wildcard asm/*.asm)
 ASMOBJECTS=$(ASMSOURCES:.asm=.o)
 LIBSOURCES=$(wildcard libs/*.c)
 LIBOBJECTS=$(LIBSOURCES:.c=.o)
-APPSOURCES=$(wildcard apps/*.c)
+APPSOURCES=$(wildcard appss/*.c)
 APPOBJECTS=$(APPSOURCES:.c=.o)
 
 STATICLIBS=
