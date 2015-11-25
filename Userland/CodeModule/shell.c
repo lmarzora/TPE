@@ -6,6 +6,7 @@
 extern char bss;
 extern char endOfBinary;
 
+void echo();
 void hola();
 
 int main() {
@@ -61,7 +62,7 @@ int main() {
 				listProcesses();
 			}else if(cmpstr(line, "hola")){
 				//newProcess("el hola", &hola, 0, 0);	
-				newProcess("prod-cons", &simpleconv_main, 0, 0);
+				newProcess("prod-cons", &simpleconv_main, 0, 0, 0);
 			}else if(cmpstr(line, "kill")){
 				printLn("Input pid to kill");
 				print("->");
@@ -73,6 +74,8 @@ int main() {
 					killProcess(num);
 				}
 				
+			}else if(cmpstr(line, "echo")){
+				newProcess("echo", &echo, 0, 0, 1);
 			}else if(cmpstr(line, "test")){
 				//testStuff();
 				
@@ -102,6 +105,30 @@ void hola(){
 	printLn("hola que tal");
 	print("$ ");
 	while(1);
+}
+
+void echo(){
+
+	char * line;
+	int flag = 1;
+
+	while(flag){
+		line = getLn(line);
+		if(!cmpstr(line, "")){
+			if(cmpstr(line, "exit")){
+				flag = 0;
+			}else if(cmpstr(line, "ps")){
+				listProcesses();
+			}else{
+				print("echo: ");
+				print(line);
+				printLn("");
+				print("$ ");
+			}
+		}
+	}
+	printLn("");
+	print("$ ");
 }
 
 

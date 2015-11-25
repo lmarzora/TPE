@@ -22,6 +22,9 @@ static stack_frame init_stack;
 SemaphoreList * semaphore_list;
 MsgQueueList * msgQueue_list;
 
+
+static volatile Process *foreground_process;
+
 int jaja = 0;
 
 void addSemaphore(Semaphore * sem){
@@ -482,7 +485,7 @@ void yield_cpu(void)
 	
 }
 
-Process * create_process(process_func func, int argc, void *argv, const char *name, int pid){
+Process * create_process(process_func func, int argc, void *argv, const char *name, int pid, int isForeground){
 	Process *p;
 
 
@@ -501,6 +504,10 @@ Process * create_process(process_func func, int argc, void *argv, const char *na
 	p->prev = NULL;
 	p->next = NULL;
 
+	if(isForeground){
+		foreground_process = p;
+	}
+
 	// Agregar a la lista de tareas
 	atomic();
 	process_list_add(p);
@@ -511,11 +518,11 @@ Process * create_process(process_func func, int argc, void *argv, const char *na
 	return p;
 }
 
-int createProcess(process_func func, int argc, void *argv, const char *name)
+int createProcess(process_func func, int argc, void *argv, const char *name, int isForeground)
 {
 	uint64_t pid = pids++;
 
-	Process* p = create_process(func,argc,argv,name,pid);
+	Process* p = create_process(func,argc,argv,name,pid, isForeground);
 	
 	return pid;
 
@@ -592,10 +599,25 @@ void delete_process(Process *p){
 }
 
 void end_process(){
+
+	if(curr_process == foreground_process){
+		Semaphore * foreground_sem = getSemaphore("foreground_sem");
+		SignalSem(foreground_sem);
+	}
+
 	curr_process->state = TERMINATED;
 	process_list_remove(curr_process);
 	enqueue_q(curr_process, pq_terminated);
 	call_pit();
+}
+
+
+is_foreground(){
+	return curr_process ==  foreground_process;
+}
+
+become_foreground(){
+	foreground_process = curr_process;
 }
 
 

@@ -56,7 +56,7 @@ void setInterval(int num){
 	intervalSet("", num);
 }
 
-void newProcess(char * nom, void * func, int argc, void * argv){
+void newProcess(char * nom, void * func, int argc, void * argv, int isForeground){
 	processNew(nom, func, argc, argv);
 }
 

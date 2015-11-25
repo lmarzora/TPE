@@ -110,6 +110,7 @@ int main()
 	
 	shell->func = sampleCodeModuleAddress;
 	shell->name = "shell";
+	shell->isForeground = 1;
 	
 	newProcess(shell);	
 

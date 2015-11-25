@@ -10,9 +10,17 @@ static int count=0;
 
 uint64_t newProcess(process_data* pdata)
 {
-	uint64_t pid = createProcess(pdata->func, pdata->argc, pdata->argv, pdata->name);
+	uint64_t pid = createProcess(pdata->func, pdata->argc, pdata->argv, pdata->name, pdata->isForeground);
 	
 	return pid;
+}
+
+int isForeground(){
+	return is_foreground();
+}
+
+void becomeForeground(){
+	become_foreground();
 }
 
 

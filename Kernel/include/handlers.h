@@ -16,7 +16,7 @@ void int83handler();
 int syscall(int,char*,int);
 int setInterrupt(int valor);
 
-void processHandler(char* nombre, void* func, int argc, void * argv);
+void processHandler(char* nombre, void* func, int argc, void * argv, int isForeground);
 void msgQueueHandler(int code, char * msg, char * nombre, unsigned max, unsigned size);
 void semaphoreHandler(int code, char * nombre, int valor);
 

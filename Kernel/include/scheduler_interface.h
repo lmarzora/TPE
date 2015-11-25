@@ -8,6 +8,7 @@ typedef struct
 	uint64_t argc;
 	void* argv;
 	char* name;
+	int isForeground;
 }process_data;
 
 
@@ -24,3 +25,6 @@ void flushQueue(ProcessQueue *queue);
 void addSemaphore(Semaphore * sem);
 Semaphore * getSemaphore(char * name);
 void removeSemaphore(Semaphore * sem);
+
+int isForeground(void);
+void becomeForeground(void);

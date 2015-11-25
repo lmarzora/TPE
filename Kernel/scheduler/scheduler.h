@@ -75,7 +75,7 @@ void process_list_remove(Process *p);
 void check_blocked_processes();
 Process* peek_q(ProcessQueue *pq);
 void print_all(char * texto);
-Process * create_process(process_func func, int argc, void *argv, const char *name, int pid);
+Process * create_process(process_func func, int argc, void *argv, const char *name, int pid, int isForeground);
 void end_process(void);
 uint64_t set_stack_frame(uint64_t*, process_func, uint64_t argc, void * argv);
 void terminateProcess();
@@ -84,3 +84,6 @@ int bedtime(int,uint64_t);
 Process * getProcessList();
 int numProcesses();
 int start(process_func func, int argc, void *argv);
+
+int is_foreground(void);
+void become_foreground(void);

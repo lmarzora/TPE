@@ -7,6 +7,8 @@
 #include "../msgqueue.h"
 #include <scheduler_interface.h>
 
+static Semaphore * foreground_sem = 0;
+
 void irqDispatcher(int64_t irq) {
 
 
@@ -31,7 +33,14 @@ int syscall(int code , char* buff , int size) {
 	MsgQueue * luis;
 
 	switch (code) {
-		case 1: 
+		case 1:
+			if(foreground_sem == 0){
+				foreground_sem = CreateSem("foreground_sem", 0);
+			}
+			if(!isForeground()){
+				WaitSem(foreground_sem);
+				becomeForeground();
+			}
 			dim = sysread(buff,size);
 			break;
 		case 2:
@@ -83,7 +92,7 @@ int syscall(int code , char* buff , int size) {
 	return dim;
 }
 
-void processHandler(char* nombre, void* func, int argc, void * argv){
+void processHandler(char* nombre, void* func, int argc, void * argv, int isForeground){
 
 	process_data* data = kalloc(sizeof(process_data),0);
 
@@ -91,6 +100,7 @@ void processHandler(char* nombre, void* func, int argc, void * argv){
 	data->func = func;
 	data->argc = argc;
 	data->argv = argv;
+	data->isForeground = isForeground;
 	
 	newProcess(data);
 
