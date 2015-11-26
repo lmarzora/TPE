@@ -6,8 +6,8 @@ int simpleconv_main(){
 	char buff[50];
 	newMsgQueue("simpleconv", 1, sizeof(buff));
 
-	newProcess("recibe", &recibe, 0, 0);
-	newProcess("escribe", &escribe, 0, 0);
+	newProcess("recibe", &recibe, 0, 0, 0);
+	newProcess("escribe", &escribe, 0, 0, 0);
 	
 }
 

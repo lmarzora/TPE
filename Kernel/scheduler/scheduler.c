@@ -612,11 +612,11 @@ void end_process(){
 }
 
 
-is_foreground(){
+int is_foreground(){
 	return curr_process ==  foreground_process;
 }
 
-become_foreground(){
+void become_foreground(){
 	foreground_process = curr_process;
 }
 

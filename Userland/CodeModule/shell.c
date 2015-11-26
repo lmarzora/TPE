@@ -60,9 +60,8 @@ int main() {
 
 			}else if(cmpstr(line, "ps")){
 				listProcesses();
-			}else if(cmpstr(line, "hola")){
-				//newProcess("el hola", &hola, 0, 0);	
-				newProcess("prod-cons", &simpleconv_main, 0, 0, 0);
+			}else if(cmpstr(line, "intconv")){
+				newProcess("escribe_int", &interactiveconv_main, 0, 0, 1);
 			}else if(cmpstr(line, "kill")){
 				printLn("Input pid to kill");
 				print("->");
@@ -76,6 +75,8 @@ int main() {
 				
 			}else if(cmpstr(line, "echo")){
 				newProcess("echo", &echo, 0, 0, 1);
+			}else if(cmpstr(line, "prodcons")){
+				newProcess("prodcons", &prodcons_main, 0, 0, 1);
 			}else if(cmpstr(line, "test")){
 				//testStuff();
 				
@@ -99,12 +100,6 @@ int main() {
 	}
 	
 	return 0;
-}
-
-void hola(){
-	printLn("hola que tal");
-	print("$ ");
-	while(1);
 }
 
 void echo(){

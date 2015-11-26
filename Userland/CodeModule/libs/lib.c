@@ -1,7 +1,7 @@
 #include <lib.h>
 #include <syscalls.h>
 
-static char buff[80];
+char buff[80];
 
 
 void print(char * line){
@@ -57,7 +57,7 @@ void setInterval(int num){
 }
 
 void newProcess(char * nom, void * func, int argc, void * argv, int isForeground){
-	processNew(nom, func, argc, argv);
+	processNew(nom, func, argc, argv, isForeground);
 }
 
 void killProcess(int num){
