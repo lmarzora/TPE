@@ -1,13 +1,7 @@
+#include <msgqueue.h>
+#include <tempfiles.h>
+#include <handlers.h>
 
-#include "msgqueue.h"
-
-
-
-/*
-CreateMsgQueue, DeleteMsgQueue - creacion y destruccion de colas de mensajes.
-El parametro msg_max indica la maxima cantidad de mensajes a almacenar, y
-msg_size el tamano de cada uno. 
-*/
 
 MsgQueue *
 CreateMsgQueue(char *name, unsigned msg_max, unsigned msg_size)
@@ -26,9 +20,6 @@ CreateMsgQueue(char *name, unsigned msg_max, unsigned msg_size)
 	MsgQueue *mq;
 	unsigned size = msg_max * msg_size;
 
-	//if ( size / msg_size != msg_max )	
-	//	Panic("CreateMsgQueue %s: excede capacidad", name);
-
 	mq = kalloc(sizeof(MsgQueue),0);
 	mq->name = name;
 	mq->msg_size = msg_size;
@@ -45,16 +36,11 @@ CreateMsgQueue(char *name, unsigned msg_max, unsigned msg_size)
 void
 DeleteMsgQueue(MsgQueue *mq)
 {
+	removeMessageQueue(mq);
 	DeleteSem(mq->sem_get);
 	DeleteSem(mq->sem_put);
-	free(mq->buf);
-	free(mq->name);
 	free(mq);
 }
-
-/*
-GetMsgQueue, GetMsgQueueCond, GetMsgQueueTimed - lectura de un mensaje.
-*/
 
 void GetMsgQueue(MsgQueue *mq, void *msg)
 {
@@ -77,9 +63,6 @@ void GetMsgQueueTimed(MsgQueue *mq, void *msg, unsigned msecs)
 
 }
 
-/*
-PutMsgQueue, PutMsgQueueCond, PutMsgQueueTimed - escritura de un mensaje.
-*/
 
 void
 PutMsgQueue(MsgQueue *mq, void *msg)
@@ -104,9 +87,6 @@ PutMsgQueueTimed(MsgQueue *mq, void *msg, unsigned msecs)
 	SignalSem(mq->sem_get);
 }
 
-/*
-AvailMsgQueue - indica la cantidad de mensajes almacenada en la cola.
-*/
 
 unsigned
 AvailMsgQueue(MsgQueue *mq)

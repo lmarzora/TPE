@@ -1,11 +1,8 @@
 #include <handlers.h>
 #include <scheduler_interface.h>
+#include <tempfiles.h>
 #include <lib.h>
-#include "semaphore.h"
-
-/*
-CreateSem - aloca un semaforo y establece su cuenta inicial.
-*/
+#include <semaphore.h>
 
 Semaphore *CreateSem(char *name, unsigned value)
 {
@@ -17,9 +14,6 @@ Semaphore *CreateSem(char *name, unsigned value)
 	return sem;
 }
 
-/*
-DeleteSem - da de baja un semaforo.
-*/
 
 void DeleteSem(Semaphore *sem)
 {
@@ -30,12 +24,6 @@ void DeleteSem(Semaphore *sem)
 	setInterrupt(valor);
 }
 
-/*
-WaitSem, WaitSemCond, WaitSemTimed - esperar en un semaforo.
-WaitSem espera indefinidamente, WaitSemCond retorna inmediatamente y
-WaitSemTimed espera con timeout. El valor de retorno indica si se consumio
-un evento del semaforo.
-*/
 
 void WaitSem(Semaphore *sem)
 {
@@ -56,11 +44,6 @@ void WaitSemTimed(Semaphore *sem, unsigned tics)
 	
 }
 
-/*
-SignalSem - senaliza un semaforo.
-Despierta a la primera tarea de la cola o incrementa la cuenta si la cola
-esta vacia.
-*/
 
 void SignalSem(Semaphore *sem)
 {
@@ -76,20 +59,13 @@ void SignalSem(Semaphore *sem)
 	setInterrupt(valor);
 }
 
-/*
-ValueSem - informa la cuenta de un semaforo.
-*/
 
 unsigned ValueSem(Semaphore *sem)
 {
 	return sem->value;
 }
 
-/*
-FlushSem - despierta todas las tareas que esperan en un semaforo.
-Las tareas completan su WaitSem() con el status que se pasa como argumento.
-Deja la cuenta en cero.
-*/
+
 
 void FlushSem(Semaphore *sem)
 {

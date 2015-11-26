@@ -60,8 +60,9 @@ typedef struct stack_frame stack_frame;
 typedef struct initial_stack initial_stack;
 
 
+Process * create_process(process_func func, int argc, void *argv, char *name, int pid, int isForeground);
 Process* get_last(ProcessQueue * pq);
-void enqueue_q(volatile Process *p, ProcessQueue * pq);
+void enqueue_q(Process *p, ProcessQueue * pq);
 uint64_t select_process(uint64_t);
 void dequeue_q(Process *p);
 void dequeue_blocked(Process *p);
@@ -75,7 +76,6 @@ void process_list_remove(Process *p);
 void check_blocked_processes();
 Process* peek_q(ProcessQueue *pq);
 void print_all(char * texto);
-Process * create_process(process_func func, int argc, void *argv, const char *name, int pid, int isForeground);
 void end_process(void);
 uint64_t set_stack_frame(uint64_t*, process_func, uint64_t argc, void * argv);
 void terminateProcess();
@@ -87,3 +87,7 @@ int start(process_func func, int argc, void *argv);
 
 int is_foreground(void);
 void become_foreground(void);
+int setScheduler();
+
+Process * findProcess(int num);
+void delete_process(Process *p);

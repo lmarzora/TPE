@@ -1,6 +1,6 @@
 #ifndef MSGQUEUE_H
 #define MSGQUEUE_H
-#include "semaphore.h"
+#include <semaphore.h>
 
 typedef struct MsgQueue
 {

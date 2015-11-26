@@ -7,11 +7,8 @@
 #include <idt.h>
 #include <scheduler_interface.h>
 #include "kSetUp.h"
-
-//TESTING
-#include "semaphore.h"
-#include "msgqueue.h"
-//
+#include <semaphore.h>
+#include <msgqueue.h>
 
 #define TOTAL_MEMORY 0x10000000000000 
 
@@ -30,9 +27,7 @@ static void * const sampleDataModuleAddress = (void*)0x500000;
 typedef int (*EntryPoint)();
 
 
-int testProc(int argc, void *argv);
 void nullProc();
-void testMsgReceive();
 
 void clearBSS(void * bssAddress, uint64_t bssSize)
 {
@@ -115,13 +110,13 @@ int main()
 	newProcess(shell);	
 
 
-	process_data* test = kalloc(sizeof(process_data),0);
+	process_data* null_task = kalloc(sizeof(process_data),0);
 
 	
-	test->func = &testMsgReceive;
-	test->name = "testMsg";
+	null_task->func = &nullProc;
+	null_task->name = "null_task";
 	
-	newProcess(test);
+	newProcess(null_task);
 
 	//ncNewline();
 	//ncClear();
@@ -148,56 +143,6 @@ int main()
 void nullProc(){
 	while(1);
 }
-
-int testProc(int argc, void *argv)
-{	/*
-	ncNewline();
-	ncNewline();
-	ncPrint("aaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n");
-	ncNewline();
-	ncPrintDec(argc);*/
-
-
-	/*
-	
-	Semaphore * misem = CreateSem("pepe", 0);
-	
-
-	//otro test
-	uint64_t i = 0;
-	while(1){
-		if(i>9999999){
-			if(i<10000005){
-				ncPrint("Nulo");
-				WaitSem(misem);
-			}
-		}
-		i++;	
-	} */
-
-	
-}
-
-void testMsgReceive(){
-	//while(1);
-
-	char buf[100];
-	MsgQueue * mimsg = CreateMsgQueue("wachin", 2, sizeof(buf));
-
-	//ncPrint("Creado - ahora espera\n");
-	GetMsgQueue(mimsg, buf);
-	//ncPrint("FIN espera - ahora imprimo\n");
-
-	ncPrint("Mensaje: ");
-	ncPrint(buf);
-	ncNewline();
-
-	ncPrint("$ ");
-
-	while(1);
-
-}
-
 
 
 

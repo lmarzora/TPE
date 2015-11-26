@@ -7,7 +7,7 @@ char buffer[80];
 int index = 0;
 int done = 0;
 int ticker = 0;
-int interval = 270;
+int interval = 1000;
 
 //18 ticks = aprox 1 segundo
 void incTick(){

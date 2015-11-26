@@ -10,5 +10,6 @@ void * alloc(int);
 void free(void*);
 uint16_t getFlags(void);
 int cmpstr(char * s1, char * s2);
+char * cpuVendor(char *);
 
 #endif

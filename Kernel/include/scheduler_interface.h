@@ -18,13 +18,11 @@ void exit(int);
 int usleep(uint64_t);
 uint64_t schedule(uint64_t);
 
+void killProcess(int num);
+
 void block(ProcessQueue *queue, unsigned msecs);
 Process * signal(ProcessQueue *queue);
 void flushQueue(ProcessQueue *queue);
-
-void addSemaphore(Semaphore * sem);
-Semaphore * getSemaphore(char * name);
-void removeSemaphore(Semaphore * sem);
 
 int isForeground(void);
 void becomeForeground(void);

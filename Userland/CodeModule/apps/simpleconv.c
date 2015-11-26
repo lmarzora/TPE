@@ -22,6 +22,9 @@ void recibe(){
 		printLn("---------------------------");
 		j++;
 	}
+
+	printLn("");
+	print("$ ");
 	
 	
 }

@@ -18,6 +18,7 @@ void killProcess(int num);
 void testStuff();
 
 int nmbRange(char c);
+int isPid(char * buf);
 
 void newMsgQueue(char * nombre, unsigned max, unsigned size);
 void putMsgQueue(char * msg, char* nombre);

@@ -2,104 +2,26 @@
 #include <string.h>
 #include <lib.h>
 #include "scheduler.h"
-#include "../msgqueue.h"
 #include <scheduler_interface.h>
 #include <naiveConsole.h>
+#include <handlers.h>
+#include <tempfiles.h>
 
 
 static volatile int curr_tick;
 static volatile uint64_t total_ticks = 0;
 static volatile uint64_t pids = 0;
 
-static volatile Process *curr_process;
+//Volatile?
+static Process *curr_process;
 static ProcessQueue *pq_ready;
 static ProcessQueue *pq_blocked;
 static ProcessQueue *pq_terminated;
 static Process *process_list;		
 static unsigned num_processes;
-static stack_frame init_stack;
+//static stack_frame init_stack;
 
-SemaphoreList * semaphore_list;
-MsgQueueList * msgQueue_list;
-
-
-static volatile Process *foreground_process;
-
-int jaja = 0;
-
-void addSemaphore(Semaphore * sem){
-	SemaphoreList * aux = kalloc(sizeof(semaphore_list), 0);
-	aux->semaphore = sem;
-	aux->next = semaphore_list;
-
-	semaphore_list = aux;
-}
-
-Semaphore * getSemaphore(char * name){
-	SemaphoreList * aux = semaphore_list;
-	while(aux != NULL){
-		if(cmpstr(aux->semaphore->name, name)){
-			return aux->semaphore;
-		}
-		aux = aux->next;
-	}
-	return NULL;
-}
-
-void removeSemaphore(Semaphore * sem){
-	SemaphoreList * aux = semaphore_list;
-	SemaphoreList * prev = 	NULL;
-	while(aux != NULL){
-		if(aux->semaphore == sem){
-			if(prev == NULL){
-				semaphore_list = semaphore_list->next;
-			}else{
-				prev->next = aux->next;
-			}
-			free(aux);
-			return;
-		}
-		aux = aux->next;
-	}
-	
-}
-
-void addMessageQueue(MsgQueue * mq){
-	MsgQueueList * aux = kalloc(sizeof(msgQueue_list), 0);
-	aux->mq = mq;
-	aux->next = msgQueue_list;
-
-	msgQueue_list = aux;
-}
-
-MsgQueue * getMessageQueue(char * name){
-	MsgQueueList * aux = msgQueue_list;
-	while(aux != NULL){
-		if(cmpstr(aux->mq->name, name)){
-			return aux->mq;
-		}
-		aux = aux->next;
-	}
-	return NULL;
-}
-
-void removeMessageQueue(MsgQueue * mq){
-	MsgQueueList * aux = msgQueue_list;
-	MsgQueueList * prev = 	NULL;
-	while(aux != NULL){
-		if(aux->mq == mq){
-			if(prev == NULL){
-				msgQueue_list = msgQueue_list->next;
-			}else{
-				prev->next = aux->next;
-			}
-			free(aux);
-			return;
-		}
-		aux = aux->next;
-	}
-	
-}
+static Process *foreground_process;
 
 void printStack(uint64_t* rsp);
 
@@ -118,6 +40,8 @@ int setScheduler(){
 	curr_tick = MAX_TICK;
 
 	curr_process=0;
+
+	return 0;
 
 }
 
@@ -189,9 +113,7 @@ uint64_t select_process(uint64_t old_rsp){
 			enqueue_q(curr_process, pq_ready);
 		}
 	}
-	/*ncPrint("Viejo: ");
-	ncPrint(curr_process->name);
-	ncNewline();*/
+	
 
 	curr_tick = MAX_TICK;
 	Process *next_process = get_last(pq_ready);
@@ -201,29 +123,10 @@ uint64_t select_process(uint64_t old_rsp){
 
 	next_process->state = RUNNING;
 	
-
-	jaja++;
 	if(curr_process == next_process) return curr_process->rsp;
 	
-	/*
-	if(jaja<11){
-		ncPrint("Viejo ");
-		ncPrint(curr_process->name);
-	}*/
-
-
-	
 	curr_process = next_process;
-	/*if(jaja<11){
 
-
-	
-	ncPrint("\nNuevo ");
-	ncPrint(curr_process->name);
-	ncNewline();
-	printPqReady();
-	}*/
-	
 	curr_process->next = NULL;
 	curr_process->prev = NULL;
 	curr_process->queue = NULL;
@@ -232,7 +135,7 @@ uint64_t select_process(uint64_t old_rsp){
 
 }
 
-void enqueue_q(volatile Process *p, ProcessQueue *pq){
+void enqueue_q(Process *p, ProcessQueue *pq){
 	
 	if(pq == NULL){
 		pq = kalloc(sizeof(ProcessQueue), 0);
@@ -253,12 +156,6 @@ void enqueue_q(volatile Process *p, ProcessQueue *pq){
 	p->prev = pq->tail;
 	pq->tail = p;
 	p->queue = pq;
-	/*
-	if(jaja<10){
-		ncPrint("Encolo en medio: ");
-		ncPrint(p->name);
-		ncNewline();
-	}*/
 
 }
 
@@ -286,13 +183,6 @@ Process* get_last(ProcessQueue *pq){
 	
 	aux->next = aux->prev = NULL;
 	aux->queue = NULL;
-
-	/*
-	if(jaja < 10){
-		ncPrint("Voy a sacar a ");
-		ncPrint(aux->name);
-		ncNewline();
-	}*/
 	
 	return aux;
 }
@@ -387,10 +277,6 @@ ready(Process *p){
 	//dequeue_blocked(p);
 	enqueue_q(p, pq_ready);
 	p->state = READY;
-	/*
-	ncPrint("Poniendo ready ");
-	ncPrint(p->name);
-	ncNewline();*/
 
 	setInterrupt(valor);
 }
@@ -401,10 +287,7 @@ Process * signal(ProcessQueue *queue){
 	int valor = setInterrupt(0);
 	if ( (p = get_last(queue)) )
 	{
-
-		//ncPrint(p->name);
 		ready(p);
-		
 	}
 	setInterrupt(valor);
 
@@ -485,7 +368,7 @@ void yield_cpu(void)
 	
 }
 
-Process * create_process(process_func func, int argc, void *argv, const char *name, int pid, int isForeground){
+Process * create_process(process_func func, int argc, void *argv, char *name, int pid, int isForeground){
 	Process *p;
 
 
@@ -518,7 +401,7 @@ Process * create_process(process_func func, int argc, void *argv, const char *na
 	return p;
 }
 
-int createProcess(process_func func, int argc, void *argv, const char *name, int isForeground)
+int createProcess(process_func func, int argc, void *argv, char *name, int isForeground)
 {
 	uint64_t pid = pids++;
 
@@ -655,5 +538,7 @@ int start(process_func func, int argc, void *argv){
 	(*func)(argc, argv);
 
 	end_process();
+
+	return 0;
 	
 }

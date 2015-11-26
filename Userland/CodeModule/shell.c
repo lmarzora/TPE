@@ -17,10 +17,6 @@ int main() {
 	
 	intro();
 
-	char * nombre = "pepe";
-	char mibuff[40];
-	
-	int x = 0;
 	char * line;
 	
 	while(1) {	
@@ -62,6 +58,8 @@ int main() {
 				listProcesses();
 			}else if(cmpstr(line, "intconv")){
 				newProcess("escribe_int", &interactiveconv_main, 0, 0, 1);
+			}else if(cmpstr(line, "simpleconv")){
+				newProcess("simpleconv", &simpleconv_main, 0, 0, 1);
 			}else if(cmpstr(line, "kill")){
 				printLn("Input pid to kill");
 				print("->");
@@ -78,17 +76,7 @@ int main() {
 			}else if(cmpstr(line, "prodcons")){
 				newProcess("prodcons", &prodcons_main, 0, 0, 1);
 			}else if(cmpstr(line, "test")){
-				//testStuff();
-				
-				newMsgQueue(nombre, 3, sizeof(mibuff));
-				putMsgQueue("gato loco", nombre);
-				getMsgQueue(mibuff, nombre);
-				printLn("Mensaje es: ");
-				printLn(mibuff);
-				printLn("");
-				//deleteMsgQueue(nombre);
-				//putMsgQueue("wachin", nombre);
-				
+				//testStuff();				
 			}else{
 				
 				print("Error: Command \"");
@@ -152,6 +140,12 @@ void help(){
 	printLn("-> clear: clears screen");
 	printLn("-> ps: shows all processes");
 	printLn("-> help: shows this help");
+	printLn("");
+	printLn("-> Apps:");
+	printLn("    * echo: muestra lo que escribis (Foreground)");
+	printLn("    * prodcons: producer-consumer (Semaforos)");
+	printLn("    * simpleconv: muestra comunicacion entre procesos (MsgQueue)");
+	printLn("    * intconv: comunicacion entre procesos interactivo (MsgQueue)");
 	printLn("----------------------------------------------------------------");
 }
 

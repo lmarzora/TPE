@@ -3,8 +3,7 @@
 #include <terminal.h>
 #include <naiveConsole.h>
 #include <sysCallAttention.h>
-#include "../semaphore.h"
-#include "../msgqueue.h"
+#include <tempfiles.h>
 #include <scheduler_interface.h>
 
 static Semaphore * foreground_sem = 0;
@@ -28,10 +27,7 @@ void irqDispatcher(int64_t irq) {
 
 int syscall(int code , char* buff , int size) {
 	int dim = -1;
-	void** buff2;
 	
-	MsgQueue * luis;
-
 	switch (code) {
 		case 1:
 			if(foreground_sem == 0){
@@ -72,19 +68,6 @@ int syscall(int code , char* buff , int size) {
 			killProcess(size);
 			break;
 		case 23:
-			/*
-			luis = CreateSem("hola", 0);
-			ncPrint("ANTESS\n");
-			WaitSem(luis);
-			ncPrint("DESPUES\n");*/
-			luis = getMessageQueue("wachin");
-			if(!luis){
-				//ncPrint("No lo encontro\n");
-			}else{
-				//ncPrint("Lo encontro\n");
-				PutMsgQueue(luis, "banana");
-			}
-
 			break;
 		default:
 			break;
@@ -171,7 +154,7 @@ void semaphoreHandler(int code, char * nombre, int valor){
 				ncPrint("No se encontro Semaforo\n");
 			break;
 		case 3:
-			aux = getMessageQueue(nombre);
+			aux = getSemaphore(nombre);
 			if(aux)
 				DeleteSem(aux);
 			else

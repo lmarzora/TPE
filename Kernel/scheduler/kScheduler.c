@@ -1,12 +1,10 @@
 #include "scheduler.h"
 #include <scheduler_interface.h>
+#include <terminal.h>
 
 //TEST
 #include <naiveConsole.h>
 //
-
-
-static int count=0;
 
 uint64_t newProcess(process_data* pdata)
 {
@@ -64,7 +62,8 @@ int usleep(uint64_t time)
 
 uint64_t schedule(uint64_t rsp)
 {
-	count ++;	
+
+	incTick();
 	//ncPrintDec(count);
 	/*		
 	ncNewline();

@@ -30,6 +30,7 @@ void recibe_int(){
 	char buff[100];
 	printLn("Bienvenido!");
 	printLn("Como te llamas?");
+	print("- ");
 	
 	getMsgQueue(buff, "interactivconv");
 	
@@ -37,6 +38,7 @@ void recibe_int(){
 	print("Hola ");
 	printLn(buff);
 	printLn("Como estas?");
+	print("- ");
 	
 	getMsgQueue(buff, "interactivconv");
 
@@ -45,6 +47,7 @@ void recibe_int(){
 	printLn("?");
 	printLn("Hay que estar GENIAL");
 	printLn("Asi que va devuelta, como estas?");
+	print("- ");
 
 	getMsgQueue(buff, "interactivconv");
 
