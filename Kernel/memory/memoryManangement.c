@@ -1,15 +1,15 @@
 #include"memory.h"
 #include<lib.h>
 #include<naiveConsole.h>
-
+#include<pAllocator.h>
 
 
 #define PAGE 0x1000
 #define MAX_LEVEL 13
 #define MAX_INDEX 12
-#define TOTAL_MEMORY 0x1000000000
+#define TOTAL_MEMORY 0x10000000000
 #define CMP  0x8000000000000000
-#define HEAP_START 0x700000
+#define HEAP_START 0x80000000
 
 static uint64_t * bitmaps[MAX_LEVEL + 1];
 extern uint8_t endOfKernel;
@@ -39,28 +39,49 @@ mem_setup(uint64_t himem_size)
 	//ncPrint("bitmap addr: ");
 	//ncPrintHex(&bitmaps);
 	//ncNewline();
-	uint64_t addr = (void*) 0x600000;
 	int i;
+	uint64_t size = 0;
+	for(i=0;i<MAX_LEVEL;i++)
+	{	
+		size = (level_size(i)) * sizeof(uint64_t);
+	}
+	ncPrint("size: ");
+	ncPrintHex(size);
+	ncNewline();
 
+	uint64_t addr =(uint64_t) 0x600000;
+		
+	ncPrint("start: ");
+	ncPrintHex(addr);
+	ncPrint(" end: ");
+	ncPrintHex(addr + size - 1);
+	ncNewline();
+	
+	ncPrint("dir :");
+	ncPrintHex(&mem_setup);
+	ncNewline();
 	for(i=0;i<MAX_LEVEL;i++)
 	{	
 		bitmaps[i] = addr;
+		if(i == 1)
+			while(1);
 		addr += (level_size(i)) * sizeof(uint64_t);
 		
 		//ncPrint("level: ");
 		//ncPrintDec(i);;		
-		//ncPrint(" level_addr: ");
-		//ncPrintHex(bitmaps[i]);
+		ncPrint(" level_addr: ");
+		ncPrintHex(bitmaps[i]);
 		//ncPrint(" level_size: ");
 		//ncPrintDec(level_size(i));
 		//ncPrint(" block_size: ");
 		//ncPrintDec(block_size(i));	
 		
 		memset(bitmaps[i],0,level_size(i)*sizeof(uint64_t));
-	//ncNewline();
+	
+		
 
 	}
-
+			
 	memset(bitmaps[MAX_INDEX],0xAAAAAAAA,level_size(i)*sizeof(uint64_t));
 	
 
@@ -243,14 +264,6 @@ getBlock(int buddyIndex)
 	return (void*)0xDEAD;
 }
 
-void
-panic(char* msg)
-{
-	//ncPrint(msg);
-	//ncNewline();
-	while(1);
-	//exit(1);
-}
 
 void*
 dir(int i, int offset, int level)

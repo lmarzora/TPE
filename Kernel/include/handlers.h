@@ -10,5 +10,7 @@ void keyboard_handler();
 void pic();
 void int80handler();
 int syscall(int,char*,int);
+void pageFaultHandler(void);
+void pageFault(uint64_t,uint64_t);
 
 #endif

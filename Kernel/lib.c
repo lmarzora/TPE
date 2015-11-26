@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <naiveConsole.h>
 
 void * memset(void * destination, int32_t c, uint64_t length)
 {
@@ -49,4 +50,12 @@ void * memcpy(void * destination, const void * source, uint64_t length)
 	return destination;
 }
 
+
+void
+panic(char* msg)
+{
+	ncPrint(msg);
+	ncNewline();
+	while(1);
+}
 

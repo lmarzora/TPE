@@ -11,6 +11,8 @@ void free(void*);
 uint64_t getFlags(void);
 
 
+void
+panic(char* msg);
 typedef int bool;
 enum { false, true };
 

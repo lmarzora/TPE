@@ -8,7 +8,7 @@
 #include <scheduler_interface.h>
 #include "kSetUp.h"
 
-#define TOTAL_MEMORY 0x10000000000000 
+#define TOTAL_MEMORY 0x100000000 
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -92,9 +92,14 @@ int main()
 {	
 
 	uint64_t memory = TOTAL_MEMORY;
-	
+	ncClear();
+	init_pMemoryAllocator(TOTAL_MEMORY);
 	setUpPaging();
-	setUpPageAllocator(memory);
+	
+	idt_set_gate(0x0E,(uint64_t)pageFaultHandler,0x8,0x8E);
+
+	setUpPageFrameAllocator(memory);
+		
 	setUpScheduler();
 	ncClear();
 	
@@ -119,6 +124,7 @@ int main()
 	ncNewline();
 	//ncClear();
 
+	
 	idt_set_gate(0x20,(uint64_t)pit_handler,0x8,0x8E);
 	idt_set_gate(0x21,(uint64_t)keyboard_handler,0x8,0x8E);
 	idt_set_gate(0x80,(uint64_t)int80handler,0x8,0x8F);

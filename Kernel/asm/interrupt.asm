@@ -6,10 +6,12 @@ EXTERN irqDispatcher
 GLOBAL pic
 GLOBAL getKey
 GLOBAL int80handler
+GLOBAL pageFaultHandler
 EXTERN syscall
 EXTERN schedule
 EXTERN ncPrintHex
 EXTERN ncNewline
+EXTERN pageFault
 
 %macro irqHandlerMaster 1
 	mov rdi, %1
@@ -120,3 +122,17 @@ getFlags:
 	pop ax;
 	ret
 
+pageFaultHandler:
+	
+	pop rdi
+	mov rsi, cr2
+	call pageFault
+
+	call ncNewline
+	call ncNewline
+	call ncNewline
+	cli
+
+
+	hlt
+	iret

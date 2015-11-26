@@ -2,6 +2,10 @@
 #include<lib.h>
 
 #define Gib 0x40000000
+#define PDPT_MASK 0x7FC0000000
+#define PDT_MASK  0x3FE00000
+#define PT_MASK   0x1FF000
+#define P_MASK    0xFFF
 
 uint64_t getCR3();
 void setCR3(uint64_t);
@@ -59,3 +63,10 @@ void * get1GiBPageAddress(uint64_t* contents);
 bool getExecuteDisable(bool value,uint64_t* contents);
 
 void clear(uint64_t* contents);
+
+
+uint64_t* getPDPT(uint64_t vaddr);
+uint64_t* getPDT(uint64_t vaddr);
+uint64_t* getPT(uint64_t vaddr);
+uint64_t* getP(uint64_t vaddr);
+

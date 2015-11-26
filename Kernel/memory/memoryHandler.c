@@ -36,7 +36,7 @@ void* kalloc(uint64_t size,uint32_t k)
 	return p;
 }
 
-void setUpPageAllocator(uint64_t memory_size)
+void setUpPageFrameAllocator(uint64_t memory_size)
 {
 	mem_setup(memory_size);
 	//set kernel pages as used

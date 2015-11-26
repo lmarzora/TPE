@@ -54,4 +54,15 @@ int syscall(int code , char* buff , int size) {
 	return dim;
 }
 
+void pageFault(uint64_t error, uint64_t vaddr)
+{
+	ncNewline();
+	ncPrint("creo que es el error: ");
+	ncPrintHex(error);
+	ncNewline();
+	ncPrint("creo que es la direccion: ");
+	ncPrintHex(vaddr);
+	ncNewline();
+
+}
  
