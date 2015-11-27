@@ -88,13 +88,14 @@ pit_handler:
 
 	mov rdi, rsp
 	call schedule
-
+	
 	mov rsp, rax
 
 	popState
 	
 	mov al, 20h
 	out 20h, al
+	
 
 	iretq
 
@@ -153,16 +154,9 @@ getFlags:
 	ret
 
 pageFaultHandler:
-	
 	pop rdi
 	mov rsi, cr2
 	call pageFault
-
-	call ncNewline
-	call ncNewline
-	call ncNewline
-	cli
-
 
 	hlt
 	iret

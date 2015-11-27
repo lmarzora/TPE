@@ -9,6 +9,7 @@
 #include "kSetUp.h"
 #include <semaphore.h>
 #include <msgqueue.h>
+#include <vmemory.h>
 
 #define TOTAL_MEMORY 0x100000000 
 
@@ -100,19 +101,29 @@ int main()
 	
 	idt_set_gate(0x0E,(uint64_t)pageFaultHandler,0x8,0x8E);
 
+	ncPrint("Test paging\n");
+	ncPrint("addr1: ");
+	ncPrintHex(get_pAddress(0x0));
+	ncNewline();
+
+	ncClear();
+
 	setUpPageFrameAllocator(memory);
-		
-	setUpScheduler();
 	ncClear();
 	
-	process_data* shell = kalloc(sizeof(process_data),0);
-
+	setUpScheduler();
 	
-	shell->func = sampleCodeModuleAddress;
+	ncClear();
+
+	//map user code module
+	void* userland = setUserModule(sampleCodeModuleAddress);
+
+	process_data* shell = kalloc(sizeof(process_data),0);
+	shell->func = userland;
 	shell->name = "shell";
 	shell->isForeground = 1;
-	
 	newProcess(shell);	
+	
 
 
 	process_data* null_task = kalloc(sizeof(process_data),0);
@@ -135,7 +146,7 @@ int main()
 	idt_set_gate(0x83,(uint64_t)int83handler,0x8,0x8F);
 	
 	//FncClear();
-		
+	ncClear();
 	sti();
 	pic();
 

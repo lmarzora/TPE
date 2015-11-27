@@ -36,7 +36,6 @@ int setScheduler(){
 	pq_ready = kalloc(sizeof(ProcessQueue), 0);
 	pq_blocked = kalloc(sizeof(ProcessQueue), 0);
 	pq_terminated = kalloc(sizeof(ProcessQueue), 0);
-	
 	curr_tick = MAX_TICK;
 
 	curr_process=0;
@@ -130,6 +129,7 @@ uint64_t select_process(uint64_t old_rsp){
 	curr_process->next = NULL;
 	curr_process->prev = NULL;
 	curr_process->queue = NULL;
+	
 
 	return curr_process->rsp;
 
@@ -371,10 +371,10 @@ void yield_cpu(void)
 Process * create_process(process_func func, int argc, void *argv, char *name, int pid, int isForeground){
 	Process *p;
 
-
-	void *rsp = kalloc(0x800000,0);
+		
+	void *rsp = valloc(0x800000,0);
 	rsp += 0x800000 - 1 - sizeof(stack_frame);
-
+	
 	uint64_t nRsp = set_stack_frame(rsp,func, argc, argv);
 
 	p = kalloc(sizeof(Process), 0);
@@ -390,7 +390,7 @@ Process * create_process(process_func func, int argc, void *argv, char *name, in
 	if(isForeground){
 		foreground_process = p;
 	}
-
+	
 	// Agregar a la lista de tareas
 	atomic();
 	process_list_add(p);
@@ -535,6 +535,7 @@ void printStack(uint64_t* rsp)
 
 int start(process_func func, int argc, void *argv){
 	
+
 	(*func)(argc, argv);
 
 	end_process();

@@ -3,8 +3,8 @@
 
 #define PAGE 0x1000
 void mem_setup(uint64_t himem_size);
-int block_size(int level);
-int level_size(int level);
+uint64_t block_size(int level);
+uint64_t level_size(int level);
 void * 
 myalloc(uint64_t bytes);
 int

@@ -1,17 +1,35 @@
+#define TOTAL_MEMORY 0x100000000
+#define PAGE 0x1000
+#define CANT_PAGES TOTAL_MEMORY/PAGE
+#define CMP_START 0x8000000000000000
+
 #include <pAllocator.h>
 #include<lib.h>
 
-uint64_t pMemory_BitMap[CANT_PAGES];
+static uint64_t* pMemory_BitMap;
 
 void init_pMemoryAllocator(uint64_t total_memory)
 {
-	int i;
-	for(i = 0 ; i < 64 ; i++) {
+	ncClear();
+	pMemory_BitMap = (uint64_t*)  0x600000;
+	int i = 0;
+	int used = 0x800000/PAGE;
+	ncPrintHex(used);
+	ncNewline();
+	while(i < used) {
 		pMemory_BitMap[i] = 0x0;
+		i++;
 	}
+	ncNewline();
+	ncPrintHex(i);
+
+
 	for(i; i < CANT_PAGES ; i++) {
 		pMemory_BitMap[i] = 0xFFFFFFFFFFFFFFFF;
 	}
+	ncNewline();
+	ncPrintHex(&pMemory_BitMap[i]);
+	
 }
 
 
@@ -52,6 +70,5 @@ void free_page(uint64_t pAddress)
 
 	return;
 }
-
 
 

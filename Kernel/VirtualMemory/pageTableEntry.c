@@ -53,16 +53,16 @@ void setPageAttribueTable(bool value, uint64_t* contents) {
 	setBit(contents, pageAttributeTableBit, value);
 }
 
-uint64_t set4KiBPageAddress(void * address, uint64_t contents) {
-	return ((uint64_t)address & addressMask4KiB) | (contents & ~addressMask4KiB);
+void set4KiBPageAddress(void * address, uint64_t* contents) {
+	*contents = ((uint64_t)address & addressMask4KiB) | (*contents & ~addressMask4KiB);
 }
 
-uint64_t set2MiBPageAddress(void * address, uint64_t contents) {
-	return ((uint64_t)address & addressMask2MiB) | (contents & ~addressMask2MiB);
+void set2MiBPageAddress(void * address, uint64_t* contents) {
+	*contents = ((uint64_t)address & addressMask2MiB) | (*contents & ~addressMask2MiB);
 }
 
-uint64_t set1GiBPageAddress(void * address, uint64_t contents) {
-	return ((uint64_t)address & addressMask1GiB) | (contents & ~addressMask1GiB);
+void set1GiBPageAddress(void * address, uint64_t* contents) {
+	*contents = ((uint64_t)address & addressMask1GiB) | (*contents & ~addressMask1GiB);
 }
 
 void setExecuteDisable(bool value, uint64_t* contents) {

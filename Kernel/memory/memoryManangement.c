@@ -5,22 +5,22 @@
 
 
 #define PAGE 0x1000
-#define MAX_LEVEL 13
-#define MAX_INDEX 12
-#define TOTAL_MEMORY 0x10000000000
+#define MAX_LEVEL 12
+#define MAX_INDEX 11
+#define TOTAL_MEMORY  0x1000000000
 #define CMP  0x8000000000000000
-#define HEAP_START 0x80000000
+#define HEAP_START 0x40000000
 
 static uint64_t * bitmaps[MAX_LEVEL + 1];
 extern uint8_t endOfKernel;
 
 
-int block_size(int level)
+uint64_t block_size(int level)
 {
 	return PAGE * (1ull << level);
 
 }
-int level_size(int level)
+uint64_t level_size(int level)
 {
 	return TOTAL_MEMORY / block_size(level);
 
@@ -29,7 +29,8 @@ int level_size(int level)
 
 void
 mem_setup(uint64_t himem_size)
-{
+{	
+
 	extern char _end;
 	//ncClear();
 	//ncNewline();
@@ -43,49 +44,35 @@ mem_setup(uint64_t himem_size)
 	uint64_t size = 0;
 	for(i=0;i<MAX_LEVEL;i++)
 	{	
-		size = (level_size(i)) * sizeof(uint64_t);
+		size += level_size(i);
 	}
-	ncPrint("size: ");
-	ncPrintHex(size);
-	ncNewline();
+	uint64_t addr = alloc_page();
 
-	uint64_t addr =(uint64_t) 0x600000;
+	do
+		size-=PAGE;
+	while(size>0);	
 		
-	ncPrint("start: ");
-	ncPrintHex(addr);
-	ncPrint(" end: ");
-	ncPrintHex(addr + size - 1);
-	ncNewline();
-	
-	ncPrint("dir :");
-	ncPrintHex(&mem_setup);
-	ncNewline();
+
 	for(i=0;i<MAX_LEVEL;i++)
 	{	
 		bitmaps[i] = addr;
-		if(i == 1)
-			while(1);
-		addr += (level_size(i)) * sizeof(uint64_t);
+		addr += level_size(i);
 		
-		//ncPrint("level: ");
-		//ncPrintDec(i);;		
-		ncPrint(" level_addr: ");
+		ncPrint("level: ");
+		ncPrintDec(i);;		
+		ncPrint(" level_addr start: ");
 		ncPrintHex(bitmaps[i]);
-		//ncPrint(" level_size: ");
-		//ncPrintDec(level_size(i));
-		//ncPrint(" block_size: ");
-		//ncPrintDec(block_size(i));	
-		
-		memset(bitmaps[i],0,level_size(i)*sizeof(uint64_t));
-	
-		
+		ncPrint(" bitmap size: ");
+		ncPrintHex( level_size(i)/sizeof(uint64_t*) );
 
+		memset(bitmaps[i],0,level_size(i)/8);
+	
 	}
 			
-	memset(bitmaps[MAX_INDEX],0xAAAAAAAA,level_size(i)*sizeof(uint64_t));
+	memset(bitmaps[MAX_INDEX],0xAAAAAAAA,level_size(i)/sizeof(uint64_t));
 	
-
-	
+	//printMap();
+		
 }
 
 
@@ -123,8 +110,8 @@ myalloc(uint64_t bytes)
 		p = getBlock(t);
 		////ncPrint("address: %x\n",p);
 		t++;
-		//ncPrintDec(t);
-		//ncNewline();
+		ncPrintDec(t);
+		ncNewline();
 	}	
 	while (t < MAX_LEVEL && p == (void*)0xDEAD);
 	
@@ -139,8 +126,8 @@ myalloc(uint64_t bytes)
 
 	if (t > MAX_LEVEL || p == (void*)0xDEAD)
 	{
-		//ncPrintHex(p);
-		//ncNewline();
+		ncPrintHex(p);
+		ncNewline();
 		panic("Out of memory");
 		return (void*) 0;
 	}

@@ -79,10 +79,10 @@ int syscall(int code , char* buff , int size) {
 void pageFault(uint64_t error, uint64_t vaddr)
 {
 	ncNewline();
-	ncPrint("creo que es el error: ");
+	ncPrint("error: ");
 	ncPrintHex(error);
 	ncNewline();
-	ncPrint("creo que es la direccion: ");
+	ncPrint("addr: ");
 	ncPrintHex(vaddr);
 	ncNewline();
 
