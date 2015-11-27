@@ -23,6 +23,7 @@ void recibe(){
 		j++;
 	}
 
+	deleteMsgQueue("simpleconv");
 	printLn("");
 	print("$ ");
 	

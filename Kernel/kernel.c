@@ -127,6 +127,7 @@ int main()
 	idt_set_gate(0x81,(uint64_t)int81handler,0x8,0x8F);
 	idt_set_gate(0x82,(uint64_t)int82handler,0x8,0x8F);
 	idt_set_gate(0x83,(uint64_t)int83handler,0x8,0x8F);
+	idt_set_gate(0x84,(uint64_t)int84handler,0x8,0x8F);
 	
 	//FncClear();
 		
@@ -143,6 +144,3 @@ int main()
 void nullProc(){
 	while(1);
 }
-
-
-

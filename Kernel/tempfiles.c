@@ -1,8 +1,11 @@
 #include <tempfiles.h>
+//sacar
+#include <naiveConsole.h>
 
-static SemaphoreList * semaphore_list;
-static MsgQueueList * msgQueue_list;
+static SemaphoreList * semaphore_list = NULL;
+static MsgQueueList * msgQueue_list = NULL;
 
+void printSemaphores();
 
 void addSemaphore(Semaphore * sem){
 	SemaphoreList * aux = kalloc(sizeof(semaphore_list), 0);
@@ -10,6 +13,20 @@ void addSemaphore(Semaphore * sem){
 	aux->next = semaphore_list;
 
 	semaphore_list = aux;
+
+	//printSemaphores();
+}
+
+void printSemaphores(){
+	SemaphoreList * aux = semaphore_list;
+	ncPrint("---Semaphore Print---\n");
+	while(aux!=NULL){
+		ncPrint("Semaforo: ");
+		ncPrint(aux->semaphore->name);
+		ncNewline();
+		aux = aux->next;
+	}
+	ncPrint("------------\n");
 }
 
 Semaphore * getSemaphore(char * name){
@@ -35,8 +52,11 @@ void removeSemaphore(Semaphore * sem){
 			}
 			free(aux);
 			return;
+		}else{
+			prev = aux;
+			aux = aux->next;
 		}
-		aux = aux->next;
+		
 	}
 	
 }
@@ -72,8 +92,10 @@ void removeMessageQueue(MsgQueue * mq){
 			}
 			free(aux);
 			return;
+		}else{
+			prev = aux;
+			aux = aux->next;
 		}
-		aux = aux->next;
 	}
 	
 }

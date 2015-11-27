@@ -1,6 +1,6 @@
-#include"memory.h"
-#include<lib.h>
-#include<naiveConsole.h>
+#include "memory.h"
+#include <lib.h>
+#include <naiveConsole.h>
 
 
 

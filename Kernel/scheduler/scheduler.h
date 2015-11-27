@@ -80,7 +80,6 @@ void end_process(void);
 uint64_t set_stack_frame(uint64_t*, process_func, uint64_t argc, void * argv);
 void terminateProcess();
 void yield_cpu();
-int bedtime(int,uint64_t);
 Process * getProcessList();
 int numProcesses();
 int start(process_func func, int argc, void *argv);

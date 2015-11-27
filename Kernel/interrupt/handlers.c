@@ -100,21 +100,21 @@ void msgQueueHandler(int code, char * msg, char * nombre, unsigned max, unsigned
 			if(aux)
 				PutMsgQueue(aux, msg);
 			else
-				ncPrint("No se encontro MsgQueue\n");
+				ncPrint("Put: No se encontro MsgQueue\n");
 			break;
 		case 2:
 			aux = getMessageQueue(nombre);
 			if(aux)
 				GetMsgQueue(aux, msg);
 			else
-				ncPrint("No se encontro MsgQueue\n");
+				ncPrint("Get: No se encontro MsgQueue\n");
 			break;
 		case 3:
 			aux = getMessageQueue(nombre);
 			if(aux)
 				DeleteMsgQueue(aux);
 			else
-				ncPrint("No se encontro MsgQueue\n");
+				ncPrint("Delete: No se encontro MsgQueue\n");
 			break;
 	}
 	/*
@@ -144,21 +144,33 @@ void semaphoreHandler(int code, char * nombre, int valor){
 			if(aux)
 				WaitSem(aux);
 			else
-				ncPrint("No se encontro Semaforo\n");
+				ncPrint("Wait: No se encontro Semaforo\n");
 			break;
 		case 2:
 			aux = getSemaphore(nombre);
 			if(aux)
 				SignalSem(aux);
 			else
-				ncPrint("No se encontro Semaforo\n");
+				ncPrint("Signal: No se encontro Semaforo\n");
 			break;
 		case 3:
 			aux = getSemaphore(nombre);
 			if(aux)
 				DeleteSem(aux);
 			else
-				ncPrint("No se encontro Semaforo\n");
+				ncPrint("Delete: No se encontro Semaforo: \n");
+				//ncPrint(nombre);
+			break;
+	}
+}
+
+void cpuHandler(int code, int num){
+	switch(code){
+		case 0:
+			sleep(num);
+			break;
+		case 1:
+			yield();
 			break;
 	}
 }

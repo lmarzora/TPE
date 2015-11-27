@@ -51,12 +51,12 @@ void yield()
 
 }
 
-int usleep(uint64_t time)
+void sleep(uint64_t ticks)
 {
-	if(time>0)
-		return bedTime(1,time);
-	else
-		return -1;
+	if(ticks>0){
+		block(0, ticks);
+	}
+		
 
 }
 

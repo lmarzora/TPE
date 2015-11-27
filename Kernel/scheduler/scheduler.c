@@ -96,7 +96,9 @@ void check_blocked_processes(){
 
 
 uint64_t select_process(uint64_t old_rsp){
-	
+	total_ticks++;
+	check_blocked_processes();
+
 	if(curr_process){
 		curr_process->rsp=old_rsp;
 
@@ -117,6 +119,7 @@ uint64_t select_process(uint64_t old_rsp){
 
 	curr_tick = MAX_TICK;
 	Process *next_process = get_last(pq_ready);
+
 
 	if(curr_process == NULL && next_process == NULL)
 		return old_rsp;
@@ -251,7 +254,7 @@ dequeue_blocked(Process *p){
 void
 dequeue_q(Process *p){
 	ProcessQueue *pq = p->queue;
-	if(pq == NULL)
+	if(pq == NULL || p->waiting)
 		return;
 
 	if (p->prev)
@@ -274,7 +277,7 @@ ready(Process *p){
 	int valor = setInterrupt(0);
 
 	dequeue_q(p);
-	//dequeue_blocked(p);
+	dequeue_blocked(p);
 	enqueue_q(p, pq_ready);
 	p->state = READY;
 
@@ -297,29 +300,30 @@ Process * signal(ProcessQueue *queue){
 void flushQueue(ProcessQueue *queue)
 {
 	Process *p;
-
-	if ( peek_q(queue) )
-	{
-		while ( (p = get_last(queue)) )
-			ready(p);
+	int valor = setInterrupt(0);
+	while ( (p = get_last(queue)) )
+		ready(p);
 		
-	}
+	setInterrupt(valor);
 	
 }
 
 
 void block(ProcessQueue *queue, unsigned msecs){
 	curr_process->state = BLOCKED;
-
 	dequeue_q(curr_process);
-	enqueue_q(curr_process, queue);
+
+	if(queue != NULL)
+		enqueue_q(curr_process, queue);
 	if( msecs != -1){
 		enqueue_blocked(curr_process, total_ticks + msecs);
 	}
+		
 
 	call_pit();
 
 }
+
 
 void 
 process_list_add(Process *p)
@@ -510,14 +514,6 @@ void terminateProcess()
 	end_process();	
 	
 
-}
-
-int bedTime(int queueID,uint64_t time)
-{
-	ProcessQueue* queue = NULL;	
-
-	block(queue,time);
-	return 1;
 }
 
 void printStack(uint64_t* rsp)
