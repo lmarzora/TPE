@@ -105,6 +105,7 @@ void analizeKeyboard(unsigned char c){
 		backspace();
 	}else if(key == '\n'){
 		enter();
+    //printProcesses();
   }else if(c==42){
     leftShift = 1;
   }else if (c==170){

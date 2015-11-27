@@ -1,6 +1,6 @@
-#include<memory.h>
+#include <memory.h>
 #include <syscalls.h>
-#include<debug.h>
+#include <debug.h>
 #include <lib.h>
 
 #define PAGE 0x1000

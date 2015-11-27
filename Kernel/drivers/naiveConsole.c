@@ -114,12 +114,24 @@ void scrollUp(){
 	showCursor();
 }
 
+
 void ncPrint(const char * string)
 {
 	int i;
 
 	for (i = 0; string[i] != 0; i++)
 		ncPrintChar(string[i]);
+	
+}
+
+void ncPrintCol(const char * string, int col){
+	int i;
+	for(i=0; i<col && string[i] != 0; i++)
+		ncPrintChar(string[i]);
+	
+	for(;i<col;i++)
+		ncPrintChar(' ');
+	
 }
 
 void ncPrintChar(char character)
@@ -127,6 +139,7 @@ void ncPrintChar(char character)
 	if(character == '\n'){
 		ncNewline();
 	}else{
+		automaticScroll();
 		*currentVideo = character;
 		currentVideo += 2;
 		showCursor();
@@ -155,6 +168,11 @@ void automaticScroll(){
 	}
 }
 
+void ncPrintDecCol(uint64_t value, int col)
+{
+	ncPrintBaseCol(value, 10, col);
+}
+
 void ncPrintDec(uint64_t value)
 {
 	ncPrintBase(value, 10);
@@ -174,6 +192,12 @@ void ncPrintBase(uint64_t value, uint32_t base)
 {
     uintToBase(value, buffer, base);
     ncPrint(buffer);
+}
+
+void ncPrintBaseCol(uint64_t value, uint32_t base, int col)
+{
+    uintToBase(value, buffer, base);
+    ncPrintCol(buffer, col);
 }
 
 void ncClear()

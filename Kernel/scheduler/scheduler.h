@@ -1,19 +1,20 @@
 #include<stdint.h>
 #include<lib.h>
+#include <stdint.h>
+#include <process.h>
+
+void printProcesses();
+
 
 enum STATE {READY, BLOCKED, RUNNING, TERMINATED};
 
 #define MAX_TICK 3;
 #define FOREVER -1;
 
+
+
+
 typedef int (*process_func) (int argc, char *argv);
-
-struct ProcessQueue
-{
-	struct Process * head;
-	struct Process * tail;
-};
-
 
 struct stack_frame {
 
@@ -63,43 +64,36 @@ struct initial_stack
 typedef struct stack_frame stack_frame;
 typedef struct initial_stack initial_stack;
 
-struct Process{
-	uint64_t rsp;
-	uint64_t ss;
-	struct Process *next;
-	struct Process *prev;
-	struct Process *blocked_prev;
-	struct Process *blocked_next;
-	struct Process *list_prev;
-	struct Process *list_next;
-	struct ProcessQueue *queue;
-	char * name;
-	int state;	
-	int id;
-	uint64_t wakeup;
-	bool atomic;
-	bool waiting;
-};
 
-typedef struct ProcessQueue ProcessQueue;
-typedef struct Process Process;
 
+Process * create_process(process_func func, int argc, void *argv, char *name, int pid, int isForeground);
 Process* get_last(ProcessQueue * pq);
-void enqueue_q(volatile Process *p, ProcessQueue * pq);
+void enqueue_q(Process *p, ProcessQueue * pq);
 uint64_t select_process(uint64_t);
-static void dequeue_q(Process *p);
-static void dequeue_blocked(Process *p);
-static void ready(Process *p);
-static void enqueue_blocked(Process *p, int wakeup);
-static void block(ProcessQueue *queue, unsigned msecs);
-static void process_list_add(Process *p);
-static void process_list_remove(Process *p);
-static void check_blocked_processes();
+void dequeue_q(Process *p);
+void dequeue_blocked(Process *p);
+void ready(Process *p);
+void enqueue_blocked(Process *p, int wakeup);
+//static void block(ProcessQueue *queue, unsigned msecs);
+//static Process * signal(ProcessQueue *queue);
+//static void flushQueue(ProcessQueue *queue);
+void process_list_add(Process *p);
+void process_list_remove(Process *p);
+void check_blocked_processes();
 Process* peek_q(ProcessQueue *pq);
 void print_all(char * texto);
-Process * create_process(process_func func, int argc, void *argv, const char *name, int pid);
 void end_process(void);
-uint64_t set_stack_frame(uint64_t*, process_func);
+uint64_t set_stack_frame(uint64_t*, process_func, uint64_t argc, void * argv);
 void terminateProcess();
 void yield_cpu();
 int bedtime(int,uint64_t);
+Process * getProcessList();
+int numProcesses();
+int start(process_func func, int argc, void *argv);
+
+int is_foreground(void);
+void become_foreground(void);
+int setScheduler();
+
+Process * findProcess(int num);
+void delete_process(Process *p);

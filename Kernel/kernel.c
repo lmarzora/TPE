@@ -7,6 +7,8 @@
 #include <idt.h>
 #include <scheduler_interface.h>
 #include "kSetUp.h"
+#include <semaphore.h>
+#include <msgqueue.h>
 
 #define TOTAL_MEMORY 0x100000000 
 
@@ -25,7 +27,7 @@ static void * const sampleDataModuleAddress = (void*)0x500000;
 typedef int (*EntryPoint)();
 
 
-void tareaNula(void);
+void nullProc();
 
 void clearBSS(void * bssAddress, uint64_t bssSize)
 {
@@ -108,6 +110,7 @@ int main()
 	
 	shell->func = sampleCodeModuleAddress;
 	shell->name = "shell";
+	shell->isForeground = 1;
 	
 	newProcess(shell);	
 
@@ -115,24 +118,26 @@ int main()
 	process_data* null_task = kalloc(sizeof(process_data),0);
 
 	
-	null_task->func = &tareaNula;
-	null_task->name = "tarea_nula";
+	null_task->func = &nullProc;
+	null_task->name = "null_task";
 	
 	newProcess(null_task);
 
-
-	ncNewline();
+	//ncNewline();
 	//ncClear();
 
 	
 	idt_set_gate(0x20,(uint64_t)pit_handler,0x8,0x8E);
 	idt_set_gate(0x21,(uint64_t)keyboard_handler,0x8,0x8E);
 	idt_set_gate(0x80,(uint64_t)int80handler,0x8,0x8F);
+	idt_set_gate(0x81,(uint64_t)int81handler,0x8,0x8F);
+	idt_set_gate(0x82,(uint64_t)int82handler,0x8,0x8F);
+	idt_set_gate(0x83,(uint64_t)int83handler,0x8,0x8F);
 	
 	//FncClear();
 		
 	sti();
-	pic();;
+	pic();
 
 	
 	//((EntryPoint)sampleCodeModuleAddress)();
@@ -141,9 +146,9 @@ int main()
 	return 0;
 }
 
-void tareaNula(void)
-{
+void nullProc(){
 	while(1);
 }
+
 
 

@@ -1,16 +1,21 @@
 include ../Makefile.inc
 
-MODULE=sampleCodeModule.bin 
+MODULE=0000-sampleCodeModule.bin 
 SOURCES=$(wildcard *.c) 
 OBJECTS=$(SOURCES:.c=.o) 
-ASMSOURCES=$(wildcard *.asm) 
-ASMOBJECTS=$(ASMSOURCES:.asm=.o) 
+ASMSOURCES=$(wildcard asm/*.asm) 
+ASMOBJECTS=$(ASMSOURCES:.asm=.o)
+LIBSOURCES=$(wildcard libs/*.c)
+LIBOBJECTS=$(LIBSOURCES:.c=.o)
+APPSOURCES=$(wildcard appss/*.c)
+APPOBJECTS=$(APPSOURCES:.c=.o)
+
 STATICLIBS=
 
 all: $(MODULE)
 
-$(MODULE): $(OBJECTS) $(ASMOBJECTS) $(STATICLIBS) 
-	$(LD) $(LDFLAGS) -T sampleCodeModule.ld -o ../$(MODULE) $(OBJECTS) $(ASMOBJECTS) $(STATICLIBS)
+$(MODULE): $(OBJECTS) $(ASMOBJECTS) $(LIBOBJECTS) $(APPOBJECTS) $(STATICLIBS) 
+	$(LD) $(LDFLAGS) -T shell.ld -o ../$(MODULE) $(OBJECTS) $(ASMOBJECTS) $(LIBOBJECTS) $(APPOBJECTS) $(STATICLIBS)
 
 %.o: %.c
 	 $(GCC) $(GCCFLAGS) -I./include -c $< -o $@ 
@@ -19,6 +24,6 @@ $(MODULE): $(OBJECTS) $(ASMOBJECTS) $(STATICLIBS)
 	$(ASM) $(ASMFLAGS) $< -o $@
 
 clean: 
-	rm -rf *.o
+	rm -rf asm/*.o libs/*.o *.o
 
 .PHONY: all clean

@@ -4,7 +4,13 @@ GLOBAL timeGet
 GLOBAL timeSet
 GLOBAL screenClear
 GLOBAL intervalSet
+GLOBAL processesList
 GLOBAL alloc
+GLOBAL processNew
+GLOBAL processKill
+GLOBAL stuffTest
+GLOBAL msgQueueSysCall
+GLOBAL semaphoreSysCall
 
 read:
 	mov rdx, rsi
@@ -46,9 +52,38 @@ screenClear:
 	int 80h
 	ret
 
+processesList:
+	mov rdi, 8
+	int 80h
+	ret
+
 intervalSet:
 	mov rdx, rsi
 	mov rsi, rdi
 	mov rdi, 6
+	int 80h
+	ret
+
+processNew:
+	int 81h
+	ret
+
+msgQueueSysCall:
+	int 82h
+	ret
+
+semaphoreSysCall:
+	int 83h
+	ret
+
+processKill:
+	mov rdx, rsi
+	mov rsi, rdi
+	mov rdi, 10
+	int 80h
+	ret
+
+stuffTest:
+	mov rdi, 23
 	int 80h
 	ret

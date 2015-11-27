@@ -1,12 +1,13 @@
 #include <naiveConsole.h>
 #include <screensaver.h>
 #include <terminal.h>
+#include "./scheduler/scheduler.h"
 
 char buffer[80];
 int index = 0;
 int done = 0;
 int ticker = 0;
-int interval = 270;
+int interval = 1000;
 
 //18 ticks = aprox 1 segundo
 void incTick(){
@@ -104,3 +105,39 @@ void copyBuffer(char * buff){
  void changeInterval(int num){
  	interval = num*18;
  }
+
+char * estado(int i){
+	switch(i){
+		case 0: return "Ready";
+		case 1: return "Blocked";
+		case 2: return "Running";
+		case 3: return "Terminated";
+	}
+
+	return "Desconocido";
+}
+
+void printProcesses(){
+	int i=0;
+	int num_processes = numProcesses();
+	ncPrint("\n-> Numero Procesos: ");
+	ncPrintDec(num_processes);
+	ncPrint("\n\n");
+	ncPrintCol("Nombre", 20);
+	ncPrintCol("PID", 10);
+	ncPrintCol("Estado", 10);
+	ncNewline();
+	ncPrintCol("------", 20);
+	ncPrintCol("---", 10);
+	ncPrintCol("------", 10);
+	ncNewline();
+	Process * aux = getProcessList();
+	for(i=0; i<num_processes; i++){
+		ncPrintCol(aux->name, 20);
+		ncPrintDecCol(aux->id, 10);
+		ncPrintCol(estado(aux->state), 10);
+		ncNewline();
+		aux = aux->list_next;
+	}
+	ncNewline();
+}

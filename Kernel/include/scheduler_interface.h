@@ -1,4 +1,6 @@
-#include<stdint.h>
+#include <stdint.h>
+#include <process.h>
+#include "../semaphore.h"
 
 typedef struct
 {
@@ -6,6 +8,7 @@ typedef struct
 	uint64_t argc;
 	void* argv;
 	char* name;
+	int isForeground;
 }process_data;
 
 
@@ -14,3 +17,12 @@ uint64_t newProcess(process_data*);
 void exit(int);
 int usleep(uint64_t);
 uint64_t schedule(uint64_t);
+
+void killProcess(int num);
+
+void block(ProcessQueue *queue, unsigned msecs);
+Process * signal(ProcessQueue *queue);
+void flushQueue(ProcessQueue *queue);
+
+int isForeground(void);
+void becomeForeground(void);

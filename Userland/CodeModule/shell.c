@@ -1,9 +1,13 @@
 #include <shell.h>
 #include <lib.h>
-#include<memory.h>
-#include<debug.h>
+#include <memory.h>
+#include <debug.h>
+#include <apps.h>
 extern char bss;
 extern char endOfBinary;
+
+void echo();
+void hola();
 
 int main() {
 	
@@ -12,8 +16,7 @@ int main() {
 	memset(&bss, 0, &endOfBinary - &bss);
 	
 	intro();
-	
-	
+
 	char * line;
 	
 	while(1) {	
@@ -51,7 +54,31 @@ int main() {
 					printLn("Error setting interval: invalid input");
 				}
 
+			}else if(cmpstr(line, "ps")){
+				listProcesses();
+			}else if(cmpstr(line, "intconv")){
+				newProcess("escribe_int", &interactiveconv_main, 0, 0, 1);
+			}else if(cmpstr(line, "simpleconv")){
+				newProcess("simpleconv", &simpleconv_main, 0, 0, 1);
+			}else if(cmpstr(line, "kill")){
+				printLn("Input pid to kill");
+				print("->");
+				line = getLn();
+				int num = isPid(line);
+				if(num == -1 ){
+					printLn("Invalid input");
+				}else{
+					killProcess(num);
+				}
+				
+			}else if(cmpstr(line, "echo")){
+				newProcess("echo", &echo, 0, 0, 1);
+			}else if(cmpstr(line, "prodcons")){
+				newProcess("prodcons", &prodcons_main, 0, 0, 1);
+			}else if(cmpstr(line, "test")){
+				//testStuff();				
 			}else{
+				
 				print("Error: Command \"");
 				print(line);
 				printLn("\" not found");
@@ -63,6 +90,29 @@ int main() {
 	return 0;
 }
 
+void echo(){
+
+	char * line;
+	int flag = 1;
+
+	while(flag){
+		line = getLn(line);
+		if(!cmpstr(line, "")){
+			if(cmpstr(line, "exit")){
+				flag = 0;
+			}else if(cmpstr(line, "ps")){
+				listProcesses();
+			}else{
+				print("echo: ");
+				print(line);
+				printLn("");
+				print("$ ");
+			}
+		}
+	}
+	printLn("");
+	print("$ ");
+}
 
 
 void intro(){
@@ -88,7 +138,14 @@ void help(){
 	printLn("-> set interval: sets time to wait for screen saver activation");
 	printLn("   Shows a prompt to input seconds between 1 and 9999");
 	printLn("-> clear: clears screen");
+	printLn("-> ps: shows all processes");
 	printLn("-> help: shows this help");
+	printLn("");
+	printLn("-> Apps:");
+	printLn("    * echo: muestra lo que escribis (Foreground)");
+	printLn("    * prodcons: producer-consumer (Semaforos)");
+	printLn("    * simpleconv: muestra comunicacion entre procesos (MsgQueue)");
+	printLn("    * intconv: comunicacion entre procesos interactivo (MsgQueue)");
 	printLn("----------------------------------------------------------------");
 }
 
@@ -115,9 +172,6 @@ int verifyTime(char * time){
 	
 }
 
-int nmbRange(char c){
-	return (c>='0' && c<='9');
-}
 
 int verifyInterval(char * interval){
 	int i=0;

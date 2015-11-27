@@ -1,14 +1,42 @@
-#include"scheduler.h"
-#include<scheduler_interface.h>
+#include "scheduler.h"
+#include <scheduler_interface.h>
+#include <terminal.h>
 
-
-static int count=0;
+//TEST
+#include <naiveConsole.h>
+//
 
 uint64_t newProcess(process_data* pdata)
 {
-	uint64_t pid = createProcess(pdata->func, pdata->argc, pdata->argv, pdata->name);
+	uint64_t pid = createProcess(pdata->func, pdata->argc, pdata->argv, pdata->name, pdata->isForeground);
 	
 	return pid;
+}
+
+int isForeground(){
+	return is_foreground();
+}
+
+void becomeForeground(){
+	become_foreground();
+}
+
+
+void killProcess(int num){
+	
+	if(num==0){
+		ncPrint("No se puede matar al shell\n");
+		return;
+	}
+
+	Process * p = findProcess(num);
+
+	if(p){
+		delete_process(p);
+	}else{
+		ncPrint("No se encontro tal proceso\n");
+	}
+	
 }
 
 void exit(int status)
@@ -34,8 +62,8 @@ int usleep(uint64_t time)
 
 uint64_t schedule(uint64_t rsp)
 {
-	count ++;	
-	
+
+	incTick();
 	//ncPrintDec(count);
 	/*		
 	ncNewline();

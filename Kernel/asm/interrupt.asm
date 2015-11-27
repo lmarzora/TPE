@@ -1,17 +1,26 @@
 ;PIT 
 GLOBAL pit_handler
+GLOBAL call_pit
 GLOBAL sti
+GLOBAL cli
 GLOBAL keyboard_handler
 EXTERN irqDispatcher
 GLOBAL pic
 GLOBAL getKey
 GLOBAL int80handler
 GLOBAL pageFaultHandler
+GLOBAL int81handler
+GLOBAL int82handler
+GLOBAL int83handler
+GLOBAL getFlags
 EXTERN syscall
 EXTERN schedule
 EXTERN ncPrintHex
 EXTERN ncNewline
 EXTERN pageFault
+EXTERN processHandler
+EXTERN msgQueueHandler
+EXTERN semaphoreHandler
 
 %macro irqHandlerMaster 1
 	mov rdi, %1
@@ -94,6 +103,18 @@ int80handler:
 	call syscall
 	iretq
 
+int81handler:
+	call processHandler
+	iretq
+
+int82handler:
+	call msgQueueHandler
+	iretq
+
+int83handler:
+	call semaphoreHandler
+	iretq
+
 getKey:
 ;	push ebp
 ;	mov ebp,esp
@@ -108,6 +129,10 @@ sti:
 	sti
 	ret
 
+cli:
+	cli
+	ret
+
 pic:	
 	mov al, 0xfc
 	out 0x21, al
@@ -116,10 +141,15 @@ pic:
 	sti
 	ret
 
+call_pit:
+	int 20h
+	ret
+
 
 getFlags:
 	pushf
-	pop ax;
+	mov rax, 0
+	pop rax
 	ret
 
 pageFaultHandler:
