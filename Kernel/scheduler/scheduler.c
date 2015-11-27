@@ -372,9 +372,22 @@ Process * create_process(process_func func, int argc, void *argv, char *name, in
 	Process *p;
 
 		
-	void *rsp = valloc(0x800000,0);
+	void *rsp = alloc(0x800000);
+	void* endStack = rsp;
 	rsp += 0x800000 - 1 - sizeof(stack_frame);
 	
+	ncNewline();
+	ncPrint("endStack: ");
+	ncPrintHex(endStack);
+	ncNewline();
+	ncPrint("setting up stack for process: ");
+	ncPrint(name);
+	ncNewline();
+	alloc_process_stack(rsp - sizeof(stack_frame),rsp);
+	ncPrintHex(get_pAddress(rsp - 0x1000));
+	ncNewline();	
+	ncPrint("ok\n");
+
 	uint64_t nRsp = set_stack_frame(rsp,func, argc, argv);
 
 	p = kalloc(sizeof(Process), 0);

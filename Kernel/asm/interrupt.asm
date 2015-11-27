@@ -13,6 +13,7 @@ GLOBAL int81handler
 GLOBAL int82handler
 GLOBAL int83handler
 GLOBAL getFlags
+GLOBAL doubleFaultHandler
 EXTERN syscall
 EXTERN schedule
 EXTERN ncPrintHex
@@ -153,10 +154,14 @@ getFlags:
 	pop rax
 	ret
 
+doubleFaultHandler:
+	cli
+	hlt
+
 pageFaultHandler:
 	pop rdi
 	mov rsi, cr2
 	call pageFault
 
 	hlt
-	iret
+	iretq

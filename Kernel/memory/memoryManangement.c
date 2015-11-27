@@ -46,10 +46,18 @@ mem_setup(uint64_t himem_size)
 	{	
 		size += level_size(i);
 	}
+	ncNewline();
+	ncPrintHex(size);
+	ncNewline();
+	ncPrintHex(size/PAGE);
+	ncNewline();
 	uint64_t addr = alloc_page();
-
-	do
+	ncPrintHex(addr);
+	
+	do {
 		size-=PAGE;
+		alloc_page();
+	}
 	while(size>0);	
 		
 
@@ -110,8 +118,8 @@ myalloc(uint64_t bytes)
 		p = getBlock(t);
 		////ncPrint("address: %x\n",p);
 		t++;
-		ncPrintDec(t);
-		ncNewline();
+		//ncPrintDec(t);
+		//ncNewline();
 	}	
 	while (t < MAX_LEVEL && p == (void*)0xDEAD);
 	

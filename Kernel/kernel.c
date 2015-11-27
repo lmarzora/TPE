@@ -93,7 +93,6 @@ void * initializeKernelBinary()
 
 int main()
 {	
-
 	uint64_t memory = TOTAL_MEMORY;
 	ncClear();
 	init_pMemoryAllocator(TOTAL_MEMORY);
@@ -101,19 +100,20 @@ int main()
 	
 	idt_set_gate(0x0E,(uint64_t)pageFaultHandler,0x8,0x8E);
 
+	idt_set_gate(0x08,(uint64_t)doubleFaultHandler,0x8,0x8E);
+
+
+
+
 	ncPrint("Test paging\n");
 	ncPrint("addr1: ");
 	ncPrintHex(get_pAddress(0x0));
 	ncNewline();
 
-	ncClear();
-
 	setUpPageFrameAllocator(memory);
-	ncClear();
 	
 	setUpScheduler();
 	
-	ncClear();
 
 	//map user code module
 	void* userland = setUserModule(sampleCodeModuleAddress);
@@ -137,7 +137,7 @@ int main()
 	//ncNewline();
 	//ncClear();
 
-	
+	//while(1);
 	idt_set_gate(0x20,(uint64_t)pit_handler,0x8,0x8E);
 	idt_set_gate(0x21,(uint64_t)keyboard_handler,0x8,0x8E);
 	idt_set_gate(0x80,(uint64_t)int80handler,0x8,0x8F);

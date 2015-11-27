@@ -263,13 +263,22 @@ uint64_t* get_pAddress( uint64_t vMemory )
 		ncPrint(" i : ");		
 		ncPrintDec(pml4_i);		
 	
+		if(!getPresent(&pml4[pml4_i]))
+		{
+			ncNewline();
+			ncPrint("NOT PRESENT\n");
+			return  -1;
+		}
+
+
 		if(getPageSize(&pml4[pml4_i]))
 		{
 			ncNewline();
 			ncPrint("512 GiB\n");
 			return (uint64_t*) get1GiBPageAddress(pdpt);
 		}
-	
+		
+
 		pdpt = (uint64_t*) get4KiBPageAddress(&pml4[pml4_i]);	
 		
 		ncPrint(" pdpt : "); 
@@ -277,6 +286,14 @@ uint64_t* get_pAddress( uint64_t vMemory )
 		ncPrint(" i : ");		
 		ncPrintDec(pdpt_i);
 		
+		if(!getPresent(&pdpt[pdpt_i]))
+		{
+			ncNewline();
+			ncPrint("NOT PRESENT\n");
+			return  -1;
+		}
+
+
 		if(getPageSize(&pdpt[pdpt_i]))
 		{
 			ncNewline();
@@ -292,6 +309,14 @@ uint64_t* get_pAddress( uint64_t vMemory )
 		ncPrint(" i : ");		
 		ncPrintDec(pdt_i);	
 		
+		if(!getPresent(&pdt[pdt_i]))
+		{
+			ncNewline();
+			ncPrint("NOT PRESENT\n");
+			return  -1;
+		}
+		
+
 		if(getPageSize(&pdt[pdt_i]))
 		{
 			ncNewline();
@@ -302,6 +327,13 @@ uint64_t* get_pAddress( uint64_t vMemory )
 
 
 		pt = (uint64_t*)get4KiBPageAddress(&pdt[pdt_i]);
+
+		if(!getPresent(&pt[pt_i]))
+		{
+			ncNewline();
+			ncPrint("NOT PRESENT\n");
+			return  -1;
+		}
 		
 		ncPrint(" pt : "); 
 		ncPrintHex(pt);

@@ -78,6 +78,7 @@ int syscall(int code , char* buff , int size) {
 
 void pageFault(uint64_t error, uint64_t vaddr)
 {
+	
 	ncNewline();
 	ncPrint("error: ");
 	ncPrintHex(error);
