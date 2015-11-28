@@ -28,6 +28,7 @@ typedef int (*EntryPoint)();
 
 
 void nullProc();
+void garbageProc();
 
 void clearBSS(void * bssAddress, uint64_t bssSize)
 {
@@ -110,11 +111,19 @@ int main()
 	newProcess(shell);	
 
 
+	process_data* garbage = kalloc(sizeof(process_data),0);
+
+	
+	garbage->func = &garbageProc;
+	garbage->name = "garbage_col";
+	
+	newProcess(garbage);
+
 	process_data* null_task = kalloc(sizeof(process_data),0);
 
 	
 	null_task->func = &nullProc;
-	null_task->name = "null_task";
+	null_task->name = "kill_me";
 	
 	newProcess(null_task);
 
@@ -141,6 +150,12 @@ int main()
 	return 0;
 }
 
+void garbageProc(){
+	while(1){
+		freeTerminated();
+		halt();
+	}
+}
 void nullProc(){
 	while(1);
 }

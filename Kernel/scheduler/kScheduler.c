@@ -29,6 +29,11 @@ void killProcess(int num){
 		return;
 	}
 
+	if(num==1){
+		ncPrint("No se puede matar al garbage collector\n");
+		return;
+	}
+
 	Process * p = findProcess(num);
 
 	if(p){
@@ -43,6 +48,10 @@ void exit(int status)
 {
 	terminateProcess();
 
+}
+
+void freeTerminated(){
+	free_terminated();
 }
 
 void yield()

@@ -3,6 +3,7 @@ GLOBAL pit_handler
 GLOBAL call_pit
 GLOBAL sti
 GLOBAL cli
+GLOBAL halt
 GLOBAL keyboard_handler
 EXTERN irqDispatcher
 GLOBAL pic
@@ -135,6 +136,10 @@ sti:
 
 cli:
 	cli
+	ret
+
+halt:
+	hlt
 	ret
 
 pic:	

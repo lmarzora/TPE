@@ -26,3 +26,4 @@ void flushQueue(ProcessQueue *queue);
 
 int isForeground(void);
 void becomeForeground(void);
+void freeTerminated();

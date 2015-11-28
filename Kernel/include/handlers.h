@@ -5,6 +5,7 @@
 
 void sti();
 void cli();
+void halt();
 void call_pit();
 void irqDispatcher(int64_t);
 void pit_handler();

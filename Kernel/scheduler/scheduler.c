@@ -377,6 +377,7 @@ Process * create_process(process_func func, int argc, void *argv, char *name, in
 
 
 	void *rsp = kalloc(0x800000,0);
+	void * orig_rsp = rsp;
 	rsp += 0x800000 - 1 - sizeof(stack_frame);
 
 	uint64_t nRsp = set_stack_frame(rsp,func, argc, argv);
@@ -387,6 +388,7 @@ Process * create_process(process_func func, int argc, void *argv, char *name, in
 	p->id = pid;
 	p->name = name;
 	p->rsp = nRsp;
+	p->stack = orig_rsp;
 	p->queue = NULL;
 	p->prev = NULL;
 	p->next = NULL;
@@ -481,7 +483,8 @@ void delete_process(Process *p){
 	p->die = true;
 	p->atomic = false;
 	
-	ready(p);
+	if(p->state != READY)
+		ready(p);
 
 }
 
@@ -491,9 +494,11 @@ void end_process(){
 		Semaphore * foreground_sem = getSemaphore("foreground_sem");
 		SignalSem(foreground_sem);
 	}
-
+	//ncPrint("Meto a ");
+	//ncPrint(curr_process->name);
+	//ncNewline();
 	curr_process->state = TERMINATED;
-	process_list_remove(curr_process);
+	//process_list_remove(curr_process);
 	enqueue_q(curr_process, pq_terminated);
 	call_pit();
 }
@@ -507,13 +512,32 @@ void become_foreground(){
 	foreground_process = curr_process;
 }
 
+void free_terminated(){
+	Process * p;
+
+	while(true){
+		atomic();
+		p= get_last(pq_terminated);
+		if(!p){
+			unatomic();
+			break;
+		}
+		//ncPrint("Si hay - es:");
+		//ncPrintHex(p);
+		//ncPrint(p->name);
+		//ncNewline();
+		process_list_remove(p);
+		free(p->stack);
+		free(p);
+		
+		unatomic();
+	}
+}
+
 
 void terminateProcess()
 {
-	free(curr_process->ss);
 	end_process();	
-	
-
 }
 
 void printStack(uint64_t* rsp)

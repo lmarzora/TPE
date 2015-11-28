@@ -90,3 +90,4 @@ int setScheduler();
 
 Process * findProcess(int num);
 void delete_process(Process *p);
+void free_terminated();
