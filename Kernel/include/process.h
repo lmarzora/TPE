@@ -12,6 +12,7 @@ struct ProcessQueue
 struct Process{
 	uint64_t rsp;
 	uint64_t ss;
+	uint64_t reserved_pages;
 	struct Process *next;
 	struct Process *prev;
 	struct Process *blocked_prev;

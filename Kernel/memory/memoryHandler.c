@@ -61,8 +61,9 @@ void alloc_process_heap(void*start, void*last)
 
 }
 
-void alloc_process_stack(void* last, void*addr)
+uint64_t alloc_process_stack(void* last, void*addr)
 {
+
 	
 	//get addr page frame
 	uint64_t page_frame, last_frame, p; 
@@ -78,10 +79,14 @@ void alloc_process_stack(void* last, void*addr)
 	ncNewline();
 	
 	//alloc pages
+	int i = 0;
 	for(p=page_frame;p>=last_frame;p-=PAGE)
 	{
+		i++;
 		alloc_pMemory(p,PAGE,1);
 	}
+
+	return i;
 
 }
 

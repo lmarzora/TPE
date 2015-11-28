@@ -26,3 +26,8 @@ void flushQueue(ProcessQueue *queue);
 
 int isForeground(void);
 void becomeForeground(void);
+
+uint64_t getProcessSS();
+uint64_t getReservedPages();
+void addCantPages(uint64_t);
+uint64_t getPid();

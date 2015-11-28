@@ -13,6 +13,8 @@
 
 #define TOTAL_MEMORY 0x100000000 
 
+void lala();
+
 extern uint8_t text;
 extern uint8_t rodata;
 extern uint8_t data;
@@ -122,7 +124,7 @@ int main()
 	shell->func = userland;
 	shell->name = "shell";
 	shell->isForeground = 1;
-	newProcess(shell);	
+	//newProcess(shell);	
 	
 
 
@@ -158,7 +160,11 @@ int main()
 }
 
 void nullProc(){
-	while(1);
+	//call_pit();
+	lala();
+	while(1){
+		//ncPrint("dasdas\n");
+	}
 }
 
 

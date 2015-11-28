@@ -95,6 +95,7 @@ void check_blocked_processes(){
 
 
 uint64_t select_process(uint64_t old_rsp){
+
 	
 	if(curr_process){
 		curr_process->rsp=old_rsp;
@@ -373,6 +374,7 @@ Process * create_process(process_func func, int argc, void *argv, char *name, in
 
 		
 	void *rsp = alloc(0x800000);
+	void *ss = rsp;
 	void* endStack = rsp;
 	rsp += 0x800000 - 1 - sizeof(stack_frame);
 	
@@ -383,7 +385,7 @@ Process * create_process(process_func func, int argc, void *argv, char *name, in
 	ncPrint("setting up stack for process: ");
 	ncPrint(name);
 	ncNewline();
-	alloc_process_stack(rsp - sizeof(stack_frame),rsp);
+	uint64_t reserved_pages = alloc_process_stack(rsp - sizeof(stack_frame),rsp);
 	ncPrintHex(get_pAddress(rsp - 0x1000));
 	ncNewline();	
 	ncPrint("ok\n");
@@ -396,9 +398,11 @@ Process * create_process(process_func func, int argc, void *argv, char *name, in
 	p->id = pid;
 	p->name = name;
 	p->rsp = nRsp;
+	p->ss = ss+0x800000;
 	p->queue = NULL;
 	p->prev = NULL;
 	p->next = NULL;
+	p->reserved_pages = reserved_pages;
 
 	if(isForeground){
 		foreground_process = p;
@@ -555,4 +559,21 @@ int start(process_func func, int argc, void *argv){
 
 	return 0;
 	
+}
+
+
+uint64_t get_process_SS(){
+	return curr_process->ss;
+}
+
+uint64_t get_reserved_pages(){
+	return curr_process->reserved_pages;
+}
+
+void add_cant_pages(uint64_t pages){
+	curr_process->reserved_pages += pages;
+}
+
+uint64_t get_pid(){
+	return curr_process->id;
 }

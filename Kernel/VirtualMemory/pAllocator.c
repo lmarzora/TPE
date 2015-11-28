@@ -28,7 +28,6 @@ void init_pMemoryAllocator(uint64_t total_memory)
 	}
 
 	ncPrintHex(alloc_page());
-	//while(1);
 	
 }
 

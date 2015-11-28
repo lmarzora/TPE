@@ -97,3 +97,8 @@ int setScheduler();
 
 Process * findProcess(int num);
 void delete_process(Process *p);
+
+uint64_t get_process_SS();
+uint64_t get_reserved_pages();
+void add_cant_pages(uint64_t);
+uint64_t get_pid();

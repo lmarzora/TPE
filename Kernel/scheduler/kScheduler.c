@@ -21,6 +21,17 @@ void becomeForeground(){
 	become_foreground();
 }
 
+uint64_t getProcessSS(){
+	return get_process_SS();
+}
+
+uint64_t getReservedPages(){
+	return get_reserved_pages();
+}
+
+void addCantPages(uint64_t pages){
+	add_cant_pages(pages);
+}
 
 void killProcess(int num){
 	
@@ -111,4 +122,9 @@ void setUpScheduler()
 {
 	setScheduler();
 
+}
+
+
+uint64_t getPid(){
+	return get_pid();
 }
