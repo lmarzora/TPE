@@ -124,7 +124,7 @@ int main()
 	shell->func = userland;
 	shell->name = "shell";
 	shell->isForeground = 1;
-	//newProcess(shell);	
+	newProcess(shell);	
 	
 
 
