@@ -10,24 +10,21 @@ static uint64_t* pMemory_BitMap;
 
 void init_pMemoryAllocator(uint64_t total_memory)
 {
-	ncClear();
+
 	pMemory_BitMap = (uint64_t*)  0x600000;
 	int i = 0;
 	int used = 0x800000/(PAGE*64);
-	ncPrintDec(used);
-	ncNewline();
+
 	while(i < used) {
 		pMemory_BitMap[i] = 0x0;
 		i++;
 	}
-	ncNewline();
-	ncPrintHex(i*PAGE*64);
-	ncNewline();
+
 	for(i; i < CANT_PAGES ; i++) {
 		pMemory_BitMap[i] = 0xFFFFFFFFFFFFFFFF;
 	}
 
-	ncPrintHex(alloc_page());
+
 	
 }
 

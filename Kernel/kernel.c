@@ -96,7 +96,6 @@ void * initializeKernelBinary()
 int main()
 {	
 	uint64_t memory = TOTAL_MEMORY;
-	ncClear();
 	init_pMemoryAllocator(TOTAL_MEMORY);
 	setUpPaging();
 	
@@ -104,13 +103,6 @@ int main()
 
 	idt_set_gate(0x08,(uint64_t)doubleFaultHandler,0x8,0x8E);
 
-
-
-
-	ncPrint("Test paging\n");
-	ncPrint("addr1: ");
-	ncPrintHex(get_pAddress(0x0));
-	ncNewline();
 
 	setUpPageFrameAllocator(memory);
 	

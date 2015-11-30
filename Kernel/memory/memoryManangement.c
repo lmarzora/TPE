@@ -13,7 +13,7 @@
 #define PAGE 0x1000
 #define MAX_LEVEL 12
 #define MAX_INDEX 11
-#define TOTAL_MEMORY  0x10000000000
+#define TOTAL_MEMORY  0x1000000000
 #define CMP  0x8000000000000000
 #define HEAP_START 0x80000000
 
@@ -52,13 +52,9 @@ mem_setup(uint64_t himem_size)
 	{	
 		size += level_size(i);
 	}
-	ncNewline();
-	ncPrintHex(size);
-	ncNewline();
-	ncPrintHex(size/PAGE);
-	ncNewline();
+
 	uint64_t addr = alloc_page();
-	ncPrintHex(addr);
+
 	
 	do {
 		size-=PAGE;
@@ -72,12 +68,7 @@ mem_setup(uint64_t himem_size)
 		bitmaps[i] = addr;
 		addr += level_size(i);
 		
-		ncPrint("level: ");
-		ncPrintDec(i);;		
-		ncPrint(" level_addr start: ");
-		ncPrintHex(bitmaps[i]);
-		ncPrint(" bitmap size: ");
-		ncPrintHex( level_size(i)/sizeof(uint64_t*) );
+
 
 		memset(bitmaps[i],0,level_size(i)/8);
 	
