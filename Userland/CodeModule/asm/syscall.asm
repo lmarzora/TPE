@@ -5,6 +5,7 @@ GLOBAL timeSet
 GLOBAL screenClear
 GLOBAL intervalSet
 GLOBAL processesList
+GLOBAL ipcsList
 GLOBAL alloc
 GLOBAL processNew
 GLOBAL processKill
@@ -55,6 +56,11 @@ screenClear:
 
 processesList:
 	mov rdi, 8
+	int 80h
+	ret
+
+ipcsList:
+	mov rdi, 9
 	int 80h
 	ret
 

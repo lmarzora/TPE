@@ -29,6 +29,7 @@ struct Process{
 	boolean atomic;
 	boolean waiting;
 	boolean die;
+	boolean receives_data;
 };
 
 typedef struct ProcessQueue ProcessQueue;

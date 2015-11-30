@@ -17,6 +17,7 @@ static Process *curr_process;
 static ProcessQueue *pq_ready;
 static ProcessQueue *pq_blocked;
 static ProcessQueue *pq_terminated;
+static ProcessQueue *pq_limbo;
 static Process *process_list;		
 static unsigned num_processes;
 //static stack_frame init_stack;
@@ -36,6 +37,7 @@ int setScheduler(){
 	pq_ready = kalloc(sizeof(ProcessQueue), 0);
 	pq_blocked = kalloc(sizeof(ProcessQueue), 0);
 	pq_terminated = kalloc(sizeof(ProcessQueue), 0);
+	pq_limbo = kalloc(sizeof(ProcessQueue), 0);
 	
 	curr_tick = MAX_TICK;
 
@@ -104,9 +106,9 @@ uint64_t select_process(uint64_t old_rsp){
 
 		if(curr_process->state == RUNNING){
 
-			if(curr_process->die){
-				end_process();
-			}
+			//if(curr_process->die){
+			//	end_process();
+			//}
 
 			if(curr_process->atomic) return curr_process->rsp;
 			curr_tick--;
@@ -114,6 +116,8 @@ uint64_t select_process(uint64_t old_rsp){
 			curr_process->state = READY;
 			enqueue_q(curr_process, pq_ready);
 		}
+
+		
 	}
 	
 
@@ -133,6 +137,13 @@ uint64_t select_process(uint64_t old_rsp){
 	curr_process->next = NULL;
 	curr_process->prev = NULL;
 	curr_process->queue = NULL;
+	
+
+	if(curr_process->die){
+		end_process();
+		return old_rsp;
+	}
+
 
 	return curr_process->rsp;
 
@@ -308,6 +319,9 @@ void flushQueue(ProcessQueue *queue)
 	
 }
 
+void limbo(){
+	block(pq_limbo, -1);
+}
 
 void block(ProcessQueue *queue, unsigned msecs){
 	curr_process->state = BLOCKED;
@@ -395,6 +409,7 @@ Process * create_process(process_func func, int argc, void *argv, char *name, in
 
 	if(isForeground){
 		foreground_process = p;
+		p->receives_data = true;
 	}
 
 	// Agregar a la lista de tareas
@@ -481,10 +496,9 @@ void delete_process(Process *p){
 	}
 
 	p->die = true;
-	p->atomic = false;
-	
 	if(p->state != READY)
 		ready(p);
+	
 
 }
 
@@ -500,7 +514,9 @@ void end_process(){
 	curr_process->state = TERMINATED;
 	//process_list_remove(curr_process);
 	enqueue_q(curr_process, pq_terminated);
+
 	call_pit();
+	
 }
 
 
@@ -508,11 +524,16 @@ int is_foreground(){
 	return curr_process ==  foreground_process;
 }
 
+int receives_data(){
+	return curr_process->receives_data;
+}
+
 void become_foreground(){
 	foreground_process = curr_process;
 }
 
 void free_terminated(){
+
 	Process * p;
 
 	while(true){
@@ -522,10 +543,6 @@ void free_terminated(){
 			unatomic();
 			break;
 		}
-		//ncPrint("Si hay - es:");
-		//ncPrintHex(p);
-		//ncPrint(p->name);
-		//ncNewline();
 		process_list_remove(p);
 		free(p->stack);
 		free(p);
@@ -553,6 +570,8 @@ void printStack(uint64_t* rsp)
 
 }
 
+
+
 int start(process_func func, int argc, void *argv){
 	
 	(*func)(argc, argv);
@@ -562,3 +581,4 @@ int start(process_func func, int argc, void *argv){
 	return 0;
 	
 }
+

@@ -52,6 +52,10 @@ void listProcesses(){
 	processesList();
 }
 
+void listIpcs(){
+	ipcsList();
+}
+
 void setInterval(int num){
 	intervalSet("", num);
 }

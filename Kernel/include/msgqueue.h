@@ -32,7 +32,10 @@ void PutMsgQueue(MsgQueue *mq, void *msg);
 
 void PutMsgQueueTimed(MsgQueue *mq, void *msg, unsigned msecs);
 
-unsigned AvailMsgQueue(MsgQueue *mq);
+unsigned MsgQueueSemGetVal(MsgQueue *mq);
+
+unsigned MsgQueueSemPutVal(MsgQueue *mq);
+
 
 
 #endif

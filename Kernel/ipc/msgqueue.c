@@ -1,11 +1,18 @@
 #include <msgqueue.h>
 #include <tempfiles.h>
 #include <handlers.h>
+#include <naiveConsole.h>
 
 
 MsgQueue *
 CreateMsgQueue(char *name, unsigned msg_max, unsigned msg_size)
 {
+	/*MsgQueue * old = getMessageQueue(name);
+	if(old){
+		ncPrint("JAJAJA");
+		DeleteMsgQueue(old);
+	}*/
+
 	char nom_sem1[100];
 	char nom_sem2[100];
 
@@ -13,9 +20,12 @@ CreateMsgQueue(char *name, unsigned msg_max, unsigned msg_size)
 	nom_sem2[0] = 'p';
 	int i;
 	for(i=1; name[i] != 0; i++){
-		nom_sem1[i-1] = name[i];
-		nom_sem2[i-1] = name[i];
+		nom_sem1[i] = name[i-1];
+		nom_sem2[i] = name[i-1];
 	}
+	nom_sem1[i] = 0;
+	nom_sem2[i] = 0;
+
 
 	MsgQueue *mq;
 	unsigned size = msg_max * msg_size;
@@ -89,7 +99,13 @@ PutMsgQueueTimed(MsgQueue *mq, void *msg, unsigned msecs)
 
 
 unsigned
-AvailMsgQueue(MsgQueue *mq)
+MsgQueueSemGetVal(MsgQueue *mq)
 {
 	return ValueSem(mq->sem_get);
+}
+
+unsigned
+MsgQueueSemPutVal(MsgQueue *mq)
+{
+	return ValueSem(mq->sem_put);
 }

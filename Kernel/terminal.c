@@ -1,6 +1,9 @@
 #include <naiveConsole.h>
 #include <screensaver.h>
 #include <terminal.h>
+#include <tempfiles.h>
+#include <semaphore.h>
+#include <msgqueue.h>
 #include "./scheduler/scheduler.h"
 
 char buffer[80];
@@ -40,6 +43,7 @@ void clearScreen(){
 
 void enter(){
 	ncNewline();
+
 	done = 1;
 }
 
@@ -138,6 +142,36 @@ void printProcesses(){
 		ncPrintCol(estado(aux->state), 10);
 		ncNewline();
 		aux = aux->list_next;
+	}
+	ncNewline();
+}
+
+void printIpcs(){
+	SemaphoreList * sl = getSemaphoreList();
+	MsgQueueList * mql = getMsgQueueList();
+
+	ncPrintCol("Tipo", 5);
+	ncPrintCol("Nombre", 20);
+	ncPrintCol("Valor", 5);
+	ncNewline();
+	ncPrintCol("----", 5);
+	ncPrintCol("------", 20);
+	ncPrintCol("-----", 5);
+	ncNewline();
+
+	while(sl){
+		ncPrintCol("Sem", 5);
+		ncPrintCol(sl->semaphore->name, 20);
+		ncPrintDecCol(ValueSem(sl->semaphore), 5);
+		ncNewline();
+		sl = sl->next;
+	}
+	while(mql){
+		ncPrintCol("MsgQ", 5);
+		ncPrintCol(mql->mq->name, 20);
+		ncPrintCol("  -  ", 5);
+		ncNewline();
+		mql = mql->next;
 	}
 	ncNewline();
 }

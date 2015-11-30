@@ -5,6 +5,9 @@
 #include <msgqueue.h>
 #include <string.h>
 
+SemaphoreList * getSemaphoreList();
+MsgQueueList * getMsgQueueList();
+
 void addSemaphore(Semaphore * sem);
 Semaphore * getSemaphore(char * name);
 void removeSemaphore(Semaphore * sem);

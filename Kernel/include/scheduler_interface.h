@@ -21,9 +21,12 @@ uint64_t schedule(uint64_t);
 void killProcess(int num);
 
 void block(ProcessQueue *queue, unsigned msecs);
+void limbo();
 Process * signal(ProcessQueue *queue);
 void flushQueue(ProcessQueue *queue);
 
 int isForeground(void);
 void becomeForeground(void);
 void freeTerminated();
+int receivesData();
+void limbo_proc();

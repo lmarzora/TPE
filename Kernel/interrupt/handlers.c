@@ -30,6 +30,9 @@ int syscall(int code , char* buff , int size) {
 	
 	switch (code) {
 		case 1:
+			if(!receivesData()){
+				limbo_proc();
+			}
 			if(foreground_sem == 0){
 				foreground_sem = CreateSem("foreground_sem", 0);
 			}
@@ -62,7 +65,7 @@ int syscall(int code , char* buff , int size) {
 			printProcesses();
 			break;
 		case 9:
-			
+			printIpcs();
 			break;
 		case 10:
 			killProcess(size);

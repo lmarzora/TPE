@@ -87,6 +87,7 @@ int start(process_func func, int argc, void *argv);
 int is_foreground(void);
 void become_foreground(void);
 int setScheduler();
+int receives_data();
 
 Process * findProcess(int num);
 void delete_process(Process *p);

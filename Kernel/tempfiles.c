@@ -1,9 +1,17 @@
 #include <tempfiles.h>
 
 
-static SemaphoreList * semaphore_list = NULL;
-static MsgQueueList * msgQueue_list = NULL;
+SemaphoreList * semaphore_list = NULL;
+MsgQueueList * msgQueue_list = NULL;
 
+
+SemaphoreList * getSemaphoreList(){
+	return semaphore_list;
+}
+
+MsgQueueList * getMsgQueueList(){
+	return msgQueue_list;
+}
 
 void addSemaphore(Semaphore * sem){
 	SemaphoreList * aux = kalloc(sizeof(semaphore_list), 0);

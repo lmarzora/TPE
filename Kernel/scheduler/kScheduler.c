@@ -21,6 +21,10 @@ void becomeForeground(){
 	become_foreground();
 }
 
+int receivesData(){
+	return receives_data();
+}
+
 
 void killProcess(int num){
 	
@@ -58,6 +62,10 @@ void yield()
 {
 	yield_cpu();
 
+}
+
+void limbo_proc(){
+	limbo();
 }
 
 void sleep(uint64_t ticks)

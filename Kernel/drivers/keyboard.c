@@ -103,7 +103,7 @@ void analizeKeyboard(unsigned char c){
  
 	if(key == '\b'){ //backspace
 		backspace();
-	}else if(key == '\n'){
+	}else if(c == 28){
 		enter();
     //printProcesses();
   }else if(c==42){
