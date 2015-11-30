@@ -6,12 +6,9 @@
 extern char bss;
 extern char endOfBinary;
 
-void echo();
-void hola();
 
 void printWarning();
 
-void pepe(int);
 
 
 int main() {
@@ -85,10 +82,10 @@ int main() {
 				}
 				
 			}else if(cmpstr(line, "echo")){
-				newProcess("echo", &echo, 0, 0, 1);
+				newProcess("echo", &echo_main, 0, 0, 1);
 			}else if(cmpstr(line, "echo&")){
 				printWarning();
-				newProcess("echo", &echo, 0, 0, 0);
+				newProcess("echo", &echo_main, 0, 0, 0);
 			
 			}else if(cmpstr(line, "prodcons")){
 				newProcess("prodcons", &prodcons_main, 0, 0, 1);
@@ -125,32 +122,7 @@ void printWarning(){
 	printLn("Sin el, se va a trabar - matar con kill");
 	printLn("**********************************************");
 }
-void echo(){
 
-	char * line;
-	int flag = 1;
-
-
-	while(flag){
-		line = getLn(line);
-		if(!cmpstr(line, "")){
-			if(cmpstr(line, "exit")){
-				flag = 0;
-			}else if(cmpstr(line, "ps")){
-				listProcesses();
-			}else if(cmpstr(line, "beyond stack")){
-				beyondStack();
-			}else{
-				print("echo: ");
-				print(line);
-				printLn("");
-				print("$ ");
-			}
-		}
-	}
-	printLn("");
-	print("$ ");
-}
 
 
 void intro(){
@@ -229,15 +201,5 @@ int verifyInterval(char * interval){
 	}
 
 	return nmbr;
-}
-void pepe(int i)
-{
-	void* a;
-	ncPrintDec(i);
-	ncPrint(" ");
-	ncPrintHex(&a);
-	ncNewline();
-	
-	pepe(i+1);
 }
 

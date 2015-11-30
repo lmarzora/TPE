@@ -175,11 +175,7 @@ void garbageProc(){
 	}
 }
 void nullProc(){
-	//call_pit();
-	//beyondStack();
-	while(1){
-		//ncPrint("dasdas\n");
-	}
+	while(1);
 }
 
 
