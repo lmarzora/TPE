@@ -16,8 +16,6 @@ int main() {
 	memset(&bss, 0, &endOfBinary - &bss);
 	//while(1);
 	
-	pepe(0);
-	
 	intro();
 
 	char * line;
@@ -78,10 +76,10 @@ int main() {
 				newProcess("echo", &echo, 0, 0, 1);
 			}else if(cmpstr(line, "prodcons")){
 				newProcess("prodcons", &prodcons_main, 0, 0, 1);
-			}else if(cmpstr(line, "test")){
-				//testStuff();				
+			}else if(cmpstr(line, "abab")){
+				//testStuff();
+				newProcess("abab", &abab_main, 0, 0, 1);
 			}else{
-				
 				print("Error: Command \"");
 				print(line);
 				printLn("\" not found");
@@ -146,7 +144,8 @@ void help(){
 	printLn("");
 	printLn("-> Apps:");
 	printLn("    * echo: muestra lo que escribis (Foreground)");
-	printLn("    * prodcons: producer-consumer (Semaforos)");
+	printLn("    * abab: dos procesos que imprimen a y b (Yield)");
+	printLn("    * prodcons: producer-consumer (Semaforos + Sleep)");
 	printLn("    * simpleconv: muestra comunicacion entre procesos (MsgQueue)");
 	printLn("    * intconv: comunicacion entre procesos interactivo (MsgQueue)");
 	printLn("----------------------------------------------------------------");

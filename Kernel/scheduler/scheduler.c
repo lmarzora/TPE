@@ -96,7 +96,13 @@ void check_blocked_processes(){
 
 uint64_t select_process(uint64_t old_rsp){
 
+
 	
+
+	total_ticks++;
+	check_blocked_processes();
+
+
 	if(curr_process){
 		curr_process->rsp=old_rsp;
 
@@ -117,6 +123,7 @@ uint64_t select_process(uint64_t old_rsp){
 
 	curr_tick = MAX_TICK;
 	Process *next_process = get_last(pq_ready);
+
 
 	if(curr_process == NULL && next_process == NULL)
 		return old_rsp;
@@ -252,7 +259,7 @@ dequeue_blocked(Process *p){
 void
 dequeue_q(Process *p){
 	ProcessQueue *pq = p->queue;
-	if(pq == NULL)
+	if(pq == NULL || p->waiting)
 		return;
 
 	if (p->prev)
@@ -275,7 +282,7 @@ ready(Process *p){
 	int valor = setInterrupt(0);
 
 	dequeue_q(p);
-	//dequeue_blocked(p);
+	dequeue_blocked(p);
 	enqueue_q(p, pq_ready);
 	p->state = READY;
 
@@ -298,29 +305,30 @@ Process * signal(ProcessQueue *queue){
 void flushQueue(ProcessQueue *queue)
 {
 	Process *p;
-
-	if ( peek_q(queue) )
-	{
-		while ( (p = get_last(queue)) )
-			ready(p);
+	int valor = setInterrupt(0);
+	while ( (p = get_last(queue)) )
+		ready(p);
 		
-	}
+	setInterrupt(valor);
 	
 }
 
 
 void block(ProcessQueue *queue, unsigned msecs){
 	curr_process->state = BLOCKED;
-
 	dequeue_q(curr_process);
-	enqueue_q(curr_process, queue);
+
+	if(queue != NULL)
+		enqueue_q(curr_process, queue);
 	if( msecs != -1){
 		enqueue_blocked(curr_process, total_ticks + msecs);
 	}
+		
 
 	call_pit();
 
 }
+
 
 void 
 process_list_add(Process *p)
@@ -372,12 +380,19 @@ void yield_cpu(void)
 Process * create_process(process_func func, int argc, void *argv, char *name, int pid, int isForeground){
 	Process *p;
 
+
 		
 	void *rsp = alloc(0x800000);
+	
 	void *ss = rsp;
 	void* endStack = rsp;
-	rsp += 0x800000 - 1 - sizeof(stack_frame);
+
+
 	
+	void * orig_rsp = rsp;
+
+	rsp += 0x800000 - 1 - sizeof(stack_frame);
+/*	
 	ncNewline();
 	ncPrint("endStack: ");
 	ncPrintHex(endStack);
@@ -385,11 +400,13 @@ Process * create_process(process_func func, int argc, void *argv, char *name, in
 	ncPrint("setting up stack for process: ");
 	ncPrint(name);
 	ncNewline();
+*/	
 	uint64_t reserved_pages = alloc_process_stack(rsp - sizeof(stack_frame),rsp);
+/*	
 	ncPrintHex(get_pAddress(rsp - 0x1000));
 	ncNewline();	
 	ncPrint("ok\n");
-
+*/
 	uint64_t nRsp = set_stack_frame(rsp,func, argc, argv);
 
 	p = kalloc(sizeof(Process), 0);
@@ -398,7 +415,11 @@ Process * create_process(process_func func, int argc, void *argv, char *name, in
 	p->id = pid;
 	p->name = name;
 	p->rsp = nRsp;
-	p->ss = ss+0x800000;
+
+	p->ss = ss + 0x800000 - 1;
+
+	p->stack = orig_rsp;
+
 	p->queue = NULL;
 	p->prev = NULL;
 	p->next = NULL;
@@ -494,7 +515,8 @@ void delete_process(Process *p){
 	p->die = true;
 	p->atomic = false;
 	
-	ready(p);
+	if(p->state != READY)
+		ready(p);
 
 }
 
@@ -504,9 +526,11 @@ void end_process(){
 		Semaphore * foreground_sem = getSemaphore("foreground_sem");
 		SignalSem(foreground_sem);
 	}
-
+	//ncPrint("Meto a ");
+	//ncPrint(curr_process->name);
+	//ncNewline();
 	curr_process->state = TERMINATED;
-	process_list_remove(curr_process);
+	//process_list_remove(curr_process);
 	enqueue_q(curr_process, pq_terminated);
 	call_pit();
 }
@@ -520,21 +544,32 @@ void become_foreground(){
 	foreground_process = curr_process;
 }
 
+void free_terminated(){
+	Process * p;
+	
+	while(true){
+		atomic();
+		p= get_last(pq_terminated);
+		if(!p){
+			unatomic();
+			break;
+		}
+		//ncPrint("Si hay - es:");
+		//ncPrintHex(p);
+		//ncPrint(p->name);
+		//ncNewline();
+		process_list_remove(p);
+		free_process_stack(p->ss,p->reserved_pages);
+		kfree(p);
+		
+		unatomic();
+	}
+}
+
 
 void terminateProcess()
 {
-	free(curr_process->ss);
 	end_process();	
-	
-
-}
-
-int bedTime(int queueID,uint64_t time)
-{
-	ProcessQueue* queue = NULL;	
-
-	block(queue,time);
-	return 1;
 }
 
 void printStack(uint64_t* rsp)

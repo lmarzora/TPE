@@ -29,3 +29,6 @@ void newSemaphore(char * nombre, int valor);
 void waitSemaphore(char * nombre);
 void signalSemaphore(char* nombre);
 void deleteSemaphore(char * nombre);
+
+void sleep(int num);
+void yield();

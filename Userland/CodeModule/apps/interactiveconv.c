@@ -23,6 +23,8 @@ int interactiveconv_main(){
 
 	ans = getLn();
 	putMsgQueue(ans, "interactivconv");
+
+	
 	
 }
 
@@ -58,6 +60,7 @@ void recibe_int(){
 		printLn("Booooo!!!");
 	}
 
+	deleteMsgQueue("interactivconv");
 	printLn("");
 	print("$ ");
 	

@@ -1,6 +1,6 @@
 #include <stdint.h>
 #include <process.h>
-#include "../semaphore.h"
+#include <semaphore.h>
 
 typedef struct
 {
@@ -15,7 +15,7 @@ typedef struct
 void yield(void);
 uint64_t newProcess(process_data*);
 void exit(int);
-int usleep(uint64_t);
+void sleep(uint64_t);
 uint64_t schedule(uint64_t);
 
 void killProcess(int num);
@@ -27,7 +27,11 @@ void flushQueue(ProcessQueue *queue);
 int isForeground(void);
 void becomeForeground(void);
 
+
 uint64_t getProcessSS();
 uint64_t getReservedPages();
 void addCantPages(uint64_t);
 uint64_t getPid();
+
+void freeTerminated();
+

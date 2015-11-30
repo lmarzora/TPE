@@ -3,6 +3,7 @@ GLOBAL pit_handler
 GLOBAL call_pit
 GLOBAL sti
 GLOBAL cli
+GLOBAL halt
 GLOBAL keyboard_handler
 EXTERN irqDispatcher
 GLOBAL pic
@@ -12,6 +13,7 @@ GLOBAL pageFaultHandler
 GLOBAL int81handler
 GLOBAL int82handler
 GLOBAL int83handler
+GLOBAL int84handler
 GLOBAL getFlags
 GLOBAL doubleFaultHandler
 EXTERN syscall
@@ -23,6 +25,8 @@ EXTERN processHandler
 EXTERN msgQueueHandler
 EXTERN semaphoreHandler
 GLOBAL lala
+EXTERN cpuHandler
+
 
 %macro irqHandlerMaster 1
 	mov rdi, %1
@@ -118,6 +122,10 @@ int83handler:
 	call semaphoreHandler
 	iretq
 
+int84handler:
+	call cpuHandler
+	iretq
+
 getKey:
 ;	push ebp
 ;	mov ebp,esp
@@ -134,6 +142,10 @@ sti:
 
 cli:
 	cli
+	ret
+
+halt:
+	hlt
 	ret
 
 pic:	

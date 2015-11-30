@@ -20,7 +20,7 @@ void DeleteSem(Semaphore *sem)
 	int valor = setInterrupt(0);
 	removeSemaphore(sem);
 	flushQueue(&sem->queue);
-	free(sem);
+	kfree(sem);
 	setInterrupt(valor);
 }
 

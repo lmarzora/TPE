@@ -86,7 +86,6 @@ void end_process(void);
 uint64_t set_stack_frame(uint64_t*, process_func, uint64_t argc, void * argv);
 void terminateProcess();
 void yield_cpu();
-int bedtime(int,uint64_t);
 Process * getProcessList();
 int numProcesses();
 int start(process_func func, int argc, void *argv);
@@ -98,7 +97,11 @@ int setScheduler();
 Process * findProcess(int num);
 void delete_process(Process *p);
 
+
 uint64_t get_process_SS();
 uint64_t get_reserved_pages();
 void add_cant_pages(uint64_t);
 uint64_t get_pid();
+
+void free_terminated();
+

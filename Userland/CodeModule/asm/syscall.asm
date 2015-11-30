@@ -11,6 +11,7 @@ GLOBAL processKill
 GLOBAL stuffTest
 GLOBAL msgQueueSysCall
 GLOBAL semaphoreSysCall
+GLOBAL cpuSysCall
 
 read:
 	mov rdx, rsi
@@ -74,6 +75,10 @@ msgQueueSysCall:
 
 semaphoreSysCall:
 	int 83h
+	ret
+
+cpuSysCall:
+	int 84h
 	ret
 
 processKill:

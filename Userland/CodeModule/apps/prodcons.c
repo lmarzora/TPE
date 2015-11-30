@@ -1,12 +1,19 @@
 void consumir();
 void producir();
+void printProds(char*);
 
-char * prods[5] = {"X", "X", "X","X", "X"};
-int indexCons = 0;
-int indexProd = 0;
-int cont = 1;
+char * prods[5];
+int indexCons;
+int indexProd;
+int cont;
 
 int prodcons_main(){
+  	int i;
+  	for(i=0; i<5; i++)
+  		prods[i] = "X";
+  	indexCons = 0;
+  	indexProd = 0;
+  	cont = 1;
 
 	printLn("");
 	printLn("Creando semaforos");
@@ -34,6 +41,9 @@ int prodcons_main(){
 
 	cont = 0;
 
+	deleteSemaphore("cons");
+	deleteSemaphore("prod");
+
 	printLn("");
 	print("$ ");
 
@@ -49,17 +59,15 @@ void consumir(){
 }
 
 void producir(){
-	int y = 0;
 	while(cont){
-		if(y>40000000){
-			waitSemaphore("cons");
-			prods[indexProd%5] = "X";
-			indexProd++;
-			printProds("  -> Productor");
-			signalSemaphore("prod");
-			y=0;
-		}
-		y++;
+		waitSemaphore("cons");
+		sleep(36);//esperar un poco antes de producir
+		if(!cont) return;
+		prods[indexProd%5] = "X";
+		indexProd++;
+		printProds("  -> Productor");
+		signalSemaphore("prod");
+		
 	}
 	
 }

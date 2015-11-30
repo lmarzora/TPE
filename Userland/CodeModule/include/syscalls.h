@@ -12,3 +12,4 @@ void msgQueueSysCall(int code, char * msg, char * nombre, unsigned max, unsigned
 void semaphoreSysCall(int code, char * nombre, int valor);
 void processNew(char * nom, void * func, int argc, void * argv, int isForeground);
 void processKill(char *, int num);
+void cpuSysCall(int code, int num);

@@ -40,6 +40,11 @@ void killProcess(int num){
 		return;
 	}
 
+	if(num==1){
+		ncPrint("No se puede matar al garbage collector\n");
+		return;
+	}
+
 	Process * p = findProcess(num);
 
 	if(p){
@@ -56,18 +61,22 @@ void exit(int status)
 
 }
 
+void freeTerminated(){
+	free_terminated();
+}
+
 void yield()
 {
 	yield_cpu();
 
 }
 
-int usleep(uint64_t time)
+void sleep(uint64_t ticks)
 {
-	if(time>0)
-		return bedTime(1,time);
-	else
-		return -1;
+	if(ticks>0){
+		block(0, ticks);
+	}
+		
 
 }
 

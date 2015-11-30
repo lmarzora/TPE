@@ -113,3 +113,11 @@ void signalSemaphore(char* nombre){
 void deleteSemaphore(char * nombre){
 	semaphoreSysCall(3, nombre, 0);
 }
+
+void sleep(int num){
+	cpuSysCall(0, num);
+}
+
+void yield(){
+	cpuSysCall(1,0);
+}

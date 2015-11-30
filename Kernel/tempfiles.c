@@ -1,7 +1,8 @@
 #include <tempfiles.h>
 
-static SemaphoreList * semaphore_list;
-static MsgQueueList * msgQueue_list;
+
+static SemaphoreList * semaphore_list = NULL;
+static MsgQueueList * msgQueue_list = NULL;
 
 
 void addSemaphore(Semaphore * sem){
@@ -10,6 +11,7 @@ void addSemaphore(Semaphore * sem){
 	aux->next = semaphore_list;
 
 	semaphore_list = aux;
+
 }
 
 Semaphore * getSemaphore(char * name){
@@ -33,10 +35,13 @@ void removeSemaphore(Semaphore * sem){
 			}else{
 				prev->next = aux->next;
 			}
-			free(aux);
+			kfree(aux);
 			return;
+		}else{
+			prev = aux;
+			aux = aux->next;
 		}
-		aux = aux->next;
+		
 	}
 	
 }
@@ -70,10 +75,12 @@ void removeMessageQueue(MsgQueue * mq){
 			}else{
 				prev->next = aux->next;
 			}
-			free(aux);
+			kfree(aux);
 			return;
+		}else{
+			prev = aux;
+			aux = aux->next;
 		}
-		aux = aux->next;
 	}
 	
 }

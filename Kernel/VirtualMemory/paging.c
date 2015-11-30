@@ -93,6 +93,7 @@ void mapUserModule(uint64_t* vAddress, uint64_t* pAddress)
 
 int alloc_pMemory(uint64_t vMemory, int size, int user)
 {
+	//ncPrint("ALLOC PAGES\n");
 	uint64_t *page, *pdpt, *pdt, *pt ;
 	int i, pml4_i, pdpt_i, pdt_i, pt_i;
 
@@ -101,7 +102,8 @@ int alloc_pMemory(uint64_t vMemory, int size, int user)
 	//ncNewline();
 
 	for(i=size ; i>0 ; i = i - PAGE) { 
-
+	//	ncPrintDec(i);
+	//	ncNewline();
 		pml4_i = getPML4Offset(vMemory);
 		pdpt_i = getPDPTOffset(vMemory);
 		pdt_i = getPDTOffset(vMemory);
@@ -110,56 +112,60 @@ int alloc_pMemory(uint64_t vMemory, int size, int user)
 
 		if(!getPresent(&pml4[pml4_i])) {
 			
-		//	ncPrint("setting PDPT ");
+	//		ncPrint("setting PDPT ");
 			page = alloc_page();
-		//	ncPrintHex(page);
-		//	ncPrint(" ");
+	//		ncPrintHex(page);
+	//		ncPrint(" ");
 			flushTable(page);
 			map4KibPage(page, &pml4[pml4_i], 1);
-		//	ncPrintHex(get4KiBPageAddress(&pml4[pml4_i]));
-		//	ncNewline();	
+	//		ncPrintHex(get4KiBPageAddress(&pml4[pml4_i]));
+	//		ncNewline();	
 		}
 
 		pdpt = get4KiBPageAddress(&pml4[pml4_i]);
 
 
 		if(!getPresent(&pdpt[pdpt_i])) {
-		//	ncPrint("setting PDT\n");
+	//		ncPrint("setting PDT\n");
 			page = alloc_page();
-		//	ncPrintHex(page);
-		//	ncPrint(" ");
+	//		ncPrintHex(page);
+	//		ncPrint(" ");
 			flushTable(page);
 			map4KibPage(page, &pdpt[pdpt_i], 1);
-		//	ncPrintHex(get4KiBPageAddress(&pdpt[pdpt_i]));
-		//	ncNewline();		
+	//		ncPrintHex(get4KiBPageAddress(&pdpt[pdpt_i]));
+	//		ncNewline();		
 		}
 			
 		pdt = get4KiBPageAddress(&pdpt[pdpt_i]);
 
 		if(!getPresent(&pdt[pdt_i])) {
-		//	ncPrint("setting PT\n");
+	//		ncPrint("setting PT\n");
 			page = alloc_page();
-		//	ncPrintHex(page);
-		//	ncPrint(" ");
+	//		ncPrintHex(page);
+	//		ncPrint(" ");
 			flushTable(page);
 			map4KibPage(page, &pdt[pdt_i], 1);	
-		//	ncPrintHex(get4KiBPageAddress(&pdt[pdt_i]));
-		//	ncNewline();	
+	//		ncPrintHex(get4KiBPageAddress(&pdt[pdt_i]));
+	//		ncNewline();	
 		}
 	
 		pt = get4KiBPageAddress(&pdt[pdt_i]);
-
-		//ncPrint("setting up P :");
-		//ncPrint(" ");
-		//ncPrintDec(pt_i);
-		//ncPrint(" ");
+	/*
+		ncPrint("setting up P :");
+		ncPrint(" pt_i: ");
+		ncPrintDec(pt_i);
+		ncPrint(" page: ");
+	*/
 		page = alloc_page();
-		//ncPrintHex(page);
-	//	ncPrint(" ");
+	/*
+		ncPrintHex(page);
+		ncPrint(" page: ");
+	*/
 		map4KibPage(page, &pt[pt_i], user);
-	//	ncPrintHex(get4KiBPageAddress(&pt[pt_i]));
-	//	ncNewline();
-		
+	/*
+		ncPrintHex(get4KiBPageAddress(&pt[pt_i]));
+		ncNewline();
+	*/	
 		vMemory+=PAGE;	
 	
 
@@ -169,22 +175,9 @@ int alloc_pMemory(uint64_t vMemory, int size, int user)
 	return 1;
 }
 
-int free_pMemory(uint64_t vMemory)
+int free_pMemory(uint64_t pMemory)
 {
-		int i, pml4_i, pdpt_i, pdt_i, pt_i;
-		uint64_t* pml4 ,* pdpt,* pdt ,* pt ,* page;
-		pml4 = getCR3();
-		pml4_i = getPML4Offset(vMemory);
-		pdpt_i = getPDPTOffset(vMemory);
-		pdt_i = getPDTOffset(vMemory);
-		pt_i = getPTOffset(vMemory);
-		
-		pdpt = get4KiBPageAddress(&pml4[pml4_i]);
-		pdt = get4KiBPageAddress(&pdpt[pdpt_i]);
-		pt = get4KiBPageAddress(&pdt[pdt_i]);
-		page = get4KiBPageAddress(&pt[pt_i]);
-
-		free_page(page);
+		free_page(pMemory);
 		return 1;
 
 }
@@ -244,9 +237,12 @@ uint64_t* getP1GiBOffset(uint64_t vaddr) {
 uint64_t* get_pAddress( uint64_t vMemory )
 {
 		//ncClear();
+	/*
 		ncPrint("getting physical address\n");
 		ncPrintHex(vMemory);
 		ncNewline();
+	*/		
+	
 		uint64_t  *pml4, *pdpt, *pdt, *pt ;
 		int  pml4_i, pdpt_i, pdt_i, pt_i, p_i;
 
@@ -257,70 +253,80 @@ uint64_t* get_pAddress( uint64_t vMemory )
 		pdpt_i = getPDPTOffset(vMemory);
 		pdt_i = getPDTOffset(vMemory);
 		pt_i = getPTOffset(vMemory);
-		
+	/*	
 		ncPrint("pml4 : ");
 		ncPrintHex(pml4);
 		ncPrint(" i : ");		
 		ncPrintDec(pml4_i);		
-	
+	*/
 		if(!getPresent(&pml4[pml4_i]))
 		{
+			
 			ncNewline();
-			ncPrint("NOT PRESENT\n");
+			ncPrint("PDPT NOT PRESENT\n");
+					
 			return  -1;
 		}
 
 
 		if(getPageSize(&pml4[pml4_i]))
 		{
+			/*
 			ncNewline();
 			ncPrint("512 GiB\n");
+			*/
 			return (uint64_t*) get1GiBPageAddress(pdpt);
 		}
 		
 
 		pdpt = (uint64_t*) get4KiBPageAddress(&pml4[pml4_i]);	
 		
+	/*
 		ncPrint(" pdpt : "); 
 		ncPrintHex(pdpt);
 		ncPrint(" i : ");		
 		ncPrintDec(pdpt_i);
-		
+	*/
 		if(!getPresent(&pdpt[pdpt_i]))
 		{
 			ncNewline();
-			ncPrint("NOT PRESENT\n");
+			ncPrint("PDT NOT PRESENT\n");
 			return  -1;
 		}
 
 
 		if(getPageSize(&pdpt[pdpt_i]))
 		{
+			
 			ncNewline();
 			ncPrint("1 GiB\n");
+			
 			p_i =  getP1GiBOffset(vMemory);
 			return (uint64_t*) (get1GiBPageAddress(pdpt) + p_i);
 		}
 
 		pdt = (uint64_t*) get4KiBPageAddress(&pdpt[pdpt_i]);
 		
+	/*
 		ncPrint(" pdt : "); 
 		ncPrintHex(pdt);
 		ncPrint(" i : ");		
 		ncPrintDec(pdt_i);	
-		
+	*/
 		if(!getPresent(&pdt[pdt_i]))
 		{
 			ncNewline();
-			ncPrint("NOT PRESENT\n");
+			ncPrint("PT NOT PRESENT\n");
 			return  -1;
 		}
 		
 
 		if(getPageSize(&pdt[pdt_i]))
 		{
+			/*	
 			ncNewline();
 			ncPrint("2 MiB\n");
+			*/
 			p_i =  getP2MiBOffset(vMemory);
 			return (uint64_t*) (get2MiBPageAddress(pdt) + p_i);
 		}
@@ -331,10 +337,10 @@ uint64_t* get_pAddress( uint64_t vMemory )
 		if(!getPresent(&pt[pt_i]))
 		{
 			ncNewline();
-			ncPrint("NOT PRESENT\n");
+			ncPrint("PAGE NOT PRESENT\n");
 			return  -1;
 		}
-		
+	/*
 		ncPrint(" pt : "); 
 		ncPrintHex(pt);
 		ncPrint(" i : ");		
@@ -344,7 +350,7 @@ uint64_t* get_pAddress( uint64_t vMemory )
 		ncNewline();
 		ncPrint("4 KiB\n");
 		ncNewline();
-		
+	*/	
 		p_i =  getP4KiBOffset(vMemory);
 		return (uint64_t*) (get4KiBPageAddress(&pt[pt_i]) + p_i);
 

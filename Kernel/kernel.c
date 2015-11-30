@@ -31,6 +31,7 @@ typedef int (*EntryPoint)();
 
 
 void nullProc();
+void garbageProc();
 
 void clearBSS(void * bssAddress, uint64_t bssSize)
 {
@@ -128,11 +129,19 @@ int main()
 	
 
 
+	process_data* garbage = kalloc(sizeof(process_data),0);
+
+	
+	garbage->func = &garbageProc;
+	garbage->name = "garbage_col";
+	
+	newProcess(garbage);
+
 	process_data* null_task = kalloc(sizeof(process_data),0);
 
 	
 	null_task->func = &nullProc;
-	null_task->name = "null_task";
+	null_task->name = "kill_me";
 	
 	newProcess(null_task);
 
@@ -146,6 +155,7 @@ int main()
 	idt_set_gate(0x81,(uint64_t)int81handler,0x8,0x8F);
 	idt_set_gate(0x82,(uint64_t)int82handler,0x8,0x8F);
 	idt_set_gate(0x83,(uint64_t)int83handler,0x8,0x8F);
+	idt_set_gate(0x84,(uint64_t)int84handler,0x8,0x8F);
 	
 	//FncClear();
 	ncClear();
@@ -159,13 +169,20 @@ int main()
 	return 0;
 }
 
+void garbageProc(){
+	while(1){
+		freeTerminated();
+		halt();
+	}
+}
 void nullProc(){
 	//call_pit();
-	lala();
+	//lala();
 	while(1){
 		//ncPrint("dasdas\n");
 	}
 }
+
 
 
 

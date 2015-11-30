@@ -3,6 +3,12 @@
 #include<naiveConsole.h>
 #include<pAllocator.h>
 
+#include "memory.h"
+#include <lib.h>
+#include <naiveConsole.h>
+
+
+
 
 #define PAGE 0x1000
 #define MAX_LEVEL 12
@@ -598,7 +604,7 @@ getStatus(void* p, int level)
 	test1 = (uint64_t)p/block_size(level);
 	test2 = (int) test1;	
 	if(test1!=test2)
-		panic("Direccion incorrecta");
+		panic("Direccion incorrecta 2");
 
 	blockIndex = getBlockIndex(p,level);
 	i = blockIndex/size;
