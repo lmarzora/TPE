@@ -8,9 +8,12 @@ void* malloc(int size)
 {
 	if(size < PAGE)
 		size = PAGE;
-	void**p;
-	alloc(p,size);
-	return *p;
+	
+	if(size == 0)
+		return (void*)0;
+	void* p ;
+	alloc(&p,size);
+	return p;
 
 }
 
@@ -20,4 +23,9 @@ void* calloc(int size)
 	memset(p,0,size);
 	return p;
 
+}
+
+void free(void*p)
+{
+	free_mem(p);
 }

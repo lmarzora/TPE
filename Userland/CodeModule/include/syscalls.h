@@ -6,6 +6,7 @@ void screenClear();
 void processesList();
 void intervalSet(char * , int );
 void alloc(char*,int);
+void free(void*);
 
 void stuffTest();
 void msgQueueSysCall(int code, char * msg, char * nombre, unsigned max, unsigned size);

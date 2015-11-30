@@ -178,6 +178,7 @@ int alloc_pMemory(uint64_t vMemory, int size, int user)
 
 int free_pMemory(uint64_t* vMemory)
 {
+
 	uint64_t *page, *pdpt, *pdt, *pt ;
 	uint64_t i, pml4_i, pdpt_i, pdt_i, pt_i;
 
@@ -243,7 +244,7 @@ uint64_t* getP1GiBOffset(uint64_t vaddr) {
 
 uint64_t* free_pAddress( uint64_t* vMemory )
 {
-
+		
 		uint64_t * page;
 		uint64_t  *pml4, *pdpt, *pdt, *pt ;
 		int  pml4_i, pdpt_i, pdt_i, pt_i, p_i;
@@ -262,7 +263,7 @@ uint64_t* free_pAddress( uint64_t* vMemory )
 		{
 			ncNewline();
 			ncPrint("PDT NOT PRESENT\n");
-					panic("FUCK\n");
+					panic("ERROR\n");
 		}
 	
 		if(getPageSize(&pdpt[pdpt_i]))
@@ -270,7 +271,6 @@ uint64_t* free_pAddress( uint64_t* vMemory )
 
 			page =  (uint64_t*) get1GiBPageAddress(pdpt);
 			setPresent(false,&pdpt[pdpt_i]);
-			while(1);
 			return page;
 		}
 
@@ -281,7 +281,7 @@ uint64_t* free_pAddress( uint64_t* vMemory )
 		{
 			ncNewline();
 			ncPrint("PT NOT PRESENT\n");
-					panic("FUCK\n");
+					panic("ERROR\n");
 		}
 		
 
@@ -299,11 +299,12 @@ uint64_t* free_pAddress( uint64_t* vMemory )
 		{
 			ncNewline();
 			ncPrint("PAGE NOT PRESENT\n");
-					panic("FUCK\n");
+					panic("ERROR\n");
 		}
 
 		page =  (uint64_t*) get4KiBPageAddress(&pt[pt_i]);
 		setPresent(false,&pt[pt_i]);
+
 		return page;
 
 }

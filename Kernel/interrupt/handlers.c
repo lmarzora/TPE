@@ -29,7 +29,7 @@ void irqDispatcher(int64_t irq) {
 
 int syscall(int code , char* buff , int size) {
 	int dim = -1;
-	
+	int valor;
 	switch (code) {
 		case 1:
 			if(!receivesData()){
@@ -60,7 +60,6 @@ int syscall(int code , char* buff , int size) {
 			sysSetInterval(size);
 			break;
 		case 7:
-			ncPrintDec(size);
 			getPages(size,buff);
 			break;
 		case 8:
@@ -77,6 +76,12 @@ int syscall(int code , char* buff , int size) {
 			break;
 		case 24:
 			moreStack();
+			break;
+		case 666:
+			valor = setInterrupt(0);
+			free_user_heap(buff);
+			setInterrupt(valor);
+			break;
 		default:
 			break;
 	}
@@ -86,6 +91,8 @@ int syscall(int code , char* buff , int size) {
 
 void pageFault(uint64_t error, uint64_t vaddr)
 {
+	cli();
+	while(1);
 	/*
 	ncNewline();
 	ncPrint("error: ");

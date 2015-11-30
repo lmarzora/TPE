@@ -14,6 +14,7 @@ GLOBAL msgQueueSysCall
 GLOBAL semaphoreSysCall
 GLOBAL cpuSysCall
 GLOBAL stackMore
+GLOBAL free_mem
 
 read:
 	mov rdx, rsi
@@ -26,6 +27,12 @@ alloc:
 	mov rdx, rsi
 	mov rsi, rdi
 	mov rdi, 7
+	int 80h
+	ret
+
+free_mem:
+	mov rsi, rdi
+	mov rdi, 666
 	int 80h
 	ret
 

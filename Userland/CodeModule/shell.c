@@ -15,12 +15,18 @@ int main() {
 	//Clean BSS
 	memset(&bss, 0, &endOfBinary - &bss);
 	//while(1);
+
 	
+	
+	
+
 	intro();
 
 	char * line;
 	
 	while(1) {	
+		
+
 		print("$ ");
 		line = getLn(line);
 		if(!cmpstr(line, "")){
