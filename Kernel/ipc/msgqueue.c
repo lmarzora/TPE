@@ -7,11 +7,10 @@
 MsgQueue *
 CreateMsgQueue(char *name, unsigned msg_max, unsigned msg_size)
 {
-	/*MsgQueue * old = getMessageQueue(name);
+	MsgQueue * old = getMessageQueue(name);
 	if(old){
-		ncPrint("JAJAJA");
-		DeleteMsgQueue(old);
-	}*/
+		PurgeMsgQueue(old);
+	}
 
 	char nom_sem1[100];
 	char nom_sem2[100];
@@ -49,6 +48,15 @@ DeleteMsgQueue(MsgQueue *mq)
 	removeMessageQueue(mq);
 	DeleteSem(mq->sem_get);
 	DeleteSem(mq->sem_put);
+	kfree(mq);
+}
+
+void
+PurgeMsgQueue(MsgQueue *mq)
+{
+	removeMessageQueue(mq);
+	PurgeSem(mq->sem_get);
+	PurgeSem(mq->sem_put);
 	kfree(mq);
 }
 

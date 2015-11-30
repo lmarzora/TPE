@@ -24,7 +24,8 @@ EXTERN pageFault
 EXTERN processHandler
 EXTERN msgQueueHandler
 EXTERN semaphoreHandler
-GLOBAL lala
+GLOBAL beyondStack
+GLOBAL moreStack
 EXTERN cpuHandler
 
 
@@ -185,23 +186,21 @@ pageFaultHandler:
 	iretq
 
 
-lala:
+beyondStack:
 	mov rbx, 12
 	mov rdx, rsp
-	sub rdx, 0x700000
-	;mov rbx, rdx-0x1500
-	;mov [rsp-0x1500], rax
-
+	sub rdx, 0x900000
 
 	mov [rdx], rbx
-	mov rdi, [rdx]
-	call ncPrintHex
-
-	mov rbx, 7
-
-	mov [rdx + 0x2000], rbx
-	mov rdi, [rdx + 0x2000]
-	call ncPrintHex
-
 
 	ret
+
+moreStack:
+	mov rbx, 12
+	mov rdx, rsp
+	sub rdx, 0x300000
+
+	mov [rdx], rbx
+
+	ret
+

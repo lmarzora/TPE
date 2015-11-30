@@ -98,6 +98,10 @@ int main() {
 			
 			}else if(cmpstr(line, "abab")){
 				newProcess("abab", &abab_main, 0, 0, 1);
+			}else if(cmpstr(line, "beyond stack")){
+				beyondStack();
+			}else if(cmpstr(line, "more stack")){
+				moreStack();
 			}else if(cmpstr(line, "abab&")){
 				newProcess("abab", &abab_main, 0, 0, 0);
 			
@@ -126,6 +130,7 @@ void echo(){
 	char * line;
 	int flag = 1;
 
+
 	while(flag){
 		line = getLn(line);
 		if(!cmpstr(line, "")){
@@ -133,6 +138,8 @@ void echo(){
 				flag = 0;
 			}else if(cmpstr(line, "ps")){
 				listProcesses();
+			}else if(cmpstr(line, "beyond stack")){
+				beyondStack();
 			}else{
 				print("echo: ");
 				print(line);
@@ -178,6 +185,8 @@ void help(){
 	printLn("    * prodcons: producer-consumer (Semaforos + Sleep)");
 	printLn("    * simpleconv: muestra comunicacion entre procesos (MsgQueue)");
 	printLn("    * intconv: comunicacion entre procesos interactivo (MsgQueue)");
+	printLn("    * beyond stack: intenta escribir por encima de los 8Mib de stack");
+	printLn("    * more stack: escribe 3Mib encima de donde se encuentra rsp");
 	printLn("----------------------------------------------------------------");
 }
 

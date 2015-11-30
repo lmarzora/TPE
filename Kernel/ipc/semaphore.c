@@ -6,10 +6,10 @@
 
 Semaphore *CreateSem(char *name, unsigned value)
 {
-	/*Semaphore * old = getSemaphore(name);
+	Semaphore * old = getSemaphore(name);
 	if(old){
-		DeleteSem(old);
-	}*/
+		PurgeSem(old);
+	}
 
 	Semaphore *sem = kalloc(sizeof(Semaphore), 0);
 
@@ -33,6 +33,17 @@ void DeleteSem(Semaphore *sem)
 	int valor = setInterrupt(0);
 	removeSemaphore(sem);
 	flushQueue(&sem->queue);
+
+	kfree(sem->name);
+	kfree(sem);
+
+	setInterrupt(valor);
+}
+
+void PurgeSem(Semaphore *sem)
+{
+	int valor = setInterrupt(0);
+	removeSemaphore(sem);
 
 	kfree(sem->name);
 	kfree(sem);

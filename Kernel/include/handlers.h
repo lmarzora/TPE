@@ -21,6 +21,8 @@ void pageFaultHandler(void);
 void pageFault(uint64_t,uint64_t);
 int setInterrupt(int valor);
 void doubleFaultHandler(void);
+void beyondStack();
+void moreStack();
 
 void processHandler(char* nombre, void* func, int argc, void * argv, int isForeground);
 void msgQueueHandler(int code, char * msg, char * nombre, unsigned max, unsigned size);

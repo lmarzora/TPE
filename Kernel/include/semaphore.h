@@ -18,6 +18,7 @@ typedef struct SemaphoreList
 
 Semaphore *CreateSem(char *name, unsigned value);
 void DeleteSem(Semaphore *sem);
+void PurgeSem(Semaphore *sem);
 void WaitSem(Semaphore *sem);
 void WaitSemTimed(Semaphore *sem, unsigned tics);
 void SignalSem(Semaphore *sem);

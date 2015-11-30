@@ -11,9 +11,7 @@
 #include <msgqueue.h>
 #include <vmemory.h>
 
-#define TOTAL_MEMORY 0x100000000 
-
-void lala();
+#define TOTAL_MEMORY 0x100000000
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -32,6 +30,7 @@ typedef int (*EntryPoint)();
 
 void nullProc();
 void garbageProc();
+void beyondStack();
 
 void clearBSS(void * bssAddress, uint64_t bssSize)
 {
@@ -177,7 +176,7 @@ void garbageProc(){
 }
 void nullProc(){
 	//call_pit();
-	//lala();
+	//beyondStack();
 	while(1){
 		//ncPrint("dasdas\n");
 	}

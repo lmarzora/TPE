@@ -8,6 +8,8 @@
 
 static Semaphore * foreground_sem = 0;
 
+
+
 void irqDispatcher(int64_t irq) {
 
 
@@ -71,7 +73,10 @@ int syscall(int code , char* buff , int size) {
 			killProcess(size);
 			break;
 		case 23:
+			beyondStack();
 			break;
+		case 24:
+			moreStack();
 		default:
 			break;
 	}
@@ -81,7 +86,7 @@ int syscall(int code , char* buff , int size) {
 
 void pageFault(uint64_t error, uint64_t vaddr)
 {
-	
+	/*
 	ncNewline();
 	ncPrint("error: ");
 	ncPrintHex(error);
@@ -91,19 +96,25 @@ void pageFault(uint64_t error, uint64_t vaddr)
 	ncNewline();
 	ncPrint("soy el process: ");
 	ncPrintDec(getPid());
-	ncNewline();
+	ncNewline();*/
 
 	if(error == 2){
-		uint64_t stack_start = getProcessSS();
+		uint64_t stack_start = getProcessSS() + 0x800000 - 1;
+
+		/*ncPrint("stack_start -vaddr: ");
+		ncPrintHex(stack_start - vaddr);
+		ncNewline();
+*/
 		if(stack_start - vaddr < 0 || stack_start - vaddr >= 0x800000){
-			panic("me pase del stack");
+			ncPrint("Page Fault (stack)\n");
+			killProcess(getPid());
 		}
 		uint64_t reserved_pages = getReservedPages();
 		uint64_t newPages = alloc_process_stack(vaddr, stack_start-(0x1000 * reserved_pages));
 		addCantPages(newPages);
-	}
-	else{
-		panic("otro tipo de error");
+	}else{
+		ncPrint("Page Fault\n");
+		killProcess(getPid());
 	}
 }
  

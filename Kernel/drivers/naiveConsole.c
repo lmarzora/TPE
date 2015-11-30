@@ -173,6 +173,11 @@ void ncPrintDecCol(uint64_t value, int col)
 	ncPrintBaseCol(value, 10, col);
 }
 
+void ncPrintHexCol(uint64_t value, int col)
+{
+	ncPrintBaseCol(value, 16, col);
+}
+
 void ncPrintDec(uint64_t value)
 {
 	ncPrintBase(value, 10);

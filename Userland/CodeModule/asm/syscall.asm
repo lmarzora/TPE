@@ -9,10 +9,11 @@ GLOBAL ipcsList
 GLOBAL alloc
 GLOBAL processNew
 GLOBAL processKill
-GLOBAL stuffTest
+GLOBAL stackBeyond
 GLOBAL msgQueueSysCall
 GLOBAL semaphoreSysCall
 GLOBAL cpuSysCall
+GLOBAL stackMore
 
 read:
 	mov rdx, rsi
@@ -94,7 +95,12 @@ processKill:
 	int 80h
 	ret
 
-stuffTest:
+stackBeyond:
 	mov rdi, 23
+	int 80h
+	ret
+
+stackMore:
+	mov edi, 24
 	int 80h
 	ret

@@ -130,16 +130,20 @@ void printProcesses(){
 	ncPrintCol("Nombre", 20);
 	ncPrintCol("PID", 10);
 	ncPrintCol("Estado", 10);
+	ncPrintCol("Stack", 10);
 	ncNewline();
 	ncPrintCol("------", 20);
 	ncPrintCol("---", 10);
 	ncPrintCol("------", 10);
+	ncPrintCol("-----", 10);
 	ncNewline();
 	Process * aux = getProcessList();
 	for(i=0; i<num_processes; i++){
 		ncPrintCol(aux->name, 20);
 		ncPrintDecCol(aux->id, 10);
 		ncPrintCol(estado(aux->state), 10);
+		ncPrintCol("0x", 2);
+		ncPrintHexCol(aux->reserved_pages * 0x1000, 8);
 		ncNewline();
 		aux = aux->list_next;
 	}

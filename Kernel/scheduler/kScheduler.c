@@ -42,10 +42,10 @@ void addCantPages(uint64_t pages){
 
 void killProcess(int num){
 	
-	if(num==0){
+	/*if(num==0){
 		ncPrint("No se puede matar al shell\n");
 		return;
-	}
+	}*/
 
 	if(num==1){
 		ncPrint("No se puede matar al garbage collector\n");

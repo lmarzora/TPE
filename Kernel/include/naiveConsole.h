@@ -9,6 +9,7 @@ void ncPrintChar(char character);
 void ncNewline();
 void ncPrintDec(uint64_t value);
 void ncPrintDecCol(uint64_t value, int col);
+void ncPrintHexCol(uint64_t value, int col);
 void ncPrintHex(uint64_t value);
 void ncPrintBin(uint64_t value);
 void ncPrintBase(uint64_t value, uint32_t base);

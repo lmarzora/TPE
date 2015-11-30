@@ -84,8 +84,12 @@ int nmbRange(char c){
 	return (c>='0' && c<='9');
 }
 
-void testStuff(){
-	stuffTest();
+void beyondStack(){
+	stackBeyond();
+}
+
+void moreStack(){
+	stackMore();
 }
 
 void newMsgQueue(char * nombre, unsigned max, unsigned size){
