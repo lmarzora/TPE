@@ -1,7 +1,6 @@
 #include <shell.h>
 #include <lib.h>
 #include <memory.h>
-#include <debug.h>
 #include <apps.h>
 extern char bss;
 extern char endOfBinary;
