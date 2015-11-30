@@ -249,7 +249,7 @@ uint64_t* free_pAddress( uint64_t* vMemory )
 		int  pml4_i, pdpt_i, pdt_i, pt_i, p_i;
 
 		pml4 = getCR3();	
-		ncNewline();		
+		//ncNewline();		
 		
 		pml4_i = getPML4Offset(vMemory);
 		pdpt_i = getPDPTOffset(vMemory);
@@ -321,7 +321,7 @@ uint64_t* get_pAddress( uint64_t vMemory )
 		int  pml4_i, pdpt_i, pdt_i, pt_i, p_i;
 
 		pml4 = getCR3();	
-		ncNewline();		
+	//	ncNewline();		
 		
 		pml4_i = getPML4Offset(vMemory);
 		pdpt_i = getPDPTOffset(vMemory);
