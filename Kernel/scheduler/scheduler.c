@@ -37,8 +37,10 @@ int setScheduler(){
 	pq_ready = kalloc(sizeof(ProcessQueue), 0);
 	pq_blocked = kalloc(sizeof(ProcessQueue), 0);
 	pq_terminated = kalloc(sizeof(ProcessQueue), 0);
+
 	pq_limbo = kalloc(sizeof(ProcessQueue), 0);
 	
+
 	curr_tick = MAX_TICK;
 
 	curr_process=0;
@@ -98,8 +100,13 @@ void check_blocked_processes(){
 
 
 uint64_t select_process(uint64_t old_rsp){
+
+
+	
+
 	total_ticks++;
 	check_blocked_processes();
+
 
 	if(curr_process){
 		curr_process->rsp=old_rsp;
@@ -139,10 +146,13 @@ uint64_t select_process(uint64_t old_rsp){
 	curr_process->queue = NULL;
 	
 
+
 	if(curr_process->die){
 		end_process();
 		return old_rsp;
 	}
+
+
 
 
 	return curr_process->rsp;
@@ -390,10 +400,32 @@ Process * create_process(process_func func, int argc, void *argv, char *name, in
 	Process *p;
 
 
-	void *rsp = kalloc(0x800000,0);
-	void * orig_rsp = rsp;
-	rsp += 0x800000 - 1 - sizeof(stack_frame);
+		
+	void *rsp = alloc(0x800000);
+	
+	void *ss = rsp;
+	void* endStack = rsp;
 
+
+	
+	void * orig_rsp = rsp;
+
+	rsp += 0x800000 - 1 - sizeof(stack_frame);
+/*	
+	ncNewline();
+	ncPrint("endStack: ");
+	ncPrintHex(endStack);
+	ncNewline();
+	ncPrint("setting up stack for process: ");
+	ncPrint(name);
+	ncNewline();
+*/	
+	uint64_t reserved_pages = alloc_process_stack(rsp - sizeof(stack_frame),rsp);
+/*	
+	ncPrintHex(get_pAddress(rsp - 0x1000));
+	ncNewline();	
+	ncPrint("ok\n");
+*/
 	uint64_t nRsp = set_stack_frame(rsp,func, argc, argv);
 
 	p = kalloc(sizeof(Process), 0);
@@ -402,16 +434,21 @@ Process * create_process(process_func func, int argc, void *argv, char *name, in
 	p->id = pid;
 	p->name = name;
 	p->rsp = nRsp;
+
+	p->ss = ss + 0x800000 - 1;
+
 	p->stack = orig_rsp;
+
 	p->queue = NULL;
 	p->prev = NULL;
 	p->next = NULL;
+	p->reserved_pages = reserved_pages;
 
 	if(isForeground){
 		foreground_process = p;
 		p->receives_data = true;
 	}
-
+	
 	// Agregar a la lista de tareas
 	atomic();
 	process_list_add(p);
@@ -535,7 +572,7 @@ void become_foreground(){
 void free_terminated(){
 
 	Process * p;
-
+	
 	while(true){
 		atomic();
 		p= get_last(pq_terminated);
@@ -544,8 +581,8 @@ void free_terminated(){
 			break;
 		}
 		process_list_remove(p);
-		free(p->stack);
-		free(p);
+		free_process_stack(p->ss,p->reserved_pages);
+		kfree(p);
 		
 		unatomic();
 	}
@@ -574,11 +611,30 @@ void printStack(uint64_t* rsp)
 
 int start(process_func func, int argc, void *argv){
 	
+
 	(*func)(argc, argv);
 
 	end_process();
 
 	return 0;
 	
+}
+
+
+
+uint64_t get_process_SS(){
+	return curr_process->ss;
+}
+
+uint64_t get_reserved_pages(){
+	return curr_process->reserved_pages;
+}
+
+void add_cant_pages(uint64_t pages){
+	curr_process->reserved_pages += pages;
+}
+
+uint64_t get_pid(){
+	return curr_process->id;
 }
 

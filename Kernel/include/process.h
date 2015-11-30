@@ -3,8 +3,6 @@
 
 #include <lib.h>
 
-typedef enum { false, true } boolean;
-
 struct ProcessQueue
 {
 	struct Process * head;
@@ -14,7 +12,9 @@ struct ProcessQueue
 struct Process{
 	uint64_t rsp;
 	uint64_t ss;
+	uint64_t reserved_pages;
 	uint64_t stack;
+
 	struct Process *next;
 	struct Process *prev;
 	struct Process *blocked_prev;
@@ -26,10 +26,14 @@ struct Process{
 	int state;	
 	int id;
 	uint64_t wakeup;
-	boolean atomic;
-	boolean waiting;
-	boolean die;
-	boolean receives_data;
+
+
+	bool receives_data;
+
+	bool atomic;
+	bool waiting;
+	bool die;
+
 };
 
 typedef struct ProcessQueue ProcessQueue;

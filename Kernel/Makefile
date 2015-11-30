@@ -13,10 +13,15 @@ MEMORYSOURCES = $(wildcard memory/*.c)
 MEMORYOBJECTS = $(MEMORYSOURCES:.c=.o)
 SCHEDULERSOURCES = $(wildcard scheduler/*.c)
 SCHEDULEROBJECTS = $(SCHEDULERSOURCES:.c=.o)
+
+VIRTUALMEMORYSOURCES = $(wildcard VirtualMemory/*.c)
+VIRTUALMEMORYOBJECTS = $(VIRTUALMEMORYSOURCES:.c=.o)
+
 IPCSOURCES = $(wildcard ipc/*.c)
 IPCOBJECTS = $(IPCSOURCES:.c=.o)
 
-OBJECTS2 = $(DRIVEROBJECTS) $(INTERRUPTOBJECTS) $(MEMORYOBJECTS) $(SCHEDULEROBJECTS) $(IPCOBJECTS)
+OBJECTS2 = $(DRIVEROBJECTS) $(INTERRUPTOBJECTS) $(MEMORYOBJECTS) $(SCHEDULEROBJECTS) $(IPCOBJECTS) $(VIRTUALMEMORYOBJECTS)
+
 
 
 LOADERSRC=loader.asm
@@ -38,6 +43,6 @@ $(LOADEROBJECT):
 	$(ASM) $(ASMFLAGS) $(LOADERSRC) -o $(LOADEROBJECT)
 
 clean:
-	rm -rf memory/*.o asm/*.o drivers/*.o interrupt/*.o scheduler/*.o *.o *.bin 
+	rm -rf memory/*.o asm/*.o drivers/*.o interrupt/*.o scheduler/*.o VirtualMemory/*.o *.o *.bin 
 
 .PHONY: all clean

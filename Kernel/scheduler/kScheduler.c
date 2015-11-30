@@ -21,8 +21,22 @@ void becomeForeground(){
 	become_foreground();
 }
 
+
 int receivesData(){
 	return receives_data();
+}
+
+
+uint64_t getProcessSS(){
+	return get_process_SS();
+}
+
+uint64_t getReservedPages(){
+	return get_reserved_pages();
+}
+
+void addCantPages(uint64_t pages){
+	add_cant_pages(pages);
 }
 
 
@@ -79,7 +93,7 @@ void sleep(uint64_t ticks)
 
 uint64_t schedule(uint64_t rsp)
 {
-
+	
 	incTick();
 	//ncPrintDec(count);
 	/*		
@@ -90,7 +104,7 @@ uint64_t schedule(uint64_t rsp)
 	*/
 	
 	uint64_t newRsp = select_process(rsp);
-
+	
 	/*
 	ncNewline();
 	ncPrint("newRsp: ");
@@ -98,10 +112,10 @@ uint64_t schedule(uint64_t rsp)
 	ncNewline();
 	*/
 
-	//stack_frame * sf = (stack_frame*)newRsp;
+	stack_frame * sf = (stack_frame*)newRsp;
 	uint64_t * sp = (uint64_t*)newRsp;
-	
-	/*ncNewline();	
+	/*
+	ncNewline();	
 	int i;
 	for(i=0;i<sizeof(stack_frame)/8;i++)
 	{	
@@ -109,7 +123,7 @@ uint64_t schedule(uint64_t rsp)
 		ncPrint(" ");
 	}
 	
-	
+	/*
 	ncNewline();
 	ncPrint("newRsp: ");
 	ncPrintHex(newRsp);
@@ -118,7 +132,7 @@ uint64_t schedule(uint64_t rsp)
 	//ncClear();
 	
 */
-
+	
 	return newRsp;
 		
 
@@ -128,4 +142,9 @@ void setUpScheduler()
 {
 	setScheduler();
 
+}
+
+
+uint64_t getPid(){
+	return get_pid();
 }

@@ -8,13 +8,17 @@ extern char endOfBinary;
 
 void echo();
 void hola();
+
 void printWarning();
 
+void pepe(int);
+
+
 int main() {
-	
 
 	//Clean BSS
 	memset(&bss, 0, &endOfBinary - &bss);
+	//while(1);
 	
 	intro();
 
@@ -217,5 +221,14 @@ int verifyInterval(char * interval){
 
 	return nmbr;
 }
-
+void pepe(int i)
+{
+	void* a;
+	ncPrintDec(i);
+	ncPrint(" ");
+	ncPrintHex(&a);
+	ncNewline();
+	
+	pepe(i+1);
+}
 

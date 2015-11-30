@@ -9,19 +9,24 @@ EXTERN irqDispatcher
 GLOBAL pic
 GLOBAL getKey
 GLOBAL int80handler
+GLOBAL pageFaultHandler
 GLOBAL int81handler
 GLOBAL int82handler
 GLOBAL int83handler
 GLOBAL int84handler
 GLOBAL getFlags
+GLOBAL doubleFaultHandler
 EXTERN syscall
 EXTERN schedule
 EXTERN ncPrintHex
 EXTERN ncNewline
+EXTERN pageFault
 EXTERN processHandler
 EXTERN msgQueueHandler
 EXTERN semaphoreHandler
+GLOBAL lala
 EXTERN cpuHandler
+
 
 %macro irqHandlerMaster 1
 	mov rdi, %1
@@ -89,13 +94,14 @@ pit_handler:
 
 	mov rdi, rsp
 	call schedule
-
+	
 	mov rsp, rax
 
 	popState
 	
 	mov al, 20h
 	out 20h, al
+	
 
 	iretq
 
@@ -161,3 +167,41 @@ getFlags:
 	pop rax
 	ret
 
+doubleFaultHandler:
+	cli
+	hlt
+
+pageFaultHandler:
+	
+	;cli
+	;hlt
+
+	pop rdi
+	mov rsi, cr2
+	call pageFault
+
+	;cli
+	;hlt
+	iretq
+
+
+lala:
+	mov rbx, 12
+	mov rdx, rsp
+	sub rdx, 0x700000
+	;mov rbx, rdx-0x1500
+	;mov [rsp-0x1500], rax
+
+
+	mov [rdx], rbx
+	mov rdi, [rdx]
+	call ncPrintHex
+
+	mov rbx, 7
+
+	mov [rdx + 0x2000], rbx
+	mov rdi, [rdx + 0x2000]
+	call ncPrintHex
+
+
+	ret

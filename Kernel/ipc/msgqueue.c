@@ -49,7 +49,7 @@ DeleteMsgQueue(MsgQueue *mq)
 	removeMessageQueue(mq);
 	DeleteSem(mq->sem_get);
 	DeleteSem(mq->sem_put);
-	free(mq);
+	kfree(mq);
 }
 
 void GetMsgQueue(MsgQueue *mq, void *msg)

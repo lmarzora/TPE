@@ -1,26 +1,32 @@
+#include"memory.h"
+#include<lib.h>
+#include<naiveConsole.h>
+#include<pAllocator.h>
+
 #include "memory.h"
 #include <lib.h>
 #include <naiveConsole.h>
 
 
 
+
 #define PAGE 0x1000
-#define MAX_LEVEL 13
-#define MAX_INDEX 12
-#define TOTAL_MEMORY 0x1000000000
+#define MAX_LEVEL 12
+#define MAX_INDEX 11
+#define TOTAL_MEMORY  0x1000000000
 #define CMP  0x8000000000000000
-#define HEAP_START 0x700000
+#define HEAP_START 0x40000000
 
 static uint64_t * bitmaps[MAX_LEVEL + 1];
 extern uint8_t endOfKernel;
 
 
-int block_size(int level)
+uint64_t block_size(int level)
 {
 	return PAGE * (1ull << level);
 
 }
-int level_size(int level)
+uint64_t level_size(int level)
 {
 	return TOTAL_MEMORY / block_size(level);
 
@@ -29,7 +35,8 @@ int level_size(int level)
 
 void
 mem_setup(uint64_t himem_size)
-{
+{	
+
 	extern char _end;
 	//ncClear();
 	//ncNewline();
@@ -39,32 +46,47 @@ mem_setup(uint64_t himem_size)
 	//ncPrint("bitmap addr: ");
 	//ncPrintHex(&bitmaps);
 	//ncNewline();
-	uint64_t addr = (void*) 0x600000;
 	int i;
+	uint64_t size = 0;
+	for(i=0;i<MAX_LEVEL;i++)
+	{	
+		size += level_size(i);
+	}
+	ncNewline();
+	ncPrintHex(size);
+	ncNewline();
+	ncPrintHex(size/PAGE);
+	ncNewline();
+	uint64_t addr = alloc_page();
+	ncPrintHex(addr);
+	
+	do {
+		size-=PAGE;
+		alloc_page();
+	}
+	while(size>0);	
+		
 
 	for(i=0;i<MAX_LEVEL;i++)
 	{	
 		bitmaps[i] = addr;
-		addr += (level_size(i)) * sizeof(uint64_t);
+		addr += level_size(i);
 		
-		//ncPrint("level: ");
-		//ncPrintDec(i);;		
-		//ncPrint(" level_addr: ");
-		//ncPrintHex(bitmaps[i]);
-		//ncPrint(" level_size: ");
-		//ncPrintDec(level_size(i));
-		//ncPrint(" block_size: ");
-		//ncPrintDec(block_size(i));	
-		
-		memset(bitmaps[i],0,level_size(i)*sizeof(uint64_t));
-	//ncNewline();
+		ncPrint("level: ");
+		ncPrintDec(i);;		
+		ncPrint(" level_addr start: ");
+		ncPrintHex(bitmaps[i]);
+		ncPrint(" bitmap size: ");
+		ncPrintHex( level_size(i)/sizeof(uint64_t*) );
 
+		memset(bitmaps[i],0,level_size(i)/8);
+	
 	}
-
-	memset(bitmaps[MAX_INDEX],0xAAAAAAAA,level_size(i)*sizeof(uint64_t));
+			
+	memset(bitmaps[MAX_INDEX],0xAAAAAAAA,level_size(i)/sizeof(uint64_t));
 	
-
-	
+	//printMap();
+		
 }
 
 
@@ -118,8 +140,8 @@ myalloc(uint64_t bytes)
 
 	if (t > MAX_LEVEL || p == (void*)0xDEAD)
 	{
-		//ncPrintHex(p);
-		//ncNewline();
+		ncPrintHex(p);
+		ncNewline();
 		panic("Out of memory");
 		return (void*) 0;
 	}
@@ -243,14 +265,6 @@ getBlock(int buddyIndex)
 	return (void*)0xDEAD;
 }
 
-void
-panic(char* msg)
-{
-	//ncPrint(msg);
-	//ncNewline();
-	while(1);
-	//exit(1);
-}
 
 void*
 dir(int i, int offset, int level)
@@ -590,7 +604,7 @@ getStatus(void* p, int level)
 	test1 = (uint64_t)p/block_size(level);
 	test2 = (int) test1;	
 	if(test1!=test2)
-		panic("Direccion incorrecta");
+		panic("Direccion incorrecta 2");
 
 	blockIndex = getBlockIndex(p,level);
 	i = blockIndex/size;

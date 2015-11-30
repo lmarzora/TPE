@@ -33,8 +33,10 @@ void DeleteSem(Semaphore *sem)
 	int valor = setInterrupt(0);
 	removeSemaphore(sem);
 	flushQueue(&sem->queue);
-	free(sem->name);
-	free(sem);
+
+	kfree(sem->name);
+	kfree(sem);
+
 	setInterrupt(valor);
 }
 

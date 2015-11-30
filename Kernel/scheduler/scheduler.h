@@ -1,12 +1,17 @@
+#include<stdint.h>
+#include<lib.h>
 #include <stdint.h>
 #include <process.h>
 
 void printProcesses();
 
+
 enum STATE {READY, BLOCKED, RUNNING, TERMINATED};
 
 #define MAX_TICK 3;
 #define FOREVER -1;
+
+
 
 
 typedef int (*process_func) (int argc, char *argv);
@@ -60,6 +65,7 @@ typedef struct stack_frame stack_frame;
 typedef struct initial_stack initial_stack;
 
 
+
 Process * create_process(process_func func, int argc, void *argv, char *name, int pid, int isForeground);
 Process* get_last(ProcessQueue * pq);
 void enqueue_q(Process *p, ProcessQueue * pq);
@@ -91,4 +97,12 @@ int receives_data();
 
 Process * findProcess(int num);
 void delete_process(Process *p);
+
+
+uint64_t get_process_SS();
+uint64_t get_reserved_pages();
+void add_cant_pages(uint64_t);
+uint64_t get_pid();
+
 void free_terminated();
+

@@ -17,11 +17,15 @@ void int82handler();
 void int83handler();
 void int84handler();
 int syscall(int,char*,int);
+void pageFaultHandler(void);
+void pageFault(uint64_t,uint64_t);
 int setInterrupt(int valor);
+void doubleFaultHandler(void);
 
 void processHandler(char* nombre, void* func, int argc, void * argv, int isForeground);
 void msgQueueHandler(int code, char * msg, char * nombre, unsigned max, unsigned size);
 void semaphoreHandler(int code, char * nombre, int valor);
 void cpuHandler(int code, int num);
+
 
 #endif

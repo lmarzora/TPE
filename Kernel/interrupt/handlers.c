@@ -78,6 +78,36 @@ int syscall(int code , char* buff , int size) {
 	return dim;
 }
 
+
+void pageFault(uint64_t error, uint64_t vaddr)
+{
+	
+	ncNewline();
+	ncPrint("error: ");
+	ncPrintHex(error);
+	ncNewline();
+	ncPrint("addr: ");
+	ncPrintHex(vaddr);
+	ncNewline();
+	ncPrint("soy el process: ");
+	ncPrintDec(getPid());
+	ncNewline();
+
+	if(error == 2){
+		uint64_t stack_start = getProcessSS();
+		if(stack_start - vaddr < 0 || stack_start - vaddr >= 0x800000){
+			panic("me pase del stack");
+		}
+		uint64_t reserved_pages = getReservedPages();
+		uint64_t newPages = alloc_process_stack(vaddr, stack_start-(0x1000 * reserved_pages));
+		addCantPages(newPages);
+	}
+	else{
+		panic("otro tipo de error");
+	}
+}
+ 
+
 void processHandler(char* nombre, void* func, int argc, void * argv, int isForeground){
 
 	process_data* data = kalloc(sizeof(process_data),0);
@@ -191,3 +221,4 @@ int setInterrupt(int valor){
 
 	return flags;
 }
+

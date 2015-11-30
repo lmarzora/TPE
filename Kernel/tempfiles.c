@@ -43,7 +43,7 @@ void removeSemaphore(Semaphore * sem){
 			}else{
 				prev->next = aux->next;
 			}
-			free(aux);
+			kfree(aux);
 			return;
 		}else{
 			prev = aux;
@@ -83,7 +83,7 @@ void removeMessageQueue(MsgQueue * mq){
 			}else{
 				prev->next = aux->next;
 			}
-			free(aux);
+			kfree(aux);
 			return;
 		}else{
 			prev = aux;

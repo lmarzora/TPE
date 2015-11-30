@@ -9,8 +9,11 @@
 #include "kSetUp.h"
 #include <semaphore.h>
 #include <msgqueue.h>
+#include <vmemory.h>
 
-#define TOTAL_MEMORY 0x10000000000000 
+#define TOTAL_MEMORY 0x100000000 
+
+void lala();
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -93,22 +96,37 @@ void * initializeKernelBinary()
 
 int main()
 {	
-
 	uint64_t memory = TOTAL_MEMORY;
-	
-
-	setUpPageAllocator(memory);
-	setUpScheduler();
 	ncClear();
+	init_pMemoryAllocator(TOTAL_MEMORY);
+	setUpPaging();
 	
-	process_data* shell = kalloc(sizeof(process_data),0);
+	idt_set_gate(0x0E,(uint64_t)pageFaultHandler,0x8,0x8E);
 
+	idt_set_gate(0x08,(uint64_t)doubleFaultHandler,0x8,0x8E);
+
+
+
+
+	ncPrint("Test paging\n");
+	ncPrint("addr1: ");
+	ncPrintHex(get_pAddress(0x0));
+	ncNewline();
+
+	setUpPageFrameAllocator(memory);
 	
-	shell->func = sampleCodeModuleAddress;
+	setUpScheduler();
+	
+
+	//map user code module
+	void* userland = setUserModule(sampleCodeModuleAddress);
+
+	process_data* shell = kalloc(sizeof(process_data),0);
+	shell->func = userland;
 	shell->name = "shell";
 	shell->isForeground = 1;
-	
 	newProcess(shell);	
+	
 
 
 	process_data* garbage = kalloc(sizeof(process_data),0);
@@ -130,6 +148,7 @@ int main()
 	//ncNewline();
 	//ncClear();
 
+	//while(1);
 	idt_set_gate(0x20,(uint64_t)pit_handler,0x8,0x8E);
 	idt_set_gate(0x21,(uint64_t)keyboard_handler,0x8,0x8E);
 	idt_set_gate(0x80,(uint64_t)int80handler,0x8,0x8F);
@@ -139,7 +158,7 @@ int main()
 	idt_set_gate(0x84,(uint64_t)int84handler,0x8,0x8F);
 	
 	//FncClear();
-		
+	ncClear();
 	sti();
 	pic();
 
@@ -157,5 +176,13 @@ void garbageProc(){
 	}
 }
 void nullProc(){
-	while(1);
+	//call_pit();
+	//lala();
+	while(1){
+		//ncPrint("dasdas\n");
+	}
 }
+
+
+
+
