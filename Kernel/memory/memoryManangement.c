@@ -13,9 +13,9 @@
 #define PAGE 0x1000
 #define MAX_LEVEL 12
 #define MAX_INDEX 11
-#define TOTAL_MEMORY  0x1000000000
+#define TOTAL_MEMORY  0x10000000000
 #define CMP  0x8000000000000000
-#define HEAP_START 0x40000000
+#define HEAP_START 0x80000000
 
 static uint64_t * bitmaps[MAX_LEVEL + 1];
 extern uint8_t endOfKernel;

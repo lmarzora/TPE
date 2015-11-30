@@ -1,7 +1,7 @@
 #include<stdint.h>
 #include<lib.h>
 
-#define Gib 0x40000000
+#define GiB 0x40000000
 #define PAGE 0x1000
 #define PML4_MASK 	0xFF8000000000ULL
 #define PDPT_MASK 	0x7FC0000000
