@@ -1,6 +1,6 @@
 #include <stdint.h>
 #include <process.h>
-#include "../semaphore.h"
+#include <semaphore.h>
 
 typedef struct
 {
