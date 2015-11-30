@@ -57,15 +57,18 @@ int main() {
 
 			}else if(cmpstr(line, "ps")){
 				listProcesses();
+			
 			}else if(cmpstr(line, "intconv")){
 				newProcess("escribe_int", &interactiveconv_main, 0, 0, 1);
 			}else if(cmpstr(line, "intconv&")){
 				printWarning();
 				newProcess("escribe_int", &interactiveconv_main, 0, 0, 0);
+			
 			}else if(cmpstr(line, "simpleconv")){
 				newProcess("simpleconv", &simpleconv_main, 0, 0, 1);
 			}else if(cmpstr(line, "simpleconv&")){
 				newProcess("simpleconv", &simpleconv_main, 0, 0, 0);
+			
 			}else if(cmpstr(line, "kill")){
 				printLn("Input pid to kill");
 				print("->");
@@ -80,12 +83,20 @@ int main() {
 			}else if(cmpstr(line, "echo")){
 				newProcess("echo", &echo, 0, 0, 1);
 			}else if(cmpstr(line, "echo&")){
+				printWarning();
 				newProcess("echo", &echo, 0, 0, 0);
+			
 			}else if(cmpstr(line, "prodcons")){
 				newProcess("prodcons", &prodcons_main, 0, 0, 1);
+			}else if(cmpstr(line, "prodcons&")){
+				printWarning();
+				newProcess("prodcons", &prodcons_main, 0, 0, 0);
+			
 			}else if(cmpstr(line, "abab")){
-				//testStuff();
 				newProcess("abab", &abab_main, 0, 0, 1);
+			}else if(cmpstr(line, "abab&")){
+				newProcess("abab", &abab_main, 0, 0, 0);
+			
 			}else if(cmpstr(line, "ipc")){
 				listIpcs();
 			}else{
@@ -101,10 +112,10 @@ int main() {
 }
 
 void printWarning(){
-	printLn("\n**********************************");
+	printLn("\n********************************************");
 	printLn("Warning! Esta app requiere el uso del teclado!");
 	printLn("Sin el, se va a trabar - matar con kill");
-	printLn("************************************");
+	printLn("**********************************************");
 }
 void echo(){
 
