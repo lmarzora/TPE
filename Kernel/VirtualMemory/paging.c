@@ -2,6 +2,7 @@
 #include"pAllocator.h"
 #include<lib.h>
 #include<vmemory.h>
+uint64_t* free_pAddress( uint64_t* vMemory );
 
 void setUpPaging()
 {
@@ -175,10 +176,17 @@ int alloc_pMemory(uint64_t vMemory, int size, int user)
 	return 1;
 }
 
-int free_pMemory(uint64_t pMemory)
+int free_pMemory(uint64_t* vMemory)
 {
-		free_page(pMemory);
-		return 1;
+	uint64_t *page, *pdpt, *pdt, *pt ;
+	uint64_t i, pml4_i, pdpt_i, pdt_i, pt_i;
+
+	uint64_t* pMemory = free_pAddress(vMemory);
+	
+
+
+	free_page(pMemory);
+	return 1;
 
 }
 
@@ -233,6 +241,72 @@ uint64_t* getP1GiBOffset(uint64_t vaddr) {
 
 }
 
+uint64_t* free_pAddress( uint64_t* vMemory )
+{
+
+		uint64_t * page;
+		uint64_t  *pml4, *pdpt, *pdt, *pt ;
+		int  pml4_i, pdpt_i, pdt_i, pt_i, p_i;
+
+		pml4 = getCR3();	
+		ncNewline();		
+		
+		pml4_i = getPML4Offset(vMemory);
+		pdpt_i = getPDPTOffset(vMemory);
+		pdt_i = getPDTOffset(vMemory);
+		pt_i = getPTOffset(vMemory);
+
+		pdpt = (uint64_t*) get4KiBPageAddress(&pml4[pml4_i]);	
+
+		if(!getPresent(&pdpt[pdpt_i]))
+		{
+			ncNewline();
+			ncPrint("PDT NOT PRESENT\n");
+					panic("FUCK\n");
+		}
+	
+		if(getPageSize(&pdpt[pdpt_i]))
+		{
+
+			page =  (uint64_t*) get1GiBPageAddress(pdpt);
+			setPresent(false,&pdpt[pdpt_i]);
+			while(1);
+			return page;
+		}
+
+		pdt = (uint64_t*) get4KiBPageAddress(&pdpt[pdpt_i]);
+		
+
+		if(!getPresent(&pdt[pdt_i]))
+		{
+			ncNewline();
+			ncPrint("PT NOT PRESENT\n");
+					panic("FUCK\n");
+		}
+		
+
+		if(getPageSize(&pdt[pdt_i]))
+		{
+			page =  (uint64_t*) get2MiBPageAddress(pdt);
+			setPresent(false,&pdt[pdt_i]);
+			return page;
+		}
+	
+
+		pt = (uint64_t*)get4KiBPageAddress(&pdt[pdt_i]);
+
+		if(!getPresent(&pt[pt_i]))
+		{
+			ncNewline();
+			ncPrint("PAGE NOT PRESENT\n");
+					panic("FUCK\n");
+		}
+
+		page =  (uint64_t*) get4KiBPageAddress(&pt[pt_i]);
+		setPresent(false,&pt[pt_i]);
+		return page;
+
+}
 
 uint64_t* get_pAddress( uint64_t vMemory )
 {

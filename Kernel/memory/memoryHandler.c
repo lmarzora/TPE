@@ -97,12 +97,15 @@ uint64_t alloc_process_stack(void* last, void*addr)
 }
 
 
-uint64_t free_process_stack(void* last, int cant)
+uint64_t free_process_stack(void* ss , int cant)
 {
 	int i = cant;
-	int64_t page_frame, last_frame, p; 
+	int64_t page_frame, last_frame, p;
+	void* last = ss + 0x800000 - 1; 
 	
-	last_frame = (uint64_t)get_pAddress(last) & PAGE_FRAME_MASK;
+
+	myfree(ss);	
+	last_frame = (uint64_t) last & PAGE_FRAME_MASK;
 	
 	for(p=last_frame;i<=cant;p-=PAGE)
 	{
@@ -131,18 +134,10 @@ void setUpPageFrameAllocator(uint64_t memory_size)
 
 }
 
-void free(void* p)
-{
-	//ncPrint("FREE\n");
-	myfree(p);
-	free_pMemory(get_pAddress(p));
-
-}
 
 void kfree(void* p)
 {
-	
-	free_pMemory(p);
+	free_page(p);	
 	
 }
 

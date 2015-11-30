@@ -435,7 +435,7 @@ Process * create_process(process_func func, int argc, void *argv, char *name, in
 	p->name = name;
 	p->rsp = nRsp;
 
-	p->ss = ss + 0x800000 - 1;
+	p->ss = ss;
 
 	p->stack = orig_rsp;
 

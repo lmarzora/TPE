@@ -9,7 +9,7 @@ void * kalloc(uint64_t,uint32_t);
 void * alloc(int);
 uint64_t alloc_process_stack(void* last, void*addr);
 uint64_t free_process_stack(void* last, int cant);
-void free(void*);
+
 void kfree(void*);
 uint16_t getFlags(void);
 int cmpstr(char * s1, char * s2);
